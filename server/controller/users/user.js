@@ -9,7 +9,6 @@ module.exports = {
       where: { email: req.params.email, password: req.body.password },
     });
 
-    console.log(req.params);
     if (!userInfo) {
       res.status(401).json({ data: null, message: "unAuthorized" });
     } else {
@@ -42,10 +41,13 @@ module.exports = {
     }
   },
   logout(req, res) {
-    // var deleteCookie = function (name) {
-    //   document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
-    // };
-    // deleteCookie("refreshToken");
-    // res.status(205).send("Logged out successfully");
+    if (req.) {
+      res.status(401).json({message:"accessToken not received"})
+    }
+    var deleteCookie = function (name) {
+      document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
+    };
+    deleteCookie("refreshToken");
+    res.status(20).send("ok");
   },
 };
