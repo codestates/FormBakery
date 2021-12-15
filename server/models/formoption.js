@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.formOption.hasMany(models.answerList,{foreignKey: 'formOptionId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
+      models.formOption.hasMany(models.answerList,{foreignKey: 'formOptionId'});
       models.formOption.belongsTo(models.formContent);
     }
   }
