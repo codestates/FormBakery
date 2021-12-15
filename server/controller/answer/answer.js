@@ -26,7 +26,7 @@ module.exports = {
         .then(async result => {
             let values = result.dataValues;
             for( let val of data){
-                val.answerId = values.formId;
+                val.answerId = values.id;
                 await db["answerList"].create(val);
             }
             res.status(201).send({
@@ -49,12 +49,19 @@ module.exports = {
             })
         }
         db['answer'].findOne({
+            attributes: { exclude: ['UserId'] },
             where:[
                 {userEmail},{formId}
             ]
         })
-        .then(result => {
+        .then(async result => {
+            if(result === null){
+                await res.status(204).send({
+                    message:'answer not exist'
+                })
+            }
             let values = result.dataValues;
+            console.log(values)
             sendData.answer = values;
             db['answerList'].findAll({
                 attributes: { exclude: ['answerId'] },
@@ -92,7 +99,7 @@ module.exports = {
             !userEmail &&
             !formId
         ){
-            res.status(400).send({
+            res.status(204).send({
                 message:'userEmail or formId not received'
             });
         }
@@ -109,13 +116,33 @@ module.exports = {
             ]
         })
         .then(result => {
+            if(result.length === 0)
+                res.status(400).send({
+                    message:"doesn't have any answer"
+                })
             let values = result.map(el => el.dataValues);
             res.status(200).send(values);
         });
     },
+    async updateAnswer(req,res){
+        let changeData = req.body.data;
 
-    deleteAnswer(req,res){
-        let id = req.body.id;
+        for(let val of changeData){
+            let id = val.id;
+            delete val.id;
+            await db['answerList'].update(val,{
+                where:[
+                    {id}
+                ]
+            })
+        }
+
+        res.status(201).send({
+            message:'ok'
+        });
+    },
+    async deleteAnswer(req,res){
+        let id = Number(req.params.id);
 
         if(!id){
             res.status(400).send({
@@ -123,8 +150,17 @@ module.exports = {
             });
         }
         
-        db['answer'].destroy({
+        await db['answer'].destroy({
             where:[{id}]
+        })
+        .then(result => {
+            db['answerList'].destroy({
+                where:[
+                    {
+                        'answerId':id
+                    }
+                ]
+            });
         });
 
         res.status(200).send({
