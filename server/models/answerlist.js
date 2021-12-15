@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       formContentId: DataTypes.INTEGER,
       answer: DataTypes.STRING,
+      answerId: DataTypes.INTEGER,
+      formOptionId: DataTypes.INTEGER
     },
     {
       sequelize,
