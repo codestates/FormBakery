@@ -26,4 +26,6 @@ router.get("/get/:id", formController.getForm);
 router.put("/image/:id",upload.single('file'),formController.uploadImageLink);
 
 router.post('/list/:email',formController.getFormList);
+
+router.put('/update/:id',formController.updateForm);
 module.exports = router;

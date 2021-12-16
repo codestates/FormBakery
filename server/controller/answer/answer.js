@@ -77,47 +77,52 @@ module.exports = {
             attributes: { exclude: ['UserId'] },
             where:[
                 {userEmail},{formId}
+            ],
+            include:[
+                {
+
+                },
+                {
+                    model:db['answerList'],
+                    attributes:{exclude:['answerId']},
+                    separate:true,
+                    order:[['id','ASC']],
+                    include:[
+                        {
+                            model:db['formContent'],
+                            attributes:['question','id','type','section','order']
+                        },
+                        {
+                            model:db['formOption'],
+                            attributes:{exclude:['createdAt','updatedAt']}
+                        }
+                    ]
+                }
             ]
         })
-        .then(async result => {
-            if(result === null){
-                await res.status(400).send({
-                    message:'answer not exist'
-                })
-            }
-            let values = result.dataValues;
-            console.log(values)
-            sendData.answer = values;
-            db['answerList'].findAll({
-                attributes: { exclude: ['answerId'] },
-                include:[
-                    {
-                        model:db['formContent'],
-                        attributes:['question','id','type','section','order']
-                    },
-                    {
-                        model:db['formOption'],
-                        attributes:{exclude:['createdAt','updatedAt']}
-                    }
-                ],
-                where:[
-                    {answerId:values.id}
-                ]
-            })
-            .then(result => {
-                sendData.values = result.map(el => {
-                    return el.dataValues;
-                });
-                res.send({
-                    data:sendData,
-                    message:'ok'
-                });
+        .then(result => {
+
+            let send = result;
+
+            send.answerLists = send.answerLists.map(el => {
+                if(el.dataValues.formOption === null)
+                    delete el.dataValues.formOption;
+                if(el.dataValues.formOptionId === null)
+                    delete el.dataValues.formOptionId
+                if(el.dataValues.answer === null)
+                    delete el.dataValues.answer
+                return el
             });
+            res.status(200).send({
+                message:'ok',
+                data:send
+            })
         })
     },
 
     /*
         설문내역 리스트 가져오기
+        수정필요
     */
     getAnswerList(req,res){
         let userEmail = req.body.userEmail;
