@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.answer.hasMany(models.answerList,{foreignKey: 'answerId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
+      models.answer.belongsTo(models.form);
+      models.answer.belongsTo(models.User);
     }
   }
   answer.init(

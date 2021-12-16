@@ -9,14 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.User.hasMany(models.form,{foreignKey: 'userEmail',onDelete: 'CASCADE',onUpdate:'CASCADE'});
+      models.User.hasMany(models.answer,{foreignKey: 'userEmail',onDelete: 'CASCADE',onUpdate:'CASCADE'});
     }
   }
   User.init(
     {
-      id: {
-        type: DataTypes.NUMBER,
-        primaryKey: true,
-      },
       email: {
         type: DataTypes.STRING,
         primaryKey: true,

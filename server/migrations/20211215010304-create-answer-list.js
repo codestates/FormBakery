@@ -14,6 +14,12 @@ module.exports = {
       answer: {
         type: Sequelize.STRING
       },
+      answerId: {
+        type: Sequelize.INTEGER
+      },
+      formOptionId: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
