@@ -4,6 +4,9 @@ const db = require("../../models/index");
 
 module.exports = {
 
+    /*
+        설문 작성
+    */
     create(req,res){
         let userEmail = req.params.email;
         let formId = req.body.formId;
@@ -55,6 +58,9 @@ module.exports = {
 
     },
 
+    /*
+        설문 내역 가져오기(get one)
+    */
     getAnswer(req,res){
         let userEmail = req.params.email;
         let formId = req.body.formId;
@@ -109,7 +115,10 @@ module.exports = {
             });
         })
     },
-    /* need commit */
+
+    /*
+        설문내역 리스트 가져오기
+    */
     getAnswerList(req,res){
         let userEmail = req.body.userEmail;
         let formId = req.body.formId;
@@ -164,6 +173,10 @@ module.exports = {
             });
         });
     },
+
+    /*
+        설문 내역 업데이트
+    */
     async updateAnswer(req,res){
         let changeData = req.body.data;
 
@@ -181,6 +194,10 @@ module.exports = {
             message:'ok'
         });
     },
+
+    /*
+        설문 내역 삭제
+    */
     async deleteAnswer(req,res){
         let id = req.params.id;
 
