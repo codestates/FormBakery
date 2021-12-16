@@ -1,6 +1,6 @@
 
 module.exports = {
-    dateToString(date) {
+    dateToString(date,format = '',needTime = false) {
         let dd = date.getDate();
         let mm = date.getMonth()+1; //January is 0!
     
@@ -18,8 +18,9 @@ module.exports = {
         m = m.toString();
         s = s.toString();
     
-        let s1 = yyyy+mm+dd;
-        return s1;
+        let s1 = yyyy+format+mm+format+dd;
+        let s2 = yyyy+format+mm+format+dd+' '+m+':'+s;
+        return needTime ? s2:s1;
     },
     randomString(num,origin) {
         return this.dateToString(new Date()) + '-' + Math.random().toString(36).substring(0,num) + '-' + origin;
