@@ -88,6 +88,10 @@ module.exports = {
                     {
                         model:db['formContent'],
                         attributes:['question','id','type','section','order']
+                    },
+                    {
+                        model:db['formOption'],
+                        attributes:{exclude:['createdAt','updatedAt']}
                     }
                 ],
                 where:[
@@ -154,7 +158,10 @@ module.exports = {
                     message:"doesn't have any answer"
                 })
             let values = result.map(el => el.dataValues);
-            res.status(200).send(values);
+            res.status(200).send({
+                data:values,
+                message:'ok'
+            });
         });
     },
     async updateAnswer(req,res){
@@ -175,7 +182,7 @@ module.exports = {
         });
     },
     async deleteAnswer(req,res){
-        let id = Number(req.params.id);
+        let id = req.params.id;
 
         if(!id){
             res.status(400).send({
