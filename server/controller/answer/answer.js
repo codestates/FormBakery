@@ -122,7 +122,7 @@ module.exports = {
             !userEmail &&
             !formId
         ){
-            res.status(204).send({
+            res.status(400).send({
                 message:'userEmail or formId not received'
             });
         }
