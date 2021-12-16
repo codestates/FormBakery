@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.answer.hasMany(models.answerList,{foreignKey: 'answerId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
       models.answer.belongsTo(models.form);
-      //models.answer.belongsTo(models.User);
+      models.answer.belongsTo(models.User);
     }
   }
   answer.init(

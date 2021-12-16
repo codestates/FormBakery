@@ -19,20 +19,39 @@ module.exports = {
                 });
         }
 
-        db["answer"].create({
-            userEmail,
-            formId
+        db['answer'].findOne({
+            where:[
+                {userEmail},
+                {formId}
+            ]
         })
         .then(async result => {
-            let values = result.dataValues;
-            for( let val of data){
-                val.answerId = values.id;
-                await db["answerList"].create(val);
+            if(result !== null){
+                await res.status(400).send({
+                    message:'aleady writed this form'
+                });
+            }else{
+                db["answer"].create({
+                    userEmail,
+                    formId
+                })
+                .then(async result => {
+        
+                    let values = result.dataValues;
+        
+                    data.sort((a, b) => a.formContentId - b.formContentId);
+        
+                    for( let val of data){
+                        val.answerId = values.id;
+                        await db["answerList"].create(val);
+                    }
+                    res.status(201).send({
+                        message:'ok'
+                    });
+                });
             }
-            res.status(201).send({
-                message:'ok'
-            })
         })
+
 
     },
 
@@ -56,7 +75,7 @@ module.exports = {
         })
         .then(async result => {
             if(result === null){
-                await res.status(204).send({
+                await res.status(400).send({
                     message:'answer not exist'
                 })
             }
@@ -69,6 +88,10 @@ module.exports = {
                     {
                         model:db['formContent'],
                         attributes:['question','id','type','section','order']
+                    },
+                    {
+                        model:db['formOption'],
+                        attributes:{exclude:['createdAt','updatedAt']}
                     }
                 ],
                 where:[
@@ -86,7 +109,7 @@ module.exports = {
             });
         })
     },
-
+    /* need commit */
     getAnswerList(req,res){
         let userEmail = req.body.userEmail;
         let formId = req.body.formId;
@@ -99,7 +122,7 @@ module.exports = {
             !userEmail &&
             !formId
         ){
-            res.status(204).send({
+            res.status(400).send({
                 message:'userEmail or formId not received'
             });
         }
@@ -111,8 +134,22 @@ module.exports = {
             include:[
                 {
                     model:db['form'],
-                    attributes:['title','subTitle']
-                }
+                    attributes: { exclude: ['createdAt','updatedAt','UserEmail'] }
+                },
+                {
+                    model:db['answerList'],
+                    attributes: { exclude: ['createdAt','updatedAt','UserEmail'] },
+                    include:[
+                        {
+                            model:db['formContent'],
+                            attributes: { exclude: ['createdAt','updatedAt'] }
+                        },
+                        {
+                            model:db['formOption'],
+                            attributes: { exclude: ['createdAt','updatedAt'] }
+                        }
+                    ]
+                }         
             ]
         })
         .then(result => {
@@ -121,7 +158,10 @@ module.exports = {
                     message:"doesn't have any answer"
                 })
             let values = result.map(el => el.dataValues);
-            res.status(200).send(values);
+            res.status(200).send({
+                data:values,
+                message:'ok'
+            });
         });
     },
     async updateAnswer(req,res){
@@ -142,7 +182,7 @@ module.exports = {
         });
     },
     async deleteAnswer(req,res){
-        let id = Number(req.params.id);
+        let id = req.params.id;
 
         if(!id){
             res.status(400).send({
