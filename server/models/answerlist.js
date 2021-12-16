@@ -8,13 +8,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      //models.answerList.belongsTo(models.answer);
+      models.answerList.belongsTo(models.formContent);
+      models.answerList.belongsTo(models.formOption);
     }
   }
   answerList.init(
     {
       formContentId: DataTypes.INTEGER,
       answer: DataTypes.STRING,
+      answerId: DataTypes.INTEGER,
+      formOptionId: DataTypes.INTEGER
     },
     {
       sequelize,
