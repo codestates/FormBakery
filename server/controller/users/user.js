@@ -3,10 +3,13 @@ dotenv.config();
 
 const db = require("../../models/index");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
+
+const clientID = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
 module.exports = {
   login: async (req, res) => {
-    console.log(db.User);
     const userInfo = await db["User"].findOne({
       where: { email: req.params.email, password: req.body.password },
     });
@@ -40,15 +43,35 @@ module.exports = {
         });
     }
   },
-  logout(req, res) {
-    if (!req.parmas.email) {
-      res.status(401).json({ message: "user information is null" });
-    }
+
+  logout: async (req, res) => {
     // 클라이언트에서 accessToken 지워주세요!
-    const deleteCookie = function (name) {
-      document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
-    };
-    deleteCookie("refreshToken");
+    res.clearCookie("refreshToken");
     res.status(200).send("logout successful");
+  },
+
+  githubCallback: async (req, res) => {
+    axios({
+      method: "post",
+      url: `https://github.com/login/oauth/access_token`,
+      headers: {
+        accept: "application/json",
+      },
+      data: {
+        client_id: clientID,
+        client_secret: clientSecret,
+        code: req.body.authorizationCode,
+      },
+    })
+      .then((result) =>
+        res
+          .status(200)
+          .json({ accessToken: result.data.access_token, message: "ok" })
+      )
+      .catch((err) => res.status(404));
+  },
+
+  signup: async (req, res) => {
+    res.send("dd");
   },
 };
