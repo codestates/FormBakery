@@ -1,6 +1,6 @@
 const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
-const config = require("../config/mailConfig");
+const config = require("../config/config");
 
 const transporter = mailer.createTransport(
     config.smtp

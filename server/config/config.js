@@ -24,4 +24,13 @@ module.exports = {
     host: process.env.DB_HOST || "127.0.0.1",
     dialect: "mysql",
   },
+  smtp:{
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    auth: {
+        user: process.env.MAIL_EMAIL,
+        pass: process.env.MAIL_PASSWORD
+    }
+}
 };
