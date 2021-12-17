@@ -253,7 +253,6 @@ module.exports = {
     */
     async updateAnswer(req,res){
         let changeData = req.body.data;
-
         for(let val of changeData){
             let id = val.id;
             delete val.id;
