@@ -137,7 +137,7 @@ module.exports = {
           })
           .json({
             data: { accessToken: accessToken },
-            message: "login successful",
+            message: "signup successful",
           });
       }
     }
@@ -159,5 +159,92 @@ module.exports = {
       where: { id: userInfo.id },
     });
     res.send({ message: "signout successful" });
+  },
+
+  getUserInfo: async (req, res) => {
+    if (!req.headers.authorization) {
+      res.status(400).json({ data: null, message: "access token is empty" });
+    } else {
+      jwt.verify(
+        req.headers.authorization,
+        process.env.ACCESS_SECRET,
+        async (err, decoded) => {
+          if (err) {
+            res.status(400).json({
+              message: "invalid access token",
+            });
+          } else {
+            console.log(decoded);
+            const userInfo = await db["User"].findOne({
+              where: { email: decoded.email },
+            });
+            if (!userInfo) {
+              res.status(404).json({
+                message: "access token has been tempered",
+              });
+            } else {
+              delete userInfo.dataValues.password;
+              res.status(200).json({
+                data: {
+                  userInfo: userInfo.dataValues,
+                },
+                message: "ok",
+              });
+            }
+          }
+        }
+      );
+    }
+  },
+
+  accessTokenRequest: async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      res
+        .status(403)
+        .json({ data: null, message: "refresh token not provided" });
+    } else {
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_SECRET,
+        async (err, decoded) => {
+          if (err) {
+            res.status(400).json({
+              message: "invalid refresh token, please log in again",
+            });
+          } else {
+            const userInfo = await db["User"].findOne({
+              where: { email: decoded.email },
+            });
+            if (!userInfo) {
+              res.status(404).json({
+                message: "refresh token has been tempered",
+              });
+            } else {
+              const accessToken = jwt.sign(
+                userInfo.dataValues,
+                process.env.ACCESS_SECRET,
+                {
+                  expiresIn: "15m",
+                }
+              );
+
+              delete userInfo.dataValues.password;
+              res.status(200).json({
+                data: {
+                  userInfo: userInfo.dataValues,
+                  accessToken: accessToken,
+                },
+                message: "ok",
+              });
+            }
+          }
+        }
+      );
+    }
+  },
+
+  updateUserInfo: async (req, res) => {
+    res.send("ok");
   },
 };
