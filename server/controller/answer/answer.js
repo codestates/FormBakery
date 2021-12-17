@@ -16,10 +16,12 @@ module.exports = {
             if(
                 !val.answer &&
                 !val.formOptionId
-            )
+            ){
                 res.status(400).send({
                     message:"data not received"
                 });
+                return;
+            }
         }
 
         db['answer'].findOne({
@@ -74,13 +76,14 @@ module.exports = {
             })
         }
         db['answer'].findOne({
-            attributes: { exclude: ['UserId'] },
+            attributes: { exclude: ['UserEmail'] },
             where:[
                 {userEmail},{formId}
             ],
             include:[
                 {
-
+                    model:db['form'],
+                    attributes:["title","subTitle","userEmail"]
                 },
                 {
                     model:db['answerList'],
@@ -133,8 +136,8 @@ module.exports = {
         if(req.body.use === 'form')
             sendParam.formId = formId;
         if(
-            !userEmail &&
-            !formId
+            (!userEmail && req.body.use === 'user') ||
+            (!formId && req.body.use === 'form')
         ){
             res.status(400).send({
                 message:'userEmail or formId not received'
@@ -166,12 +169,22 @@ module.exports = {
                 }         
             ]
         })
-        .then(result => {
+        .then(async result => {
+
+            let statistics = {}
+            let values = result.map(el => el.dataValues);
+
+            values.forEach(t => {
+                t.answerLists.dataValues.forforEach(t => {
+                    
+                });
+            });
+
+
             if(result.length === 0)
                 res.status(400).send({
                     message:"doesn't have any answer"
                 })
-            let values = result.map(el => el.dataValues);
             res.status(200).send({
                 data:values,
                 message:'ok'
