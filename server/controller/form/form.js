@@ -1,6 +1,6 @@
 const e = require("express");
 const db = require("../../models/index");
-
+const { Op } = require('sequelize');
 module.exports = {
 
     /*
@@ -30,7 +30,7 @@ module.exports = {
             }else{
                 db['form'].create(form)
                 .then(async result => {
-                    let formId = result.dataValues.id;
+                    let formId = result.id;
                     data.sort((a,b) => a.order - b.order);
 
                     for(let el of data){
@@ -102,8 +102,13 @@ module.exports = {
                 include:{
                     model:db['formOption'],
                     attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
-                } 
-            }
+                    separate: true,
+                    order:[['id','ASC']]
+                }
+            },
+            order:[
+                [db['formContent'],'order','ASC']
+            ]
         })
         .then(result => {
             if(result === null){
@@ -137,9 +142,12 @@ module.exports = {
             include:{
                 model:db['formContent'],
                 attributes:{exclude:['createdAt','updatedAt','formId']},
+                order:[['order','ASC']],
                 include:{
                     model:db['formOption'],
                     attributes:{exclude:['createdAt','updatedAt','formContentId']},
+                    separate:true,
+                    order:[['id','ASC']]
                 }
             }
         })
@@ -156,6 +164,57 @@ module.exports = {
                 })
             }
         });
-    }
+    },
 
+    /*
+        테스트 필요
+    */
+    async updateForm(req,res){
+        if(
+            !req.body ||
+            !req.body.formContents.length ||
+            req.body.formContents.length === 0
+        ){
+            await res.status(400).send({
+                message:'data not exist'
+            });
+        }else{
+            let data = req.body;
+            let id = req.params.id;
+
+            db['form'].update({
+                title:data.title,
+                subTitle:data.subTitle
+            },
+            {where:[{id}]})
+            .then(async result => {
+                let values = result.dataValues;
+                for(let content of data.formContents){
+                    let id = content.id
+                    delete content.id;
+                    await db['formContent'].update(content,{
+                        where:{id}
+                    })
+                    .then(async result => {
+                        if(
+                            content.formOptions &&
+                            content.formOptions.length > 0
+                        ){
+                            for(let option of content.formOptions){
+                                let optionId = option.id
+                                delete option.id;
+                                await db['formOption'].update(option,{
+                                    where:{id:optionId}
+                                });
+                            }
+                        }
+                    })
+                }
+
+                res.status(200).send({
+                    message:'ok'
+                });
+            })
+        }
+    }
 }
