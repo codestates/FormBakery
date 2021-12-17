@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 
-interface Modal {
+interface IProps {
     title: string;
     subTitle: string;
     onClick: () => void;
     show: boolean;
 }
 
-const Modal = ({ title, subTitle, onClick, show }: Modal) => {
+const Modal = ({ title, subTitle, onClick, show }: IProps) => {
     // 모달 창 보임 유무
-    const [isVisible, setIsVisible] = useState(false);
-    useEffect(() => {
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+    useEffect((): void => {
         if (show) {
             setIsVisible(show);
         }
     }, [show]);
-    const toggleModal = () => {
+    const toggleModal = (): void => {
         setIsVisible((prev) => !prev);
     };
     return (

@@ -1,19 +1,30 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, {
+    useRef,
+    useState,
+    useEffect,
+    ChangeEvent,
+    KeyboardEvent,
+} from "react";
 import MypageHeader from "../../../components/layout/MypageHeader";
 import AccountLeftPannel from "../../../components/layout/AccountLeftPannel";
+
+interface IPassword {
+    newPassword: string;
+    reNewPassword: string;
+}
 
 const changePassword = () => {
     // ref
     const reNewPasswordRef = useRef<HTMLInputElement>(null);
 
     // 새 비밀번호, 비밀번호 확인
-    const [passwordInfo, setPasswordInfo] = useState({
+    const [passwordInfo, setPasswordInfo] = useState<IPassword>({
         newPassword: "",
         reNewPassword: "",
     });
 
     // usestate 변경 관련
-    const stateHandler = (e) => {
+    const stateHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         if (e.target.id === "newPassword") {
             setPasswordInfo({
                 ...passwordInfo,
@@ -28,12 +39,12 @@ const changePassword = () => {
     };
 
     // 비밀번호가 같지 않을 경우 오류 메세지
-    const [matchError, setMatchError] = useState("");
+    const [matchError, setMatchError] = useState<string>("");
 
     // 저장 버튼 활성화 관련
-    const [isDisable, setIsDisable] = useState(true);
+    const [isDisable, setIsDisable] = useState<boolean>(true);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (
             passwordInfo.newPassword === "" ||
             passwordInfo.reNewPassword === ""
@@ -45,16 +56,17 @@ const changePassword = () => {
     }, [passwordInfo]);
 
     // 엔터 단축키 관련
-    const pressEnter = (e) => {
-        if (e.target.id === "newPassword" && e.code === "Enter") {
+    const pressEnter = (e: KeyboardEvent<HTMLInputElement>): void => {
+        const target = e.target as HTMLInputElement;
+        if (target.id === "newPassword" && e.code === "Enter") {
             reNewPasswordRef.current.focus();
-        } else if (e.target.id === "reNewPassword" && e.code === "Enter") {
+        } else if (target.id === "reNewPassword" && e.code === "Enter") {
             requestModify();
         }
     };
 
     // 비밀번호 수정 요청
-    const requestModify = () => {
+    const requestModify = (): void => {
         if (passwordInfo.newPassword === passwordInfo.reNewPassword) {
             setMatchError("");
             alert("비밀번호 수정 요청");

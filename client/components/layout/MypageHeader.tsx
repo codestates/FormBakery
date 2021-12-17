@@ -5,32 +5,37 @@ import Logo from "../Logo";
 import { useRouter } from "next/router";
 import Modal from "../Modal";
 
+interface IOption {
+    id: string;
+    label: string;
+}
+
 const MypageHeader = () => {
     const router = useRouter();
     // 유저아이콘 클릭 시 모달의 보임 유무 state 관리
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState<boolean>(false);
 
     // mypage 옵션
-    const headerOption = [
+    const headerOption: IOption[] = [
         { id: "myForm", label: "내 설문지" },
         { id: "account", label: "계정관리" },
     ];
 
     // 선택된 옵션 (초기값은 url에서 받아옴)
-    const [selectedOption, setSelectedOption] = useState(
+    const [selectedOption, setSelectedOption] = useState<string>(
         router.pathname.split("/")[2]
     );
 
     // 유저 아이콘 토글 모달
-    const toggleModal = () => {
+    const toggleModal = (): void => {
         setIsVisible((prev) => !prev);
     };
 
     // 로그아웃 클릭시 모달 창 활성화 관련 state
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     // 로그아웃 버튼 함수
-    const buttonHandler = () => {
+    const buttonHandler = (): void => {
         toggleModal();
         setShowModal(true);
         setTimeout(() => {
@@ -39,7 +44,7 @@ const MypageHeader = () => {
     };
 
     // 로그아웃 요청
-    const requestSignout = () => {
+    const requestSignout = (): void => {
         alert("로그아웃 요청");
     };
 

@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+    useEffect,
+    useRef,
+    useState,
+    ChangeEvent,
+    KeyboardEvent,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "../../components/layout/Header";
@@ -6,7 +12,7 @@ import Logo from "../../components/Logo";
 import AuthContainer from "../../components/layout/AuthContainer";
 import { isValidEmail } from "../../utils/regex";
 
-interface login {
+interface IUserInfo {
     email: string;
     password: string;
 }
@@ -16,11 +22,12 @@ const login = () => {
     const passwordRef = useRef<HTMLInputElement>(null);
 
     // 사용자의 이메일, 페스워드 state
-    const [userInfo, setUserInfo] = useState({
+    const [userInfo, setUserInfo] = useState<IUserInfo>({
         email: "",
         password: "",
     });
-    const stateHandler = (e) => {
+
+    const stateHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         if (e.target.id === "email") {
             setUserInfo({
                 ...userInfo,
@@ -34,9 +41,9 @@ const login = () => {
         }
     };
     // 로그인 버튼 활성화관련
-    const [isDisable, setIsDisable] = useState(true);
+    const [isDisable, setIsDisable] = useState<boolean>(true);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (userInfo.password === "" || !isValidEmail(userInfo.email)) {
             setIsDisable(true);
         } else {
@@ -45,11 +52,12 @@ const login = () => {
     }, [userInfo]);
 
     // 이메일에서 엔터를 누를 경우 비밀번호로 이동
-    const pressEnter = (e) => {
-        if (e.target.id === "email" && e.code === "Enter") {
+    const pressEnter = (e: KeyboardEvent<HTMLInputElement>): void => {
+        const target = e.target as HTMLInputElement;
+        if (target.id === "email" && e.code === "Enter") {
             passwordRef.current.focus();
         } else if (
-            e.target.id === "password" &&
+            target.id === "password" &&
             !isDisable &&
             e.code === "Enter"
         ) {

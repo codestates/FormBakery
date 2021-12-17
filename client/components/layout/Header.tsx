@@ -6,15 +6,15 @@ import Modal from "../Modal";
 
 const Header = () => {
     // 유저아이콘 클릭 시 모달의 보임 유무 state 관리
-    const [isVisible, setIsVisible] = useState(false);
-    const toggleModal = () => {
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+    const toggleModal = (): void => {
         setIsVisible((prev) => !prev);
     };
 
     // 계정 삭제버튼 클릭시 모달 활성화
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
-    const buttonHandler = () => {
+    const buttonHandler = (): void => {
         toggleModal();
         setShowModal(true);
         setTimeout(() => {
@@ -22,7 +22,7 @@ const Header = () => {
         }, 100);
     };
 
-    const requestSignout = () => {
+    const requestSignout = (): void => {
         alert("로그아웃 요청");
     };
 
