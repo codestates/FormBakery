@@ -10,4 +10,8 @@ router.put("/signup", userController.signup);
 router.post("/emailAuth", userController.emailAuth);
 router.post("/signout/:email", userController.signout);
 
+router.post("/getUserInfo", userController.getUserInfo);
+router.post("/accessTokenRequest", userController.accessTokenRequest);
+router.post("/updateUserInfo", userController.updateUserInfo);
+
 module.exports = router;
