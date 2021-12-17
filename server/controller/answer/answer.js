@@ -174,11 +174,11 @@ module.exports = {
             let statistics = {}
             let values = result.map(el => el.dataValues);
 
-            values.forEach(t => {
-                t.answerLists.dataValues.forforEach(t => {
+            for(let t of values){
+                for(let v of t.answerLists.dataValues){
                     
-                });
-            });
+                }
+            }
 
 
             if(result.length === 0)
