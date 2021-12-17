@@ -13,5 +13,7 @@ router.post("/signout/:email", userController.signout);
 router.post("/getUserInfo", userController.getUserInfo);
 router.post("/accessTokenRequest", userController.accessTokenRequest);
 router.put("/updateUserInfo/:email", userController.updateUserInfo);
+router.put("/changePassword/:email", userController.changePassword);
+router.put("/forgetPassword/:email", userController.forgetPassword);
 
 module.exports = router;

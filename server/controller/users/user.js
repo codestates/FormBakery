@@ -22,7 +22,7 @@ module.exports = {
 
     bcrypt.compare(password, userInfo.password, function (err, resp) {
       if (resp === false) {
-        res.status(401).send({ data: null, message: "unAuthorized" });
+        res.status(401).send({ message: "unAuthorized" });
       } else if (resp === true) {
         delete userInfo.dataValues.password;
         const accessToken = jwt.sign(
@@ -194,7 +194,6 @@ module.exports = {
               message: "invalid access token",
             });
           } else {
-            console.log(decoded);
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
             });
@@ -275,21 +274,78 @@ module.exports = {
   },
 
   updateUserInfo: async (req, res) => {
+    const { email } = req.params;
+    const { name, nickname, profilePicture } = req.body;
+
     if (!req.headers.authorization) {
       res.status(400).json({ data: null, message: "access token is empty" });
     } else {
+      jwt.verify(
+        req.headers.authorization,
+        process.env.ACCESS_SECRET,
+        async (err, decoded) => {
+          if (err) {
+            res.status(401).json({
+              message: "invalid access token",
+            });
+          } else {
+            const userInfo = await db["User"].findOne({
+              where: { email: decoded.email },
+            });
+            if (!userInfo) {
+              res.status(404).json({
+                message: "access token has been tempered",
+              });
+            } else {
+              db["User"].update(
+                { name, nickname, profilePicture },
+                { where: { email } }
+              );
+              res.status(200).send({ message: "changeUserInfo successful" });
+            }
+          }
+        }
+      );
     }
+  },
+
+  changePassword: async (req, res) => {
     const { email } = req.params;
-    const { name, nickname, profilePicture } = req.body;
-    // 토큰
-    db["User"].findOneAndUpdate({ email }, req.body, function (err, contact) {
-      if (err) {
-        res.send({ message: "err" });
+    const { password, newPassword } = req.body;
+
+    const userInfo = await db["User"].findOne({
+      where: { email: req.params.email },
+    });
+
+    bcrypt.compare(password, userInfo.password, function (err, resp) {
+      if (resp === false) {
+        res.status(401).send({ message: "unAuthorized" });
+      } else if (resp === true) {
+        const encryptedPassword = bcrypt.hashSync(
+          newPassword,
+          Number(process.env.PASSWORD_SALT)
+        );
+
+        db["User"].update(
+          { password: encryptedPassword },
+          { where: { email } }
+        );
+        res.status(200).send({ message: "changePassword successful" });
       } else {
-        res.status(200).sned({ message: "ok" });
+        res.status(500).send({ message: "err" });
       }
     });
   },
 
-  changePassword: async (req, res) => {},
+  forgetPassword: async (req, res) => {
+    const { email } = req.params;
+    const { newPassword } = req.body;
+
+    const encryptedPassword = bcrypt.hashSync(
+      newPassword,
+      Number(process.env.PASSWORD_SALT)
+    );
+    db["User"].update({ password: encryptedPassword }, { where: { email } });
+    res.status(200).send({ message: "changePassword successful" });
+  },
 };
