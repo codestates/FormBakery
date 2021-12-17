@@ -173,20 +173,76 @@ module.exports = {
 
             let statistics = {}
             let values = result.map(el => el.dataValues);
-
-            for(let t of values){
-                for(let v of t.answerLists.dataValues){
-                    
-                }
-            }
-
-
-            if(result.length === 0)
+            if(result.length === 0){
                 res.status(400).send({
                     message:"doesn't have any answer"
                 })
+                return;
+            }
+
+
+
+            // 통계 가져오기
+            let i = 0;
+            for(let t of values){
+
+                values[i].answerLists = t.answerLists.map(el => {
+                    if(el.dataValues.formOption === null)
+                        delete el.dataValues.formOption;
+                    if(el.dataValues.formOptionId === null)
+                        delete el.dataValues.formOptionId
+                    if(el.dataValues.answer === null)
+                        delete el.dataValues.answer
+                    return el
+                });
+
+                for(let v of t.answerLists){
+                    let answer = v.dataValues;
+                    let content = answer.formContent.dataValues;
+                    
+                    if(
+                        content.type === 'short' ||
+                        content.type === 'long' ||
+                        content.type === 'calender' ||
+                        content.type === 'tile'
+                    ){
+                        if(statistics[''+content.id] === undefined){
+                            statistics[''+content.id] = {
+                                question:content.question,
+                                data:[]
+                            };
+                        }
+                        statistics[''+content.id].data.push(answer.answer);
+                    }else{
+                        if(statistics[''+content.id] === undefined){
+                            let options = await db['formOption'].findAll({
+                                where:{
+                                    formContentId:answer.formOption.formContentId
+                                }
+                            });
+                            statistics[''+content.id] = {};
+                            statistics[''+content.id].question = content.question;
+                            for(let option of options){
+                                let val = option.dataValues;
+                                statistics[''+content.id][''+val.id] = {
+                                    count:0,
+                                    text:val.text
+                                }
+                            }
+                        }
+                        statistics[''+content.id][''+answer.formOption.id].count += 1;
+                    }
+                }
+                i++;
+            }
+
+
+
             res.status(200).send({
-                data:values,
+                data:{
+                    value:values,
+                    statistics
+                },
                 message:'ok'
             });
         });
