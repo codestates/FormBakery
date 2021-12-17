@@ -4,6 +4,7 @@ dotenv.config();
 const db = require("../../models/index");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const bcrypt = require("bcrypt");
 
 const clientID = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -13,44 +14,51 @@ const smtp = require("nodemailer-smtp-transport");
 
 module.exports = {
   login: async (req, res) => {
+    const { password } = req.body;
+
     const userInfo = await db["User"].findOne({
-      where: { email: req.params.email, password: req.body.password },
+      where: { email: req.params.email },
     });
-    if (!userInfo) {
-      res.status(401).send({ data: null, message: "unAuthorized" });
-    } else {
-      delete userInfo.dataValues.password;
-      const accessToken = jwt.sign(
-        userInfo.dataValues,
-        process.env.ACCESS_SECRET,
-        {
-          expiresIn: "15m",
-        }
-      );
-      const refreshToken = jwt.sign(
-        userInfo.dataValues,
-        process.env.REFRESH_SECRET,
-        {
-          expiresIn: "30d",
-        }
-      );
-      res
-        .status(200)
-        .cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          samSite: "none",
-        })
-        .json({
-          data: { accessToken: accessToken },
-          message: "login successful",
-        });
-    }
+
+    bcrypt.compare(password, userInfo.password, function (err, resp) {
+      if (resp === false) {
+        res.status(401).send({ data: null, message: "unAuthorized" });
+      } else if (resp === true) {
+        delete userInfo.dataValues.password;
+        const accessToken = jwt.sign(
+          userInfo.dataValues,
+          process.env.ACCESS_SECRET,
+          {
+            expiresIn: "15m",
+          }
+        );
+        const refreshToken = jwt.sign(
+          userInfo.dataValues,
+          process.env.REFRESH_SECRET,
+          {
+            expiresIn: "30d",
+          }
+        );
+        res
+          .status(200)
+          .cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            samSite: "none",
+          })
+          .json({
+            data: { accessToken: accessToken },
+            message: "login successful",
+          });
+      } else {
+        res.status(500).send({ message: "err" });
+      }
+    });
   },
 
   logout: async (req, res) => {
     // 클라이언트에서 accessToken 지워주세요!
     res.clearCookie("refreshToken");
-    res.status(200).send("logout successful");
+    res.status(200).send({ message: "logout successful" });
   },
 
   githubCallback: async (req, res) => {
@@ -86,7 +94,7 @@ module.exports = {
         host: "smtp.gmail.com",
         auth: {
           user: "jsb9761321@gmail.com",
-          pass: "tnql01!!",
+          pass: process.env.GOOGLE_PASSWORD,
         },
       })
     );
@@ -117,7 +125,16 @@ module.exports = {
       if (userInfo) {
         res.status(409).send({ message: "email exists" });
       } else {
-        db["User"].create({ email, password, name, nickname });
+        const encryptedPassword = bcrypt.hashSync(
+          password,
+          Number(process.env.PASSWORD_SALT)
+        );
+        db["User"].create({
+          email,
+          password: encryptedPassword,
+          name,
+          nickname,
+        });
         const newUser = {
           email,
           name,
@@ -145,20 +162,23 @@ module.exports = {
 
   signout: async (req, res) => {
     const { password } = req.body;
-    const { email } = req.params;
 
     const userInfo = await db["User"].findOne({
-      where: { email, password },
+      where: { email: req.params.email },
     });
 
-    if (!userInfo) {
-      res.status(404).send({ message: "incorrect password" });
-    }
-
-    db["User"].destroy({
-      where: { id: userInfo.id },
+    bcrypt.compare(password, userInfo.password, function (err, resp) {
+      if (resp === false) {
+        res.status(404).send({ message: "incorrect password" });
+      } else if (resp === true) {
+        db["User"].destroy({
+          where: { email: userInfo.email },
+        });
+        res.status(200).send({ message: "signout successful" });
+      } else {
+        res.status(500).send({ message: "err" });
+      }
     });
-    res.send({ message: "signout successful" });
   },
 
   getUserInfo: async (req, res) => {
@@ -243,8 +263,33 @@ module.exports = {
       );
     }
   },
+  passwordCheck: async (req, res) => {
+    const userInfo = await db["User"].findOne({
+      where: { email: req.params.email, password: req.body.password },
+    });
+    if (userInfo) {
+      res.status(200).send({ message: "correct password" });
+    } else {
+      res.status(401).send({ message: "unAuthorized" });
+    }
+  },
 
   updateUserInfo: async (req, res) => {
-    res.send("ok");
+    if (!req.headers.authorization) {
+      res.status(400).json({ data: null, message: "access token is empty" });
+    } else {
+    }
+    const { email } = req.params;
+    const { name, nickname, profilePicture } = req.body;
+    // 토큰
+    db["User"].findOneAndUpdate({ email }, req.body, function (err, contact) {
+      if (err) {
+        res.send({ message: "err" });
+      } else {
+        res.status(200).sned({ message: "ok" });
+      }
+    });
   },
+
+  changePassword: async (req, res) => {},
 };
