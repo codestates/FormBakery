@@ -12,6 +12,6 @@
 
 ### Jang SaeJin
 
-## Front-End Page
+## Front-End
 
-## Back-End API
+## Back-End
