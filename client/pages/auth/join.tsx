@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+    ChangeEvent,
+    KeyboardEvent,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -7,9 +13,21 @@ import AuthContainer from "../../components/layout/AuthContainer";
 import { isValidEmail } from "../../utils/regex";
 import Logo from "../../components/Logo";
 
-interface join {
+interface IUserInfo {
     email: string;
     password: string;
+    rePassword: string;
+    auth: string;
+}
+
+interface IError {
+    passwordError: string;
+    authError: string;
+}
+
+interface IDisable {
+    authDisable: boolean;
+    singUpDisable: boolean;
 }
 
 const join = () => {
@@ -19,13 +37,13 @@ const join = () => {
     const rePasswordRef = useRef<HTMLInputElement>(null);
 
     // 사용자의 이메일, 페스워드 state
-    const [userInfo, setUserInfo] = useState({
+    const [userInfo, setUserInfo] = useState<IUserInfo>({
         email: "",
         password: "",
         rePassword: "",
         auth: "",
     });
-    const stateHandler = (e) => {
+    const stateHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         if (e.target.id === "email") {
             setUserInfo({
                 ...userInfo,
@@ -50,19 +68,19 @@ const join = () => {
     };
 
     // 에러 메세지
-    const [error, setError] = useState({
+    const [error, setError] = useState<IError>({
         passwordError: "", // 비밀번호 불일치
         authError: "", // 인증번호 불일치
     });
 
     // 버튼 활성화
-    const [isDisable, setIsDisable] = useState({
+    const [isDisable, setIsDisable] = useState<IDisable>({
         authDisable: true,
         singUpDisable: true,
     });
 
     // 인증번호 요청 버튼 활성화 관련
-    useEffect(() => {
+    useEffect((): void => {
         if (
             userInfo.password === "" ||
             userInfo.rePassword === "" ||
@@ -81,7 +99,7 @@ const join = () => {
     }, [userInfo]);
 
     // 회원가입 버튼 활성화 관련
-    useEffect(() => {
+    useEffect((): void => {
         if (userInfo.auth === "") {
             setIsDisable({
                 ...isDisable,
@@ -96,25 +114,26 @@ const join = () => {
     }, [userInfo.auth]);
 
     // 엔터 단축키 관련
-    const pressEnter = (e) => {
-        if (e.target.id === "email" && e.code === "Enter") {
+    const pressEnter = (e: KeyboardEvent<HTMLInputElement>): void => {
+        const target = e.target as HTMLInputElement;
+        if (target.id === "email" && e.code === "Enter") {
             passwordRef.current.focus();
-        } else if (e.target.id === "password" && e.code === "Enter") {
+        } else if (target.id === "password" && e.code === "Enter") {
             rePasswordRef.current.focus();
         } else if (
-            e.target.id === "re-password" &&
+            target.id === "re-password" &&
             !isDisable.authDisable &&
             e.code === "Enter"
         ) {
             requestAuth();
         }
-        if (e.target.id === "auth" && e.code === "Enter") {
+        if (target.id === "auth" && e.code === "Enter") {
             requestSignUp();
         }
     };
 
     // 인증번호 요청
-    const requestAuth = () => {
+    const requestAuth = (): void => {
         if (userInfo.password !== userInfo.rePassword) {
             setError({
                 ...error,
@@ -130,7 +149,7 @@ const join = () => {
     };
 
     // 회원가입 요청
-    const requestSignUp = () => {
+    const requestSignUp = (): void => {
         // 인증번호가 일치하지 않을 경우
         if (userInfo.auth !== "123") {
             setError({
@@ -276,7 +295,9 @@ const join = () => {
                 <p className="inline-flex w-96 mt-4 text-sm text-gray-400">
                     이미 계정이 있으신가요?{" "}
                     <Link href={"/auth/login"}>
-                        <span className="ml-2 text-main cursor-pointer">로그인</span>
+                        <span className="ml-2 text-main cursor-pointer">
+                            로그인
+                        </span>
                     </Link>
                 </p>
             </AuthContainer>

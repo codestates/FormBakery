@@ -1,37 +1,29 @@
-import React, { useState } from "react";
-// import { useRouter } from "next/router";
+import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import Link from "next/link";
 import Header from "../../components/layout/Header";
 import AuthContainer from "../../components/layout/AuthContainer";
 import { isValidEmail } from "../../utils/regex";
 
-interface resetPassword {
-    email: string;
-    password: string;
-}
-
 const resetPassword = () => {
-    // const router = useRouter();
-
     // 사용자의 이메일
-    const [email, setEmail] = useState("");
-    const changeEmail = (e) => {
+    const [email, setEmail] = useState<string>("");
+    const changeEmail = (e: ChangeEvent<HTMLInputElement>): void => {
         setEmail(e.target.value);
     };
 
     // 에러 메세지
-    const [emailError, setEmailError] = useState("");
-    const [emailTypeError, setEmailTypeError] = useState("");
+    const [emailError, setEmailError] = useState<string>("");
+    const [emailTypeError, setEmailTypeError] = useState<string>("");
 
     // 엔터 단축키 관련
-    const pressEnter = (e) => {
+    const pressEnter = (e: KeyboardEvent<HTMLInputElement>): void => {
         if (e.code === "Enter") {
             requestLink();
         }
     };
 
     // 비밀번호 재설정 링크 요청
-    const requestLink = () => {
+    const requestLink = (): void => {
         // 없는 메일일 경우
         if (!isValidEmail(email)) {
             setEmailTypeError("이메일 형식이 올바르지 않습니다.");
