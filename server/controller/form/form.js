@@ -69,27 +69,29 @@ module.exports = {
                                         formContentId,
                                         row:gridData.row,
                                         col:gridData.col
-                                    });
-                                    let grids = [
-                                        ...gridData.rawName.map((t,idx) => {
-                                            return {
-                                                text:t,
-                                                location:idx,
-                                                isRaw:'y',
-                                                formContentId
-                                            }
-                                        }),
-                                        ...gridData.colName.map((t,idx) => {
-                                            return {
-                                                text:t,
-                                                location:idx,
-                                                isRaw:'n',
-                                                formContentId
-                                            }
-                                        })
-                                    ];
-                                    await db['gridName'].bulkCreate(grids);
-
+                                    })
+                                    .then(result => {
+                                        let res = result.dataValues;
+                                        let grids = [
+                                            ...gridData.rawName.map((t,idx) => {
+                                                return {
+                                                    text:t,
+                                                    location:idx,
+                                                    isRaw:'y',
+                                                    formGridId:res.id
+                                                }
+                                            }),
+                                            ...gridData.colName.map((t,idx) => {
+                                                return {
+                                                    text:t,
+                                                    location:idx,
+                                                    isRaw:'n',
+                                                    formGridId:res.id
+                                                }
+                                            })
+                                        ];
+                                        db['gridName'].bulkCreate(grids);
+                                    })
                                 }
                             });
                     }
@@ -132,12 +134,27 @@ module.exports = {
             include:{
                 model:db['formContent'],
                 attributes:{ exclude:['createdAt','updatedAt','formId'] },
-                include:{
-                    model:db['formOption'],
-                    attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
-                    separate: true,
-                    order:[['id','ASC']]
-                }
+                include:
+                    [
+                        {
+                            model:db['formOption'],
+                            attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                            separate: true,
+                            order:[['id','ASC']],
+                            
+                        },
+                        {
+                            model:db['formGrid'],
+                            attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                            include:                        {
+                                model:db['gridName'],
+                                attributes:{ exclude:['createdAt','updatedAt','formGridId'] },
+                                separate: true,
+                                order:[['isRaw','ASC'],['id','ASC']],
+                            }
+                        },
+                    ]
+                
             },
             order:[
                 [db['formContent'],'order','ASC']
@@ -154,6 +171,10 @@ module.exports = {
                 data.formContents = data.formContents.map(t => {
                     if(t.formOptions.length === 0)
                         delete t.dataValues.formOptions
+                    if(t.formGrids.length === 0)
+                        delete t.dataValues.formGrids
+                    if(t.content === null)
+                        delete t.dataValues.content
                     return t;
                 });
 
@@ -172,20 +193,50 @@ module.exports = {
 
         db['form'].findAll({
             where:[{userEmail}],
+            attributes:{exclude:['createdAt','updatedAt']},
             include:{
                 model:db['formContent'],
                 attributes:{exclude:['createdAt','updatedAt','formId']},
                 order:[['order','ASC']],
-                include:{
-                    model:db['formOption'],
-                    attributes:{exclude:['createdAt','updatedAt','formContentId']},
-                    separate:true,
-                    order:[['id','ASC']]
-                }
+                include:[
+                    {
+                        model:db['formOption'],
+                        attributes:{exclude:['createdAt','updatedAt','formContentId']},
+                        separate:true,
+                        order:[['id','ASC']]
+                    },
+                    {
+                        model:db['formGrid'],
+                        attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                        include:{
+                            model:db['gridName'],
+                            attributes:{ exclude:['createdAt','updatedAt','formGridId'] },
+                            separate: true,
+                            order:[['isRaw','ASC'],['id','ASC']],
+                        }
+                    }
+
+                ]
             }
         })
         .then(result => {
-            let sendData = result;
+
+            let sendData = result.map(qst => {
+
+                let data = qst.dataValues
+                data.formContents = data.formContents.map(t => {
+
+                    if(t.formOptions.length === 0)
+                        delete t.dataValues.formOptions
+                    if(t.formGrids.length === 0)
+                        delete t.dataValues.formGrids
+                    if(t.content === null)
+                        delete t.dataValues.content
+                    return t;
+                });
+                return data;
+            });
+
             if(sendData.length === 0){
                 res.status(400).send({
                     message:'form not exist'

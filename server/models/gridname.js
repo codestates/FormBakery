@@ -11,12 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.gridName.belongsTo(models.formGrid);
     }
   };
   gridName.init({
     location: DataTypes.INTEGER,
     text: DataTypes.STRING,
-    formContentId: DataTypes.INTEGER
+    isRaw: DataTypes.STRING,
+    formGridId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'gridName',

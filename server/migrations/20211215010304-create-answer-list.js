@@ -20,6 +20,9 @@ module.exports = {
       formOptionId: {
         type: Sequelize.INTEGER
       },
+      formGridId:{
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

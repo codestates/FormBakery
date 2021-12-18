@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.formGrid.belongsTo(models.formContent);
+      models.formGrid.hasMany(models.answerList,{foreignKey: 'formGridId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
+      models.formGrid.hasMany(models.gridName,{foreignKey: 'formGridId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
     }
   };
   formGrid.init({

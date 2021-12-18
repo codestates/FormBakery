@@ -15,7 +15,7 @@ module.exports = {
       text: {
         type: Sequelize.STRING
       },
-      formContentId: {
+      formGridId: {
         type: Sequelize.INTEGER,
         allowNull:false
       },
