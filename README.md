@@ -7,10 +7,11 @@
 ## Team
 
 ### Jeong Subi(Team Leader)
-> Introduce
 
 ### Park Namsu
-> Introduce
 
 ### Jang SaeJin
-> Introduce
+
+## Front-End Page
+
+## Back-End API
