@@ -7,10 +7,10 @@
 ## Team
 
 ### Jeong Subi(Team Leader)
-> [Github]()
+> Introduce
 
 ### Park Namsu
-> [Github]()
+> Introduce
 
 ### Jang SaeJin
-> [Github]()
+> Introduce
