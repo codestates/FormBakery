@@ -14,17 +14,17 @@ FormBakery 입니다 :)
 
 ## Team Role
 
-#### Jeong Subi(Team Leader)
+#### Jeong Subi(Team Leader)👩🏼‍💻
   * Team Management
   * Back-End Development
   * DataBase Structure Design
 
-#### Park Namsu
+#### Park Namsu👨🏻‍💻
   * Back-End Development
   * AWS EC2,RDS Setting
   * DataBase Structure Design
 
-#### Jang SaeJin
+#### Jang SaeJin🧑🏻‍💻
   * Page Design
   * Front-End Development
 
