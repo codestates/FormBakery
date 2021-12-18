@@ -35,10 +35,15 @@ module.exports = {
 
                     for(let el of data){
                         let options;
+                        let gridData;
                         el.formId = formId;
                         if(el.formOptions){
                             options = el.formOptions;
                             delete el.formOptions;
+                        }
+                        if(el.gridData){
+                            gridData = el.gridData;
+                            delete el.gridData;
                         }
                         await db['formContent'].create(el)
                             .then(async result => {
@@ -57,6 +62,34 @@ module.exports = {
                                         }
                                     })
                                     db['formOption'].bulkCreate(options);
+                                }
+                                if(el.type === 'grid'){
+                                    console.log(gridData)
+                                    await db['formGrid'].create({
+                                        formContentId,
+                                        row:gridData.row,
+                                        col:gridData.col
+                                    });
+                                    let grids = [
+                                        ...gridData.rawName.map((t,idx) => {
+                                            return {
+                                                text:t,
+                                                location:idx,
+                                                isRaw:'y',
+                                                formContentId
+                                            }
+                                        }),
+                                        ...gridData.colName.map((t,idx) => {
+                                            return {
+                                                text:t,
+                                                location:idx,
+                                                isRaw:'n',
+                                                formContentId
+                                            }
+                                        })
+                                    ];
+                                    await db['gridName'].bulkCreate(grids);
+
                                 }
                             });
                     }
