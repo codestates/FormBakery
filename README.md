@@ -32,4 +32,4 @@ FormBakery 입니다 :)
 
 ## Back-End
 
-참조: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)
+reference: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)
