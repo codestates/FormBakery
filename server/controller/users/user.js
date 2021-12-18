@@ -404,4 +404,25 @@ module.exports = {
     db["User"].update({ password: encryptedPassword }, { where: { email } });
     res.status(200).send({ message: "changePassword successful" });
   },
+  /*
+      userProfile image 저장
+  */
+  uploadProfileImage: async (req, res) => {
+    const { email } = req.params;
+    const { filename } = req.file;
+    db["User"]
+      .update(
+        {
+          profilePicture: filename,
+        },
+        {
+          where: { email },
+        }
+      )
+      .then((result) => {
+        res.status(201).send({
+          message: "ok",
+        });
+      });
+  },
 };
