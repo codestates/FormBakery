@@ -7,7 +7,9 @@ router.post("/logout", userController.logout);
 router.post("/githubCallback", userController.githubCallback);
 
 router.put("/signup", userController.signup);
-router.post("/emailAuth", userController.emailAuth);
+router.post("/signupEmailAuth", userController.signupEmailAuth);
+router.post("/passwordEmailAuth", userController.passwordEmailAuth);
+
 router.post("/signout/:email", userController.signout);
 
 router.post("/getUserInfo", userController.getUserInfo);
