@@ -165,9 +165,9 @@ module.exports = {
                             model:db['formOption'],
                             attributes: { exclude: ['createdAt','updatedAt'] }
                         }
-                    ]
+                    ],
                 }         
-            ]
+            ],
         })
         .then(async result => {
 
@@ -180,60 +180,61 @@ module.exports = {
                 return;
             }
 
-
-
             // 통계 가져오기
             let i = 0;
             for(let t of values){
+                values[i].sort((a,b) => a.answerLists.formContent.order - b.answerLists.formContent.order)
+                
+                if(req.body.use === 'form'){
+                    values[i].answerLists = t.answerLists.map(el => {
+                        if(el.dataValues.formOption === null)
+                            delete el.dataValues.formOption;
+                        if(el.dataValues.formOptionId === null)
+                            delete el.dataValues.formOptionId
+                        if(el.dataValues.answer === null)
+                            delete el.dataValues.answer
+                        return el
+                    });
 
-                values[i].answerLists = t.answerLists.map(el => {
-                    if(el.dataValues.formOption === null)
-                        delete el.dataValues.formOption;
-                    if(el.dataValues.formOptionId === null)
-                        delete el.dataValues.formOptionId
-                    if(el.dataValues.answer === null)
-                        delete el.dataValues.answer
-                    return el
-                });
-
-                for(let v of t.answerLists){
-                    let answer = v.dataValues;
-                    let content = answer.formContent.dataValues;
-                    
-                    if(
-                        content.type === 'short' ||
-                        content.type === 'long' ||
-                        content.type === 'calender' ||
-                        content.type === 'tile'
-                    ){
-                        if(statistics[''+content.id] === undefined){
-                            statistics[''+content.id] = {
-                                question:content.question,
-                                data:[]
-                            };
-                        }
-                        statistics[''+content.id].data.push(answer.answer);
-                    }else{
-                        if(statistics[''+content.id] === undefined){
-                            let options = await db['formOption'].findAll({
-                                where:{
-                                    formContentId:answer.formOption.formContentId
-                                }
-                            });
-                            statistics[''+content.id] = {};
-                            statistics[''+content.id].question = content.question;
-                            for(let option of options){
-                                let val = option.dataValues;
-                                statistics[''+content.id][''+val.id] = {
-                                    count:0,
-                                    text:val.text
+                    for(let v of t.answerLists){
+                        let answer = v.dataValues;
+                        let content = answer.formContent.dataValues;
+                        
+                        if(
+                            content.type === 'short' ||
+                            content.type === 'long' ||
+                            content.type === 'calender' ||
+                            content.type === 'tile'
+                        ){
+                            if(statistics[''+content.id] === undefined){
+                                statistics[''+content.id] = {
+                                    question:content.question,
+                                    data:[]
+                                };
+                            }
+                            statistics[''+content.id].data.push(answer.answer);
+                        }else{
+                            if(statistics[''+content.id] === undefined){
+                                let options = await db['formOption'].findAll({
+                                    where:{
+                                        formContentId:answer.formOption.formContentId
+                                    }
+                                });
+                                statistics[''+content.id] = {};
+                                statistics[''+content.id].question = content.question;
+                                for(let option of options){
+                                    let val = option.dataValues;
+                                    statistics[''+content.id][''+val.id] = {
+                                        count:0,
+                                        text:val.text
+                                    }
                                 }
                             }
+                            statistics[''+content.id][''+answer.formOption.id].count += 1;
                         }
-                        statistics[''+content.id][''+answer.formOption.id].count += 1;
                     }
+                    i++;
                 }
-                i++;
             }
 
 
