@@ -12,13 +12,21 @@ FormBakery 입니다 :)
 
 [Form Bakery Introduce Page](https://github.com/codestates/FormBakery/wiki)
 
-## Team
+## Team Role
 
 #### Jeong Subi(Team Leader)
+  * Team Management
+  * Back-End Development
+  * DataBase Structure Design
 
 #### Park Namsu
+  * Back-End Development
+  * AWS EC2,RDS Setting
+  * DataBase Structure Design
 
 #### Jang SaeJin
+  * Page Design
+  * Front-End Development
 
 ## Front-End
 
