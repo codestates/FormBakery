@@ -6,11 +6,11 @@
 
 ## Team
 
-### Jeong Subi(Team Leader)
+#### Jeong Subi(Team Leader)
 
-### Park Namsu
+#### Park Namsu
 
-### Jang SaeJin
+#### Jang SaeJin
 
 ## Front-End
 
