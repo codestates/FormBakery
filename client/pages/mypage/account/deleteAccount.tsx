@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from "react";
-// import { useRouter } from "next/router";
-import Link from "next/link";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import MypageHeader from "../../../components/layout/MypageHeader";
 import AccountLeftPannel from "../../../components/layout/AccountLeftPannel";
-import { isValidEmail } from "../../../utils/regex";
 import Modal from "../../../components/Modal";
 
 const deleteAccount = () => {
     // 탈퇴한다 입력창
-    const [deleteAccount, setDeleteAccount] = useState("");
-    const stateHandler = (e) => {
+    const [deleteAccount, setDeleteAccount] = useState<string>("");
+    const stateHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         setDeleteAccount(e.target.value);
     };
 
     // 계정 삭제버튼 활성화
-    const [isDisable, setIsDisable] = useState(true);
+    const [isDisable, setIsDisable] = useState<boolean>(true);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (deleteAccount === "계정삭제") {
             setIsDisable(false);
         } else {
@@ -25,9 +22,9 @@ const deleteAccount = () => {
     }, [deleteAccount]);
 
     // 계정 삭제버튼 클릭시 모달 활성화
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
-    const buttonHandler = () => {
+    const buttonHandler = (): void => {
         setShowModal(true);
         setTimeout(() => {
             setShowModal(false);
@@ -35,7 +32,7 @@ const deleteAccount = () => {
     };
 
     // 계정 삭제요청
-    const requestDelete = () => {
+    const requestDelete = (): void => {
         alert("계정 삭제요청");
     };
     return (

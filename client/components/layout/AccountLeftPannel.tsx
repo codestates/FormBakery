@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+interface IOption {
+    id: string;
+    label: string;
+}
+
 const AccountLeftPannel = () => {
     const router = useRouter();
-    const leftPanelOption = [
+    const leftPanelOption: IOption[] = [
         {
             id: "profile",
             label: "프로필 설정",
@@ -12,7 +17,7 @@ const AccountLeftPannel = () => {
         { id: "changePassword", label: "비밀번호 변경" },
         { id: "deleteAccount", label: "계정 탈퇴" },
     ];
-    const [selectedOption, setSelectedOption] = useState(
+    const [selectedOption, setSelectedOption] = useState<string>(
         router.pathname.split("/")[3]
     );
     return (

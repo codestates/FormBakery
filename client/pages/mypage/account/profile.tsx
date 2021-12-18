@@ -7,12 +7,12 @@ import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
 
 const proflie = () => {
     // 사진 업로드
-    const uploadPhoto = () => {
+    const uploadPhoto = (): void => {
         alert("사진 업로드");
     };
 
-    const [showDropDown, setShowDropDown] = useState(true);
-    const toggleDropDown = () => {
+    const [showDropDown, setShowDropDown] = useState<boolean>(true);
+    const toggleDropDown = (): void => {
         setShowDropDown((prev) => !prev);
     };
 
