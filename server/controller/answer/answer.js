@@ -131,16 +131,7 @@ module.exports = {
             let send = result.dataValues;
 
             send.answerLists = send.answerLists.map(el => {
-                if(el.dataValues.formOption === null)
-                    delete el.dataValues.formOption;
-                if(el.dataValues.formOptionId === null)
-                    delete el.dataValues.formOptionId
-                if(el.dataValues.answer === null)
-                    delete el.dataValues.answer
-                if(el.dataValues.formGridId === null)
-                    delete el.dataValues.formGridId
-                if(el.dataValues.formGrid === null)
-                    delete el.dataValues.formGrid
+                deleteNullContent(el);
                     
                 let separate;
                 if(el.dataValues.formGridId){
@@ -230,18 +221,7 @@ module.exports = {
                 values[i].answerLists.sort((a,b) => a.dataValues.formContent.order - b.dataValues.formContent.order)
 
                 values[i].answerLists = t.answerLists.map(el => {
-
-                    if(el.dataValues.formOption === null)
-                        delete el.dataValues.formOption;
-                    if(el.dataValues.formOptionId === null)
-                        delete el.dataValues.formOptionId
-                    if(el.dataValues.answer === null)
-                        delete el.dataValues.answer
-                    if(el.dataValues.formGridId === null)
-                        delete el.dataValues.formGridId
-                    if(el.dataValues.formGrid === null)
-                        delete el.dataValues.formGrid
-                        
+                    deleteNullContent(el);                        
                     let separate;
                     if(el.dataValues.formGridId){
                         separate = el.dataValues.answer.split('.');
@@ -278,7 +258,7 @@ module.exports = {
                             if(statistics[''+content.id] === undefined){
                                 let options = await db['formOption'].findAll({
                                     where:{
-                                        formContentId:answer.formOption.formContentId
+                                        formContentId:answer.formContentId
                                     }
                                 });
                                 statistics[''+content.id] = {};
@@ -292,8 +272,24 @@ module.exports = {
                                 }
                             }
                             statistics[''+content.id][''+answer.formOption.id].count += 1;
+                        }else if(
+                            content.type === 'grid'
+                        ){
+                            if(statistics[''+content.id] === undefined){
+                                
+                                let arr = new Array(answer.formGrid.dataValues.row);
+                                for(let i=0; i< answer.formGrid.dataValues.row; i++)
+                                    arr[i] = new Array(answer.formGrid.dataValues.col).fill(0);
+
+                                statistics[''+content.id] = {
+                                    question:content.question,
+                                    data:arr,
+                                    gridNames:answer.formGrid.gridNames
+                                }
+                            }
+                            console.log(answer.row + '.' + answer.col)
+                            statistics[''+content.id].data[Number(answer.row)][Number(answer.col)]++;
                         }
-                        /* do something(Grid statics 추가) */
                     }
                     i++;
                 }
@@ -319,6 +315,8 @@ module.exports = {
         for(let val of changeData){
             let id = val.id;
             delete val.id;
+            if(val.row && val.col)
+                val.answer = val.row + '.' + val.col
             await db['answerList'].update(val,{
                 where:[
                     {id}
@@ -362,3 +360,16 @@ module.exports = {
     }
 }
 
+function deleteNullContent(el){
+
+    if(el.dataValues.formOption === null)
+        delete el.dataValues.formOption;
+    if(el.dataValues.formOptionId === null)
+        delete el.dataValues.formOptionId
+    if(el.dataValues.answer === null)
+        delete el.dataValues.answer
+    if(el.dataValues.formGridId === null)
+        delete el.dataValues.formGridId
+    if(el.dataValues.formGrid === null)
+        delete el.dataValues.formGrid
+}
