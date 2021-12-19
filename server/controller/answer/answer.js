@@ -8,7 +8,7 @@ module.exports = {
     /*
         설문 작성
     */
-    create(req,res){
+    async create(req,res){
         let userEmail = req.params.email;
         let formId = req.body.formId;
         let data = req.body.data;
@@ -31,7 +31,11 @@ module.exports = {
             }
             i++;
         }
-
+        let find = await db['form'].findOne({where:[{id:formId}]});
+        if(!find)
+            res.status(400).send({
+                message:'form not exist'
+            })
         db['answer'].findOne({
             where:[
                 {userEmail},
@@ -43,6 +47,7 @@ module.exports = {
                 await res.status(400).send({
                     message:'aleady writed this form'
                 });
+                return;
             }else{
                 db["answer"].create({
                     userEmail,

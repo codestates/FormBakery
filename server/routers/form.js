@@ -28,4 +28,6 @@ router.put("/image/:id",upload.single('file'),formController.uploadImageLink);
 router.post('/list/:email',formController.getFormList);
 
 router.put('/update/:id',formController.updateForm);
+
+router.delete('/delete/:id',formController.deleteForm);
 module.exports = router;

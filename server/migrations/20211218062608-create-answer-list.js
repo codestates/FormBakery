@@ -15,7 +15,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       answerId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        references: { model: "answers", key: "id", }
       },
       formOptionId: {
         type: Sequelize.INTEGER

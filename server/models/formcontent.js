@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       models.formContent.hasMany(models.formOption,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
       models.formContent.hasMany(models.answerList,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
       models.formContent.hasMany(models.formGrid,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
-      models.formContent.belongsTo(models.form);
+      models.formContent.belongsTo(models.form,{foreignKey: 'formId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
     }
   }
   formContent.init(

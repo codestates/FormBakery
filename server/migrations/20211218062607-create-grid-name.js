@@ -17,7 +17,9 @@ module.exports = {
       },
       formGridId: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull:false,
+        onDelete: "CASCADE",
+        references: { model: "formGrids", key: "id", }
       },
       isRaw: {
         type: Sequelize.STRING,

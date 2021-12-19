@@ -10,7 +10,9 @@ module.exports = {
       },
       formId: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull:false,
+        onDelete: "CASCADE",
+        references: { model: "forms", key: "id", }
       },
       type: {
         type: Sequelize.STRING,
