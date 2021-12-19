@@ -1,6 +1,6 @@
 const e = require("express");
 const db = require("../../models/index");
-const { Op } = require('sequelize');
+const { Op, col } = require('sequelize');
 module.exports = {
 
     /*
@@ -110,7 +110,7 @@ module.exports = {
         let id = req.params.id;
         const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } = req.file
         db['formContent'].update({
-            question:filename
+            content:filename
         },{
             where:[
                 {id}
@@ -251,7 +251,7 @@ module.exports = {
     },
 
     /*
-        테스트 필요
+        Grid 추가로 인한 추가 수정 필요
     */
     async updateForm(req,res){
         if(
@@ -276,6 +276,13 @@ module.exports = {
                 for(let content of data.formContents){
                     let id = content.id
                     delete content.id;
+                    if(
+                        content.row &&
+                        content.col
+                    ){
+                        // update 시 grid 부분 처리
+                    }
+                    
                     await db['formContent'].update(content,{
                         where:{id}
                     })
@@ -300,5 +307,18 @@ module.exports = {
                 });
             })
         }
+    },
+    deleteForm(req,res){
+        let id = req.params.id;
+        if(!id){
+            res.status(400).send({message:'id not exist'});
+            return;
+        }
+        db['form'].destroy({
+            where:[{id}]
+        })
+        .then(result => {
+            res.status(200).send({message:'ok'});
+        })
     }
 }
