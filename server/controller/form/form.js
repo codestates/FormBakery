@@ -1,6 +1,6 @@
 const e = require("express");
 const db = require("../../models/index");
-const { Op } = require('sequelize');
+const { Op, col } = require('sequelize');
 module.exports = {
 
     /*
@@ -35,10 +35,15 @@ module.exports = {
 
                     for(let el of data){
                         let options;
+                        let gridData;
                         el.formId = formId;
                         if(el.formOptions){
                             options = el.formOptions;
                             delete el.formOptions;
+                        }
+                        if(el.gridData){
+                            gridData = el.gridData;
+                            delete el.gridData;
                         }
                         await db['formContent'].create(el)
                             .then(async result => {
@@ -58,6 +63,36 @@ module.exports = {
                                     })
                                     db['formOption'].bulkCreate(options);
                                 }
+                                if(el.type === 'grid'){
+                                    console.log(gridData)
+                                    await db['formGrid'].create({
+                                        formContentId,
+                                        row:gridData.row,
+                                        col:gridData.col
+                                    })
+                                    .then(result => {
+                                        let res = result.dataValues;
+                                        let grids = [
+                                            ...gridData.rawName.map((t,idx) => {
+                                                return {
+                                                    text:t,
+                                                    location:idx,
+                                                    isRaw:'y',
+                                                    formGridId:res.id
+                                                }
+                                            }),
+                                            ...gridData.colName.map((t,idx) => {
+                                                return {
+                                                    text:t,
+                                                    location:idx,
+                                                    isRaw:'n',
+                                                    formGridId:res.id
+                                                }
+                                            })
+                                        ];
+                                        db['gridName'].bulkCreate(grids);
+                                    })
+                                }
                             });
                     }
                     res.status(201).send({
@@ -75,7 +110,7 @@ module.exports = {
         let id = req.params.id;
         const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } = req.file
         db['formContent'].update({
-            question:filename
+            content:filename
         },{
             where:[
                 {id}
@@ -99,12 +134,27 @@ module.exports = {
             include:{
                 model:db['formContent'],
                 attributes:{ exclude:['createdAt','updatedAt','formId'] },
-                include:{
-                    model:db['formOption'],
-                    attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
-                    separate: true,
-                    order:[['id','ASC']]
-                }
+                include:
+                    [
+                        {
+                            model:db['formOption'],
+                            attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                            separate: true,
+                            order:[['id','ASC']],
+                            
+                        },
+                        {
+                            model:db['formGrid'],
+                            attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                            include:                        {
+                                model:db['gridName'],
+                                attributes:{ exclude:['createdAt','updatedAt','formGridId'] },
+                                separate: true,
+                                order:[['isRaw','ASC'],['id','ASC']],
+                            }
+                        },
+                    ]
+                
             },
             order:[
                 [db['formContent'],'order','ASC']
@@ -121,6 +171,10 @@ module.exports = {
                 data.formContents = data.formContents.map(t => {
                     if(t.formOptions.length === 0)
                         delete t.dataValues.formOptions
+                    if(t.formGrids.length === 0)
+                        delete t.dataValues.formGrids
+                    if(t.content === null)
+                        delete t.dataValues.content
                     return t;
                 });
 
@@ -139,20 +193,50 @@ module.exports = {
 
         db['form'].findAll({
             where:[{userEmail}],
+            attributes:{exclude:['createdAt','updatedAt']},
             include:{
                 model:db['formContent'],
                 attributes:{exclude:['createdAt','updatedAt','formId']},
                 order:[['order','ASC']],
-                include:{
-                    model:db['formOption'],
-                    attributes:{exclude:['createdAt','updatedAt','formContentId']},
-                    separate:true,
-                    order:[['id','ASC']]
-                }
+                include:[
+                    {
+                        model:db['formOption'],
+                        attributes:{exclude:['createdAt','updatedAt','formContentId']},
+                        separate:true,
+                        order:[['id','ASC']]
+                    },
+                    {
+                        model:db['formGrid'],
+                        attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                        include:{
+                            model:db['gridName'],
+                            attributes:{ exclude:['createdAt','updatedAt','formGridId'] },
+                            separate: true,
+                            order:[['isRaw','ASC'],['id','ASC']],
+                        }
+                    }
+
+                ]
             }
         })
         .then(result => {
-            let sendData = result;
+
+            let sendData = result.map(qst => {
+
+                let data = qst.dataValues
+                data.formContents = data.formContents.map(t => {
+
+                    if(t.formOptions.length === 0)
+                        delete t.dataValues.formOptions
+                    if(t.formGrids.length === 0)
+                        delete t.dataValues.formGrids
+                    if(t.content === null)
+                        delete t.dataValues.content
+                    return t;
+                });
+                return data;
+            });
+
             if(sendData.length === 0){
                 res.status(400).send({
                     message:'form not exist'
@@ -167,7 +251,7 @@ module.exports = {
     },
 
     /*
-        테스트 필요
+        Grid 추가로 인한 추가 수정 필요
     */
     async updateForm(req,res){
         if(
@@ -192,6 +276,13 @@ module.exports = {
                 for(let content of data.formContents){
                     let id = content.id
                     delete content.id;
+                    if(
+                        content.row &&
+                        content.col
+                    ){
+                        // update 시 grid 부분 처리
+                    }
+                    
                     await db['formContent'].update(content,{
                         where:{id}
                     })
@@ -216,5 +307,18 @@ module.exports = {
                 });
             })
         }
+    },
+    deleteForm(req,res){
+        let id = req.params.id;
+        if(!id){
+            res.status(400).send({message:'id not exist'});
+            return;
+        }
+        db['form'].destroy({
+            where:[{id}]
+        })
+        .then(result => {
+            res.status(200).send({message:'ok'});
+        })
     }
 }

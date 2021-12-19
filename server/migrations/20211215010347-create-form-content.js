@@ -9,10 +9,14 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       formId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        onDelete: "CASCADE",
+        references: { model: "forms", key: "id", }
       },
       type: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull:false
       },
       question: {
         type: Sequelize.STRING
@@ -21,7 +25,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       order: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false
+      },
+      //only image, explane
+      content: {
+        type:Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

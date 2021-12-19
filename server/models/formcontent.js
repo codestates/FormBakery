@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.formContent.hasMany(models.formOption,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
       models.formContent.hasMany(models.answerList,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
-      models.formContent.belongsTo(models.form);
+      models.formContent.hasMany(models.formGrid,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
+      models.formContent.belongsTo(models.form,{foreignKey: 'formId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
     }
   }
   formContent.init(
@@ -20,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       question: DataTypes.STRING,
       section: DataTypes.INTEGER,
       order: DataTypes.INTEGER,
+      content: DataTypes.STRING
     },
     {
       sequelize,
