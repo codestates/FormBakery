@@ -12,7 +12,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       userEmail: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        onDelete: "CASCADE",
+        references: { model: "Users", key: "email", }
       },
       subTitle: {
         type: Sequelize.STRING
