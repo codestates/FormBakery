@@ -45,6 +45,7 @@ module.exports = {
             expiresIn: "30d",
           }
         );
+
         res
           .status(200)
           .cookie("refreshToken", refreshToken, {
@@ -89,6 +90,10 @@ module.exports = {
       .then((result) =>
         res
           .status(200)
+          .cookie("refreshToken", refresh_Token, {
+            httpOnly: true,
+            samSite: "none",
+          })
           .json({ accessToken: result.data.access_token, message: "ok" })
       )
       .catch((err) => res.status(404));
@@ -102,17 +107,22 @@ module.exports = {
       method: "post",
       url: `https://kauth.kakao.com/oauth/token`,
       headers: {
-        accept: "application/json",
+        "content-type": "application/x-www-form-urlencoded",
       },
-      data: {
+
+      data: qs.stringify({
         client_id: process.env.KAKAO_CLIENT_ID,
-        client_secret: clientSecret,
-        code: req.body.authorizationCode,
-      },
+        client_secret: process.env.KAKAO_CLIENT_SECRET,
+        code: req.body.authorization_code,
+      }),
     })
       .then((result) =>
         res
           .status(200)
+          .cookie("refreshToken", refresh_Token, {
+            httpOnly: true,
+            samSite: "none",
+          })
           .json({ accessToken: result.data.access_token, message: "ok" })
       )
       .catch((err) => res.status(404));
