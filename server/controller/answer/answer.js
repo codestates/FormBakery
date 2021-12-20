@@ -1,5 +1,6 @@
 
 
+const answer = require("../../models/answer");
 const db = require("../../models/index");
 
 module.exports = {
@@ -7,23 +8,34 @@ module.exports = {
     /*
         설문 작성
     */
-    create(req,res){
+    async create(req,res){
         let userEmail = req.params.email;
         let formId = req.body.formId;
         let data = req.body.data;
 
+        let i=0;
         for(let val of data){
             if(
                 !val.answer &&
-                !val.formOptionId
+                !val.formOptionId &&
+                (!val.row || !val.col)
             ){
                 res.status(400).send({
                     message:"data not received"
                 });
                 return;
             }
+            if(val.row && val.col){
+                data[i].answer = val.row + '.' + val.col
+                delete data[i].row, data[i].col;
+            }
+            i++;
         }
-
+        let find = await db['form'].findOne({where:[{id:formId}]});
+        if(!find)
+            res.status(400).send({
+                message:'form not exist'
+            })
         db['answer'].findOne({
             where:[
                 {userEmail},
@@ -35,6 +47,7 @@ module.exports = {
                 await res.status(400).send({
                     message:'aleady writed this form'
                 });
+                return;
             }else{
                 db["answer"].create({
                     userEmail,
@@ -76,7 +89,7 @@ module.exports = {
             })
         }
         db['answer'].findOne({
-            attributes: { exclude: ['UserEmail'] },
+            attributes: { exclude: ['UserEmail','createdAt','updatedAt'] },
             where:[
                 {userEmail},{formId}
             ],
@@ -93,27 +106,44 @@ module.exports = {
                     include:[
                         {
                             model:db['formContent'],
-                            attributes:['question','id','type','section','order']
+                            attributes:['question','id','type','section','order'],
                         },
                         {
                             model:db['formOption'],
                             attributes:{exclude:['createdAt','updatedAt']}
+                        },
+                        {
+                            model:db['formGrid'],
+                            attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                            include:{
+                                model:db['gridName'],
+                                attributes:{ exclude:['createdAt','updatedAt','formGridId'] },
+                                separate: true,
+                                order:[['isRaw','ASC'],['id','ASC']],
+                            }
                         }
                     ]
                 }
             ]
         })
         .then(result => {
-
-            let send = result;
+            if(result === null){
+                res.status(400).send({
+                    message:"answer not exist"
+                })
+                return;
+            }
+            let send = result.dataValues;
 
             send.answerLists = send.answerLists.map(el => {
-                if(el.dataValues.formOption === null)
-                    delete el.dataValues.formOption;
-                if(el.dataValues.formOptionId === null)
-                    delete el.dataValues.formOptionId
-                if(el.dataValues.answer === null)
-                    delete el.dataValues.answer
+                deleteNullContent(el);
+                    
+                let separate;
+                if(el.dataValues.formGridId){
+                    separate = el.dataValues.answer.split('.');
+                    el.dataValues.row = Number(separate[0]); el.dataValues.col = Number(el.col = separate[1]);
+                    delete el.dataValues.answer;
+                }
                 return el
             });
             res.status(200).send({
@@ -159,15 +189,25 @@ module.exports = {
                     include:[
                         {
                             model:db['formContent'],
-                            attributes: { exclude: ['createdAt','updatedAt'] }
+                            attributes:['question','id','type','section','order'],
                         },
                         {
                             model:db['formOption'],
-                            attributes: { exclude: ['createdAt','updatedAt'] }
+                            attributes:{exclude:['createdAt','updatedAt']}
+                        },
+                        {
+                            model:db['formGrid'],
+                            attributes:{ exclude:['createdAt','updatedAt','formContentId'] },
+                            include:{
+                                model:db['gridName'],
+                                attributes:{ exclude:['createdAt','updatedAt','formGridId'] },
+                                separate: true,
+                                order:[['isRaw','ASC'],['id','ASC']],
+                            }
                         }
-                    ]
-                }         
-            ]
+                    ],
+                },        
+            ],
         })
         .then(async result => {
 
@@ -180,60 +220,84 @@ module.exports = {
                 return;
             }
 
-
-
             // 통계 가져오기
             let i = 0;
             for(let t of values){
+                values[i].answerLists.sort((a,b) => a.dataValues.formContent.order - b.dataValues.formContent.order)
 
                 values[i].answerLists = t.answerLists.map(el => {
-                    if(el.dataValues.formOption === null)
-                        delete el.dataValues.formOption;
-                    if(el.dataValues.formOptionId === null)
-                        delete el.dataValues.formOptionId
-                    if(el.dataValues.answer === null)
-                        delete el.dataValues.answer
-                    return el
+                    deleteNullContent(el);                        
+                    let separate;
+                    if(el.dataValues.formGridId){
+                        separate = el.dataValues.answer.split('.');
+                        el.dataValues.row = Number(separate[0]);el.dataValues.col = Number(el.dataValues.col = separate[1]);
+                        delete el.dataValues.answer;
+                    }
+                    return el;
                 });
 
-                for(let v of t.answerLists){
-                    let answer = v.dataValues;
-                    let content = answer.formContent.dataValues;
-                    
-                    if(
-                        content.type === 'short' ||
-                        content.type === 'long' ||
-                        content.type === 'calender' ||
-                        content.type === 'tile'
-                    ){
-                        if(statistics[''+content.id] === undefined){
-                            statistics[''+content.id] = {
-                                question:content.question,
-                                data:[]
-                            };
-                        }
-                        statistics[''+content.id].data.push(answer.answer);
-                    }else{
-                        if(statistics[''+content.id] === undefined){
-                            let options = await db['formOption'].findAll({
-                                where:{
-                                    formContentId:answer.formOption.formContentId
-                                }
-                            });
-                            statistics[''+content.id] = {};
-                            statistics[''+content.id].question = content.question;
-                            for(let option of options){
-                                let val = option.dataValues;
-                                statistics[''+content.id][''+val.id] = {
-                                    count:0,
-                                    text:val.text
+                if(req.body.use === 'form'){
+                    for(let v of t.answerLists){
+
+                        let answer = v.dataValues;
+                        let content = answer.formContent.dataValues;
+                        
+                        if(
+                            content.type === 'short' ||
+                            content.type === 'long' ||
+                            content.type === 'calender' ||
+                            content.type === 'tile'
+                        ){
+                            if(statistics[''+content.id] === undefined){
+                                statistics[''+content.id] = {
+                                    question:content.question,
+                                    data:[]
+                                };
+                            }
+                            statistics[''+content.id].data.push(answer.answer);
+                        }else if(
+                            content.type === 'radio' ||
+                            content.type === 'check' ||
+                            content.type === 'drop'
+                        ){
+                            if(statistics[''+content.id] === undefined){
+                                let options = await db['formOption'].findAll({
+                                    where:{
+                                        formContentId:answer.formContentId
+                                    }
+                                });
+                                statistics[''+content.id] = {};
+                                statistics[''+content.id].question = content.question;
+                                for(let option of options){
+                                    let val = option.dataValues;
+                                    statistics[''+content.id][''+val.id] = {
+                                        count:0,
+                                        text:val.text
+                                    }
                                 }
                             }
+                            statistics[''+content.id][''+answer.formOption.id].count += 1;
+                        }else if(
+                            content.type === 'grid'
+                        ){
+                            if(statistics[''+content.id] === undefined){
+                                
+                                let arr = new Array(answer.formGrid.dataValues.row);
+                                for(let i=0; i< answer.formGrid.dataValues.row; i++)
+                                    arr[i] = new Array(answer.formGrid.dataValues.col).fill(0);
+
+                                statistics[''+content.id] = {
+                                    question:content.question,
+                                    data:arr,
+                                    gridNames:answer.formGrid.gridNames
+                                }
+                            }
+                            console.log(answer.row + '.' + answer.col)
+                            statistics[''+content.id].data[Number(answer.row)][Number(answer.col)]++;
                         }
-                        statistics[''+content.id][''+answer.formOption.id].count += 1;
                     }
+                    i++;
                 }
-                i++;
             }
 
 
@@ -256,6 +320,8 @@ module.exports = {
         for(let val of changeData){
             let id = val.id;
             delete val.id;
+            if(val.row && val.col)
+                val.answer = val.row + '.' + val.col
             await db['answerList'].update(val,{
                 where:[
                     {id}
@@ -283,15 +349,15 @@ module.exports = {
         await db['answer'].destroy({
             where:[{id}]
         })
-        .then(result => {
-            db['answerList'].destroy({
-                where:[
-                    {
-                        'answerId':id
-                    }
-                ]
-            });
-        });
+        // .then(result => {
+        //     db['answerList'].destroy({
+        //         where:[
+        //             {
+        //                 'answerId':id
+        //             }
+        //         ]
+        //     });
+        // });
 
         res.status(200).send({
             message:'ok'
@@ -299,3 +365,16 @@ module.exports = {
     }
 }
 
+function deleteNullContent(el){
+
+    if(el.dataValues.formOption === null)
+        delete el.dataValues.formOption;
+    if(el.dataValues.formOptionId === null)
+        delete el.dataValues.formOptionId
+    if(el.dataValues.answer === null)
+        delete el.dataValues.answer
+    if(el.dataValues.formGridId === null)
+        delete el.dataValues.formGridId
+    if(el.dataValues.formGrid === null)
+        delete el.dataValues.formGrid
+}

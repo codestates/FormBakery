@@ -9,10 +9,14 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userEmail: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        onDelete: "CASCADE",
+        references: { model: "Users", key: "email", }
       },
       formId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        references: { model: "forms", key: "id", }
       },
       createdAt: {
         allowNull: false,
