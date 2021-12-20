@@ -22,6 +22,15 @@
 
 [Form Bakery Introduce Page](https://github.com/codestates/FormBakery/wiki)
 
+## Tech Stack
+- Front-End: React, React-axios, React-hooks, React-router, Typescript, Sass, Javascript, HTML, CSS
+
+- Back-End: Node.js, Express, MySQL, Sequelize, Oauth, JWT
+
+- Deployment: AWS(EC2, S3, RDS, loadbalancer, Route53)
+
+![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)
+
 ## Team Role
 
 #### [Jeong Subi(Team Leader)](https://github.com/JeongSubi)👩🏼‍💻
@@ -37,12 +46,6 @@
 #### [Jang SaeJin](https://github.com/JangSeBaRi)🧑🏻‍💻
   * Page Design
   * Front-End Development
-
-## Stack
-
-![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)
-
-
 
 ### Back-End API Reference
 
