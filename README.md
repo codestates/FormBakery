@@ -21,7 +21,7 @@
 
 [Form Bakery Introduce Page](https://github.com/codestates/FormBakery/wiki)
 
-<## Team Role>
+## <Team Role>
 
 #### Jeong Subi(Team Leader)👩🏼‍💻
   * Team Management
