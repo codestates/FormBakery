@@ -13,37 +13,43 @@
 
 ## **_FormBakery_** 에서 사용할 수 있는 기능들을 소개합니다!👐🏻
 
-* 회원가입을 하지 않아도 깃허브, 카카오톡 소셜로그인을 통해 쉽게 접속할 수 있어요.
-* 간편한 설문 조사 양식을 만들 수 있어요.
+* 복잡한 회원가입을 하지 않아도 깃허브, 카카오톡 소셜로그인을 통해 쉽게 접속할 수 있어요.
+* 페이지로 구분된 간편한 설문 조사 양식을 만들 수 있어요.
 * 객관식, 주관식, 그리드 등 다양한 질문 형식들을 생성할 수 있어요.
-* 이메일과 링크를 통해 손쉽게 배포해 보세요.
-* 작성된 데이터를 가지고 통계를 확인할 수 있어요.
+* 이메일과 링크를 통해 설문지를 손쉽게 배포해 보세요.
+* 작성된 데이터를 가지고 시각적인 통계를 확인할 수 있어요.
 * 자신이 생성하고 답한 설문들을 한번에 모아 볼 수 있어요.
 
 [Form Bakery Introduce Page](https://github.com/codestates/FormBakery/wiki)
 
+## Tech Stack
+- Front-End: React, React-axios, React-hooks, React-router, Typescript, Sass, Javascript, HTML, CSS
+
+- Back-End: Node.js, Express, MySQL, Sequelize, Oauth, JWT
+
+- Deployment: AWS(EC2, S3, RDS, loadbalancer, Route53)
+
+![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)
+
 ## Team Role
 
-#### Jeong Subi(Team Leader)👩🏼‍💻
+#### 👩🏼‍💻 [Jeong Subi (Team Leader / Back-End)](https://github.com/JeongSubi)
   * Team Management
   * Back-End Development
   * DataBase Structure Design
 
-#### Park Namsu👨🏻‍💻
+#### 👨🏻‍💻 [Park Namsu (Back-End)](https://github.com/PARKNAMSU)
   * Back-End Development
   * AWS EC2,RDS Setting
   * DataBase Structure Design
 
-#### Jang SaeJin🧑🏻‍💻
+#### 🧑🏻‍💻 [Jang SaeJin (Front-End)](https://github.com/JangSeBaRi)
   * Page Design
   * Front-End Development
 
-## Stack
+## Back-End API Infomation
 
-![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)
+Link: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)
 
-
-
-### Back-End API Reference
-
-Reference: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)
+## FormBakery Reference
+Reference: [Google 설문지](https://www.google.com/intl/ko_kr/forms/about/)
