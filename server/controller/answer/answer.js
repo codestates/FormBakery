@@ -349,15 +349,15 @@ module.exports = {
         await db['answer'].destroy({
             where:[{id}]
         })
-        .then(result => {
-            db['answerList'].destroy({
-                where:[
-                    {
-                        'answerId':id
-                    }
-                ]
-            });
-        });
+        // .then(result => {
+        //     db['answerList'].destroy({
+        //         where:[
+        //             {
+        //                 'answerId':id
+        //             }
+        //         ]
+        //     });
+        // });
 
         res.status(200).send({
             message:'ok'
