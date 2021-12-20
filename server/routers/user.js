@@ -32,6 +32,7 @@ router.put(
 router.post("/login/:email", userController.login);
 router.post("/logout", userController.logout);
 router.post("/githubCallback", userController.githubCallback);
+router.post("/kakaoCallback", userController.kakaoCallback);
 
 router.put("/signup", userController.signup);
 router.post("/signupEmailAuth", userController.signupEmailAuth);
