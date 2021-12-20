@@ -2,7 +2,7 @@ const e = require("express");
 const db = require("../../models/index");
 
 const { Op } = require("sequelize");
-
+const transaction = db.sequelize.transaction();
 module.exports = {
   /*
         Form 생성
@@ -270,15 +270,13 @@ module.exports = {
   async updateForm(req, res) {
     let id = req.params.id;
 
-    if (!id) {
-      res.status(400).send({ message: "id not exist" });
+    if (!id) res.status(400).send({ message: "id not exist" });
 
     let find = await db["form"].findOne({ where: { id } });
     if (find === null) {
       res.status(400).send({
         message: "form not exist",
       });
-
       return;
     }
     await db["formContent"].destroy({
@@ -360,90 +358,6 @@ module.exports = {
         data: imageId,
       });
     });
-    // if(
-    //     !req.body ||
-    //     !req.body.formContents.length ||
-    //     req.body.formContents.length === 0
-    // ){
-    //     await res.status(400).send({
-    //         message:'data not exist'
-    //     });
-    // }else{
-    //     let data = req.body;
-    //     let id = req.params.id;
-
-    //     db['form'].update({
-    //         title:data.title,
-    //         subTitle:data.subTitle
-    //     },
-    //     {where:[{id}]})
-    //     .then(async result => {
-    //         let values = result.dataValues;
-    //         for(let content of data.formContents){
-    //             let id = content.id
-    //             delete content.id;
-    //             if(
-    //                 content.type === 'grid'
-    //             ){
-    //                 // update 시 grid 부분 처리
-    //                 await db['formGrid'].update({
-    //                     row:content.row,
-    //                     col:content.col
-    //                 },{
-    //                     where:{
-    //                         id:content.gridData.id
-    //                     }
-    //                 })
-    //                 .then(async result => {
-    //                     let formGridId = content.gridData.id;
-    //                     let grids = [
-    //                         ...content.gridData.rawName.map((t,idx) => {
-    //                             return {
-    //                                 text:t,
-    //                                 location:idx,
-    //                                 isRaw:'y',
-    //                                 formGridId
-    //                             }
-    //                         }),
-    //                         ...content.gridData.colName.map((t,idx) => {
-    //                             return {
-    //                                 text:t,
-    //                                 location:idx,
-    //                                 isRaw:'n',
-    //                                 formGridId
-    //                             }
-    //                         })
-    //                     ];
-    //                     await db['gridName'].destroy({where:{formGridId}})
-    //                     await db['gridName'].bulkCreate(grids)
-    //                     delete content.gridData;
-    //                 })
-    //             }
-
-    //             await db['formContent'].update(content,{
-    //                 where:{id}
-    //             })
-    //             .then(async result => {
-    //                 if(
-    //                     content.formOptions &&
-    //                     content.formOptions.length > 0
-    //                 ){
-    //                     for(let option of content.formOptions){
-    //                         let optionId = option.id
-    //                         delete option.id;
-    //                         await db['formOption'].update(option,{
-    //                             where:{id:optionId}
-    //                         });
-    //                     }
-    //                 }
-    //             })
-    //         }
-
-    //         res.status(200).send({
-    //             message:'ok'
-    //         });
-    //     })
-    // }
   },
   deleteForm(req, res) {
     let id = req.params.id;
