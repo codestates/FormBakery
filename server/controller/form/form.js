@@ -271,9 +271,9 @@ module.exports = {
             form.subTitle = req.body.subTitle;
         db['form'].update(form,{where:{id}})
         .then(async result => {
+            await db['answer'].destroy({where:{formId:id}});
             let formId = id;
             data.sort((a,b) => a.order - b.order);
-
             for(let el of data){
                 let options;
                 let gridData;
