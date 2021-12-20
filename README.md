@@ -30,7 +30,7 @@
 
 ## Stack
 
-![image](https://user-images.githubusercontent.com/62639722/146731264-c7943e21-8067-4ccf-8642-ed61ba3ea945.png)
+![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)
 
 
 
