@@ -33,17 +33,17 @@
 
 ## Team Role
 
-#### 👩🏼‍💻 [Jeong Subi(Team Leader / Back-End)](https://github.com/JeongSubi)
+#### 👩🏼‍💻 [Jeong Subi (Team Leader / Back-End)](https://github.com/JeongSubi)
   * Team Management
   * Back-End Development
   * DataBase Structure Design
 
-#### 👨🏻‍💻 [Park Namsu(Back-End)](https://github.com/PARKNAMSU)
+#### 👨🏻‍💻 [Park Namsu (Back-End)](https://github.com/PARKNAMSU)
   * Back-End Development
   * AWS EC2,RDS Setting
   * DataBase Structure Design
 
-#### 🧑🏻‍💻 [Jang SaeJin(Front-End)](https://github.com/JangSeBaRi)
+#### 🧑🏻‍💻 [Jang SaeJin (Front-End)](https://github.com/JangSeBaRi)
   * Page Design
   * Front-End Development
 
