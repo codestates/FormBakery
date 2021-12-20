@@ -6,7 +6,6 @@ module.exports = {
         설문 작성
     */
   async create(req, res) {
-    const transaction = await db.sequelize.transaction();
     let userEmail = req.params.email;
     let formId = req.body.formId;
     let data = req.body.data;
@@ -40,35 +39,24 @@ module.exports = {
           });
           return;
         } else {
-          try {
-            db["answer"]
-              .create(
-                {
-                  userEmail,
-                  formId,
-                },
-                { transaction }
-              )
-              .then(async (result) => {
-                let values = result.dataValues;
+          db["answer"]
+            .create({
+              userEmail,
+              formId,
+            })
+            .then(async (result) => {
+              let values = result.dataValues;
 
-                data.sort((a, b) => a.formContentId - b.formContentId);
+              data.sort((a, b) => a.formContentId - b.formContentId);
 
-                for (let val of data) {
-                  val.answerId = values.id;
-                  await db["answerList"].create(val, { transaction });
-                }
-                await transaction.commit();
-                res.status(201).send({
-                  message: "ok",
-                });
+              for (let val of data) {
+                val.answerId = values.id;
+                await db["answerList"].create(val);
+              }
+              res.status(201).send({
+                message: "ok",
               });
-          } catch (err) {
-            res.status(400).send({
-              message: "database err",
-              code: err,
             });
-          }
         }
       });
   },
