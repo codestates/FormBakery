@@ -1,6 +1,6 @@
 # 📝FormBakery🍞
 
-## Introduce
+## <Introduce>
 
 각 기업, 개인들을 대상으로 설문조사를 진행하고 분석할때 어려움을 겪었던 경험이 있나요?
 
@@ -10,7 +10,7 @@
 
 **_FormBakery_** 입니다 :)
 
-## **_FormBakery_** 에서 사용할 수 있는 기능들을 소개합니다!👐🏻
+## <**_FormBakery_** 에서 사용할 수 있는 기능들을 소개합니다!👐🏻>
 
 * 회원가입을 하지 않아도 깃허브, 카카오톡 소셜로그인을 통해 쉽게 접속할 수 있어요.
 * 간편한 설문 조사 양식을 만들 수 있어요.
@@ -21,7 +21,7 @@
 
 [Form Bakery Introduce Page](https://github.com/codestates/FormBakery/wiki)
 
-## Team Role
+## <Team Role>
 
 #### Jeong Subi(Team Leader)👩🏼‍💻
   * Team Management
@@ -37,7 +37,7 @@
   * Page Design
   * Front-End Development
 
-## Stack
+## <Stack>
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)
 
