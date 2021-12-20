@@ -6,9 +6,6 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const bcrypt = require("bcrypt");
 
-const clientID = process.env.GITHUB_CLIENT_ID;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-
 const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
 
@@ -23,6 +20,9 @@ module.exports = {
     const userInfo = await db["User"].findOne({
       where: { email },
     });
+    if (!userInfo) {
+      res.status(400).send({ message: "not exists user email" });
+    }
 
     bcrypt.compare(password, userInfo.password, function (err, resp) {
       if (resp === false) {
@@ -70,6 +70,9 @@ module.exports = {
     res.status(200).send({ message: "logout successful" });
   },
 
+  /*
+      github 콜백
+  */
   githubCallback: async (req, res) => {
     axios({
       method: "post",
@@ -78,7 +81,31 @@ module.exports = {
         accept: "application/json",
       },
       data: {
-        client_id: clientID,
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code: req.body.authorizationCode,
+      },
+    })
+      .then((result) =>
+        res
+          .status(200)
+          .json({ accessToken: result.data.access_token, message: "ok" })
+      )
+      .catch((err) => res.status(404));
+  },
+
+  /*
+      kakao 콜백
+  */
+  kakaoCallback: async (req, res) => {
+    axios({
+      method: "post",
+      url: `https://kauth.kakao.com/oauth/token`,
+      headers: {
+        accept: "application/json",
+      },
+      data: {
+        client_id: process.env.KAKAO_CLIENT_ID,
         client_secret: clientSecret,
         code: req.body.authorizationCode,
       },
