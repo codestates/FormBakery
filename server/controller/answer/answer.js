@@ -223,6 +223,7 @@ module.exports = {
             // 통계 가져오기
             let i = 0;
             for(let t of values){
+                console.log(values[i].answerLists)
                 values[i].answerLists.sort((a,b) => a.dataValues.formContent.order - b.dataValues.formContent.order)
 
                 values[i].answerLists = t.answerLists.map(el => {
@@ -318,8 +319,8 @@ module.exports = {
     async updateAnswer(req,res){
         let changeData = req.body.data;
         for(let val of changeData){
-            let id = val.id;
-            delete val.id;
+            let id = val.formContentId;
+            delete val.formContentId;
             if(val.row && val.col)
                 val.answer = val.row + '.' + val.col
             await db['answerList'].update(val,{

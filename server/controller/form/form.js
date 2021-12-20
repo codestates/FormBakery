@@ -1,6 +1,6 @@
 const e = require("express");
 const db = require("../../models/index");
-const { Op, col } = require('sequelize');
+const { Op } = require('sequelize');
 module.exports = {
 
     /*
@@ -255,8 +255,11 @@ module.exports = {
     */
     async updateForm(req,res){
         let id = req.params.id;
-        if(!id){
-            res.status(400).send({message:'id not exist'});
+        let find = await db['form'].findOne({where:{id}});
+        if(find === null){
+            res.status(400).send({
+                message:"form not exist"
+            });
             return;
         }
         await db['formContent'].destroy({
@@ -428,10 +431,6 @@ module.exports = {
     },
     deleteForm(req,res){
         let id = req.params.id;
-        if(!id){
-            res.status(400).send({message:'id not exist'});
-            return;
-        }
         db['form'].destroy({
             where:[{id}]
         })
