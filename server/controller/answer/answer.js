@@ -9,7 +9,6 @@ module.exports = {
     let userEmail = req.params.email;
     let formId = req.body.formId;
     let data = req.body.data;
-
     let i = 0;
     for (let val of data) {
       if (!val.answer && !val.formOptionId && (!val.row || !val.col)) {
@@ -219,7 +218,6 @@ module.exports = {
         // 통계 가져오기
         let i = 0;
         for (let t of values) {
-          console.log(values[i].answerLists);
           values[i].answerLists.sort(
             (a, b) =>
               a.dataValues.formContent.order - b.dataValues.formContent.order
@@ -241,7 +239,6 @@ module.exports = {
             for (let v of t.answerLists) {
               let answer = v.dataValues;
               let content = answer.formContent.dataValues;
-
               if (
                 content.type === "short" ||
                 content.type === "long" ||
@@ -280,6 +277,7 @@ module.exports = {
                   "" + answer.formOption.id
                 ].count += 1;
               } else if (content.type === "grid") {
+                console.log(answer);
                 if (statistics["" + content.id] === undefined) {
                   let arr = new Array(answer.formGrid.dataValues.row);
                   for (let i = 0; i < answer.formGrid.dataValues.row; i++)
