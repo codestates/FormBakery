@@ -40,7 +40,7 @@ router.post("/passwordEmailAuth", userController.passwordEmailAuth);
 
 router.post("/signout/:email", userController.signout);
 
-router.get("/getUserInfo", userController.getUserInfo);
+router.post("/getUserInfo", userController.getUserInfo);
 router.post("/accessTokenRequest", userController.accessTokenRequest);
 router.put("/updateUserInfo/:email", userController.updateUserInfo);
 router.put("/changePassword/:email", userController.changePassword);
