@@ -158,31 +158,6 @@ module.exports = {
       true,
       number
     );
-
-    //   const transporter = mailer.createTransport(
-    //     smtp({
-    //       service: "gmail",
-    //       host: "smtp.gmail.com",
-    //       auth: {
-    //         user: "jsb9761321@gmail.com",
-    //         pass: process.env.GOOGLE_PASSWORD,
-    //       },
-    //     })
-    //   );
-
-    //   const mailOpt = {
-    //     from: "jsb9761321@gmail.com",
-    //     to: req.body.email,
-    //     subject: "Form Bakery 회원가입 인증번호 입니다.",
-    //     html: `<h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1><h3>[${number}]</h3>`,
-    //   };
-
-    //   transporter.sendMail(mailOpt, (err, info) => {
-    //     if (err) throw err;
-    //     else {
-    //       res.status(200).send({ data: number, message: "emailAuth successful" });
-    //     }
-    //   });
   },
 
   /*
@@ -196,35 +171,30 @@ module.exports = {
     if (!userInfo) {
       res.status(400).send({ message: "not exists email" });
     }
+
     let number = Math.floor(Math.random() * 1000000) + 100000;
     if (number > 1000000) {
       number = number - 100000;
     }
 
-    const transporter = mailer.createTransport(
-      smtp({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        auth: {
-          user: "jsb9761321@gmail.com",
-          pass: process.env.GOOGLE_PASSWORD,
-        },
-      })
+    let title = "Form Bakery 비밀번호 재설정 인증번호 입니다.";
+    let html = `
+            <h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1>
+            <h2>[${number}]</h2>
+            <br/>
+            <h3>문의: ${process.env.MAIL_EMAIL}</h3>
+      `;
+
+    mailMethod.sendEmail(
+      req,
+      res,
+      process.env.MAIL_EMAIL,
+      req.body.email,
+      title,
+      html,
+      true,
+      number
     );
-
-    const mailOpt = {
-      from: "jsb9761321@gmail.com",
-      to: req.body.email,
-      subject: "Form Bakery 비밀번호 재설정 인증번호 입니다.",
-      html: `<h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1><h3>[${number}]</h3>`,
-    };
-
-    transporter.sendMail(mailOpt, (err, info) => {
-      if (err) throw err;
-      else {
-        res.status(200).send({ data: number, message: "emailAuth successful" });
-      }
-    });
   },
 
   /*
