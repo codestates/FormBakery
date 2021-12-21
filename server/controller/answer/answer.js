@@ -300,7 +300,6 @@ module.exports = {
                 content.type === "grid" &&
                 answer.formGrid !== undefined
               ) {
-                console.log(answer);
                 if (statistics["" + content.id] === undefined) {
                   let arr = new Array(answer.formGrid.dataValues.row);
                   for (let i = 0; i < answer.formGrid.dataValues.row; i++)
@@ -341,7 +340,9 @@ module.exports = {
     for (let val of changeData) {
       let formContentId = val.formContentId;
       delete val.formContentId;
-      if (val.row && val.col) val.answer = val.row + "." + val.col;
+      if (val.row && val.col) {
+        val.answer = val.row + "." + val.col;
+      }
       try {
         if (val.formOptionIds) {
           await db["answerList"].destroy(
