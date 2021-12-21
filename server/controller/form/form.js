@@ -1,29 +1,19 @@
 const e = require("express");
 const db = require("../../models/index");
-
+const recommandData = require("./recommandData");
 const { Op, UUIDV1 } = require("sequelize");
 module.exports = {
   /*
         Form 생성
     */
   async create(req, res) {
-    let uuid = req.params.uuidInfo;
+    let id = req.params.uuidInfo;
     let userEmail = req.body.email;
-    let insertData = {
-      id: uuid,
-      title: "이름없는 설문지 제목",
-      subTitle: "이름없는 설문지 소제목",
-      userEmail,
-      questions: [
-        {
-          question: "이름없는 설문지 질문",
-          type: "short",
-          order: 1,
-          section: 1,
-          isNeccessary: "n",
-        },
-      ],
-    };
+    let recoType = req.body.recommand ? req.body.recommand : "default";
+
+    let insertData = recommandData[recoType];
+    insertData.id = id;
+    insertData.userEmail = userEmail;
     let find = await db["form"].findOne({
       where: { id: insertData.id },
     });
@@ -37,7 +27,7 @@ module.exports = {
     let data = insertData.questions;
     let imageId = [];
     let form = {
-      id: uuid,
+      id,
       userEmail,
       title: insertData.title,
       subTitle: insertData.subTitle,
