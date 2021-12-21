@@ -8,7 +8,7 @@ module.exports = {
   /*
       accessToken 생성
   */
-  accessTokenRequest: async (req, res) => {
+  accessTokenRequest: async (req, res, type) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
       res
@@ -39,8 +39,18 @@ module.exports = {
                   expiresIn: "15m",
                 }
               );
-
+              if (type === "update") {
+                const { email } = req.params;
+                const { name, nickname } = req.body;
+                await db["User"].update(
+                  { name, nickname },
+                  { where: { email } }
+                );
+                userInfo.dataValues.name = req.body.name;
+                userInfo.dataValues.nickname = req.body.nickname;
+              }
               delete userInfo.dataValues.password;
+
               res.status(200).json({
                 data: {
                   userInfo: userInfo.dataValues,
