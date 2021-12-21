@@ -284,7 +284,7 @@ module.exports = {
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            accessTokenRequest.accessTokenRequest(req, res);
+            await accessTokenRequest.accessTokenRequest(req, res);
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
@@ -323,18 +323,31 @@ module.exports = {
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            accessTokenRequest.accessTokenRequest(req, res);
+            await accessTokenRequest.accessTokenRequest(req, res, "update");
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
             });
+            delete userInfo.dataValues.password;
+
             if (!userInfo) {
               res.status(404).json({
                 message: "access token has been tempered",
               });
             } else {
-              db["User"].update({ name, nickname }, { where: { email } });
-              res.status(200).send({ message: "changeUserInfo successful" });
+              await db["User"].update(
+                { name, nickname },
+                { where: { email: decoded.email } }
+              );
+              userInfo.dataValues.name = name;
+              userInfo.dataValues.nickname = nickname;
+
+              res.status(200).json({
+                data: {
+                  userInfo: userInfo.dataValues,
+                },
+                message: "ok",
+              });
             }
           }
         }
