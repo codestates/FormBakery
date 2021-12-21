@@ -8,8 +8,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.form.hasMany(models.formContent,{foreignKey: 'formId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
-      models.form.hasMany(models.answer,{foreignKey: 'formId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
+      models.form.hasMany(models.formContent, {
+        foreignKey: "formId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+      models.form.hasMany(models.answer, {
+        foreignKey: "formId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
       models.form.belongsTo(models.User);
     }
   }
