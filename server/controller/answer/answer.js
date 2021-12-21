@@ -6,6 +6,7 @@ module.exports = {
         설문 작성
     */
   async create(req, res) {
+    const transaction = await db.sequelize.transaction();
     let userEmail = req.params.email;
     let formId = req.body.formId;
     let data = req.body.data;
@@ -20,14 +21,21 @@ module.exports = {
       if (val.row && val.col) {
         data[i].answer = val.row + "." + val.col;
         delete data[i].row, data[i].col;
+        await db["formGrid"]
+          .findOne({ where: { formContentId: val.formContentId } })
+          .then((result) => {
+            data[i].formGridId = result.dataValues.id;
+          });
       }
       i++;
     }
     let find = await db["form"].findOne({ where: [{ id: formId }] });
-    if (!find)
+    if (!find) {
       res.status(400).send({
         message: "form not exist",
       });
+      return;
+    }
     db["answer"]
       .findOne({
         where: [{ userEmail }, { formId }],
@@ -39,24 +47,36 @@ module.exports = {
           });
           return;
         } else {
-          db["answer"]
-            .create({
-              userEmail,
-              formId,
-            })
-            .then(async (result) => {
-              let values = result.dataValues;
+          try {
+            db["answer"]
+              .create(
+                {
+                  userEmail,
+                  formId,
+                },
+                { transaction }
+              )
+              .then(async (result) => {
+                let values = result.dataValues;
 
-              data.sort((a, b) => a.formContentId - b.formContentId);
+                data.sort((a, b) => a.formContentId - b.formContentId);
 
-              for (let val of data) {
-                val.answerId = values.id;
-                await db["answerList"].create(val);
-              }
-              res.status(201).send({
-                message: "ok",
+                for (let val of data) {
+                  val.answerId = values.id;
+                  await db["answerList"].create(val, { transaction });
+                }
+                await transaction.commit();
               });
+          } catch (err) {
+            console.log("catch");
+            res.status(400).send({
+              message: "database err",
+              code: err,
             });
+          }
+          res.status(201).send({
+            message: "ok",
+          });
         }
       });
   },
@@ -316,30 +336,46 @@ module.exports = {
         설문 내역 업데이트 - checkbox 관련 수정 완료
     */
   async updateAnswer(req, res) {
+    const transaction = await db.sequelize.transaction();
     let changeData = req.body.data;
     for (let val of changeData) {
       let formContentId = val.formContentId;
       delete val.formContentId;
       if (val.row && val.col) val.answer = val.row + "." + val.col;
-      if (val.formOptionIds) {
-        await db["answerList"].destroy({
-          where: [{ formContentId }],
+      try {
+        if (val.formOptionIds) {
+          await db["answerList"].destroy(
+            {
+              where: [{ formContentId }],
+            },
+            { transaction }
+          );
+          let append = val.formOptionIds.map((num) => {
+            return {
+              formOptionId: num,
+              formContentId,
+              answerId: req.body.answerId,
+            };
+          });
+          await db["answerList"].bulkCreate(append, { transaction });
+        } else {
+          await db["answerList"].update(
+            val,
+            {
+              where: [{ formContentId }],
+            },
+            { transaction }
+          );
+        }
+      } catch (err) {
+        res.status(400).send({
+          message: "database err",
+          code: err,
         });
-        let append = val.formOptionIds.map((num) => {
-          return {
-            formOptionId: num,
-            formContentId,
-            answerId: req.body.answerId,
-          };
-        });
-        await db["answerList"].bulkCreate(append);
-      } else {
-        await db["answerList"].update(val, {
-          where: [{ formContentId }],
-        });
+        return;
       }
     }
-
+    await transaction.commit();
     res.status(201).send({
       message: "ok",
     });
