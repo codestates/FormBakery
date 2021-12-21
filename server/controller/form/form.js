@@ -2,13 +2,12 @@ const e = require("express");
 const db = require("../../models/index");
 
 const { Op } = require("sequelize");
-
+const transaction = db.sequelize.transaction();
 module.exports = {
   /*
         Form 생성
     */
-  async create(req, res) {
-    const transaction = await db.sequelize.transaction();
+  create(req, res) {
     let userEmail = req.params.email;
     let data = req.body.questions;
     let imageId = [];
@@ -30,89 +29,76 @@ module.exports = {
             message: "This email not exist",
           });
         } else {
-          try {
-            db["form"].create(form, { transaction }).then(async (result) => {
-              let formId = result.id;
-              data.sort((a, b) => a.order - b.order);
+          db["form"].create(form).then(async (result) => {
+            let formId = result.id;
+            data.sort((a, b) => a.order - b.order);
 
-              for (let el of data) {
-                let options;
-                let gridData;
-                el.formId = formId;
-                if (el.formOptions) {
-                  options = el.formOptions;
-                  delete el.formOptions;
-                }
-                if (el.gridData) {
-                  gridData = el.gridData;
-                  delete el.gridData;
-                }
-                await db["formContent"]
-                  .create(el, { transaction })
-                  .then(async (result) => {
-                    let formContentId = result.dataValues.id;
-                    if (el.type === "image") imageId.push(formContentId);
-                    if (
-                      el.type === "check" ||
-                      el.type === "radio" ||
-                      el.type === "drop"
-                    ) {
-                      options = options.map((t) => {
-                        return {
-                          formContentId,
-                          text: t,
-                        };
-                      });
-                      db["formOption"].bulkCreate(options, { transaction });
-                    }
-                    if (el.type === "grid") {
-                      console.log(gridData);
-                      await db["formGrid"]
-                        .create(
-                          {
-                            formContentId,
-                            row: gridData.row,
-                            col: gridData.col,
-                          },
-                          { transaction }
-                        )
-                        .then((result) => {
-                          let res = result.dataValues;
-                          let grids = [
-                            ...gridData.rawName.map((t, idx) => {
-                              return {
-                                text: t,
-                                location: idx,
-                                isRaw: "y",
-                                formGridId: res.id,
-                              };
-                            }),
-                            ...gridData.colName.map((t, idx) => {
-                              return {
-                                text: t,
-                                location: idx,
-                                isRaw: "n",
-                                formGridId: res.id,
-                              };
-                            }),
-                          ];
-                          db["gridName"].bulkCreate(grids, { transaction });
-                        });
-                    }
-                  });
+            for (let el of data) {
+              let options;
+              let gridData;
+              el.formId = formId;
+              if (el.formOptions) {
+                options = el.formOptions;
+                delete el.formOptions;
               }
-              await transaction.commit();
-              res.status(201).send({
-                message: "ok",
-                data: imageId,
+              if (el.gridData) {
+                gridData = el.gridData;
+                delete el.gridData;
+              }
+              await db["formContent"].create(el).then(async (result) => {
+                let formContentId = result.dataValues.id;
+                if (el.type === "image") imageId.push(formContentId);
+                if (
+                  el.type === "check" ||
+                  el.type === "radio" ||
+                  el.type === "drop"
+                ) {
+                  options = options.map((t) => {
+                    return {
+                      formContentId,
+                      text: t,
+                    };
+                  });
+                  db["formOption"].bulkCreate(options);
+                }
+                if (el.type === "grid") {
+                  console.log(gridData);
+                  await db["formGrid"]
+                    .create({
+                      formContentId,
+                      row: gridData.row,
+                      col: gridData.col,
+                    })
+                    .then((result) => {
+                      let res = result.dataValues;
+                      let grids = [
+                        ...gridData.rawName.map((t, idx) => {
+                          return {
+                            text: t,
+                            location: idx,
+                            isRaw: "y",
+                            formGridId: res.id,
+                          };
+                        }),
+                        ...gridData.colName.map((t, idx) => {
+                          return {
+                            text: t,
+                            location: idx,
+                            isRaw: "n",
+                            formGridId: res.id,
+                          };
+                        }),
+                      ];
+                      db["gridName"].bulkCreate(grids);
+                    });
+                }
               });
+            }
+            res.status(201).send({
+              message: "ok",
+              data: imageId,
             });
-          } catch (err) {
-            res.status(400).send({
-              message: "database err",
-              code: err,
-            });
-          }
+          });
         }
       });
   },
@@ -151,6 +137,7 @@ module.exports = {
     */
   getForm(req, res) {
     let id = req.params.id;
+
     db["form"]
       .findOne({
         where: { id },
@@ -281,7 +268,6 @@ module.exports = {
         Grid 추가로 인한 추가 수정 필요
     */
   async updateForm(req, res) {
-    const transaction = await db.sequelize.transaction();
     let id = req.params.id;
 
     if (!id) res.status(400).send({ message: "id not exist" });
@@ -293,106 +279,85 @@ module.exports = {
       });
       return;
     }
-    try {
-      await db["formContent"].destroy(
-        {
-          where: [{ formId: id }],
-        },
-        { transaction }
-      );
-      let data = req.body.questions;
-      let imageId = [];
-      let form = {
-        title: req.body.title,
-      };
-      if (req.body.subTitle) form.subTitle = req.body.subTitle;
-      db["form"]
-        .update(form, { where: { id } }, { transaction })
-        .then(async (result) => {
-          await db["answer"].destroy(
-            { where: { formId: id } },
-            { transaction }
-          );
-          let formId = id;
-          data.sort((a, b) => a.order - b.order);
-          for (let el of data) {
-            let options;
-            let gridData;
-            el.formId = formId;
-            if (el.formOptions) {
-              options = el.formOptions;
-              delete el.formOptions;
-            }
-            if (el.gridData) {
-              gridData = el.gridData;
-              delete el.gridData;
-            }
-            await db["formContent"]
-              .create(el, { transaction })
-              .then(async (result) => {
-                let formContentId = result.dataValues.id;
-                if (el.type === "image") imageId.push(formContentId);
-                if (
-                  el.type === "check" ||
-                  el.type === "radio" ||
-                  el.type === "drop"
-                ) {
-                  options = options.map((t) => {
+    await db["formContent"].destroy({
+      where: [{ formId: id }],
+    });
+    let data = req.body.questions;
+    let imageId = [];
+    let form = {
+      title: req.body.title,
+    };
+    if (req.body.subTitle) form.subTitle = req.body.subTitle;
+    db["form"].update(form, { where: { id } }).then(async (result) => {
+      await db["answer"].destroy({ where: { formId: id } });
+      let formId = id;
+      data.sort((a, b) => a.order - b.order);
+      for (let el of data) {
+        let options;
+        let gridData;
+        el.formId = formId;
+        if (el.formOptions) {
+          options = el.formOptions;
+          delete el.formOptions;
+        }
+        if (el.gridData) {
+          gridData = el.gridData;
+          delete el.gridData;
+        }
+        await db["formContent"].create(el).then(async (result) => {
+          let formContentId = result.dataValues.id;
+          if (el.type === "image") imageId.push(formContentId);
+          if (
+            el.type === "check" ||
+            el.type === "radio" ||
+            el.type === "drop"
+          ) {
+            options = options.map((t) => {
+              return {
+                formContentId,
+                text: t,
+              };
+            });
+            db["formOption"].bulkCreate(options);
+          }
+          if (el.type === "grid") {
+            console.log(gridData);
+            await db["formGrid"]
+              .create({
+                formContentId,
+                row: gridData.row,
+                col: gridData.col,
+              })
+              .then((result) => {
+                let res = result.dataValues;
+                let grids = [
+                  ...gridData.rawName.map((t, idx) => {
                     return {
-                      formContentId,
                       text: t,
+                      location: idx,
+                      isRaw: "y",
+                      formGridId: res.id,
                     };
-                  });
-                  db["formOption"].bulkCreate(options, { transaction });
-                }
-                if (el.type === "grid") {
-                  console.log(gridData);
-                  await db["formGrid"]
-                    .create(
-                      {
-                        formContentId,
-                        row: gridData.row,
-                        col: gridData.col,
-                      },
-                      { transaction }
-                    )
-                    .then((result) => {
-                      let res = result.dataValues;
-                      let grids = [
-                        ...gridData.rawName.map((t, idx) => {
-                          return {
-                            text: t,
-                            location: idx,
-                            isRaw: "y",
-                            formGridId: res.id,
-                          };
-                        }),
-                        ...gridData.colName.map((t, idx) => {
-                          return {
-                            text: t,
-                            location: idx,
-                            isRaw: "n",
-                            formGridId: res.id,
-                          };
-                        }),
-                      ];
-                      db["gridName"].bulkCreate(grids, { transaction });
-                    });
-                }
+                  }),
+                  ...gridData.colName.map((t, idx) => {
+                    return {
+                      text: t,
+                      location: idx,
+                      isRaw: "n",
+                      formGridId: res.id,
+                    };
+                  }),
+                ];
+                db["gridName"].bulkCreate(grids);
               });
           }
-          await transaction.commit();
-          res.status(201).send({
-            message: "ok",
-            data: imageId,
-          });
         });
-    } catch (err) {
-      res.status(400).send({
-        message: "database err",
-        code: err,
+      }
+      res.status(201).send({
+        message: "ok",
+        data: imageId,
       });
-    }
+    });
   },
   deleteForm(req, res) {
     let id = req.params.id;

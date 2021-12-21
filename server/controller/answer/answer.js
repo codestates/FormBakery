@@ -6,7 +6,6 @@ module.exports = {
         설문 작성
     */
   async create(req, res) {
-    const transaction = await db.sequelize.transaction();
     let userEmail = req.params.email;
     let formId = req.body.formId;
     let data = req.body.data;
@@ -40,35 +39,24 @@ module.exports = {
           });
           return;
         } else {
-          try {
-            db["answer"]
-              .create(
-                {
-                  userEmail,
-                  formId,
-                },
-                { transaction }
-              )
-              .then(async (result) => {
-                let values = result.dataValues;
+          db["answer"]
+            .create({
+              userEmail,
+              formId,
+            })
+            .then(async (result) => {
+              let values = result.dataValues;
 
-                data.sort((a, b) => a.formContentId - b.formContentId);
+              data.sort((a, b) => a.formContentId - b.formContentId);
 
-                for (let val of data) {
-                  val.answerId = values.id;
-                  await db["answerList"].create(val, { transaction });
-                }
-                await transaction.commit();
-                res.status(201).send({
-                  message: "ok",
-                });
+              for (let val of data) {
+                val.answerId = values.id;
+                await db["answerList"].create(val);
+              }
+              res.status(201).send({
+                message: "ok",
               });
-          } catch (err) {
-            res.status(400).send({
-              message: "database err",
-              code: err,
             });
-          }
         }
       });
   },
@@ -288,7 +276,10 @@ module.exports = {
                 statistics["" + content.id][
                   "" + answer.formOption.id
                 ].count += 1;
-              } else if (content.type === "grid") {
+              } else if (
+                content.type === "grid" &&
+                answer.formGrid !== undefined
+              ) {
                 console.log(answer);
                 if (statistics["" + content.id] === undefined) {
                   let arr = new Array(answer.formGrid.dataValues.row);
@@ -322,17 +313,31 @@ module.exports = {
   },
 
   /*
-        설문 내역 업데이트
+        설문 내역 업데이트 - checkbox 관련 수정 완료
     */
   async updateAnswer(req, res) {
     let changeData = req.body.data;
     for (let val of changeData) {
-      let id = val.formContentId;
+      let formContentId = val.formContentId;
       delete val.formContentId;
       if (val.row && val.col) val.answer = val.row + "." + val.col;
-      await db["answerList"].update(val, {
-        where: [{ id }],
-      });
+      if (val.formOptionIds) {
+        await db["answerList"].destroy({
+          where: [{ formContentId }],
+        });
+        let append = val.formOptionIds.map((num) => {
+          return {
+            formOptionId: num,
+            formContentId,
+            answerId: req.body.answerId,
+          };
+        });
+        await db["answerList"].bulkCreate(append);
+      } else {
+        await db["answerList"].update(val, {
+          where: [{ formContentId }],
+        });
+      }
     }
 
     res.status(201).send({
