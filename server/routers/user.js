@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controller/users/user");
+const accessTokenController = require("../controller/users/accessTokenRequest");
 
 const multer = require("multer");
 const method = require("../method/custom");
@@ -42,7 +43,7 @@ router.post("/passwordEmailAuth", userController.passwordEmailAuth);
 router.post("/signout/:email", userController.signout);
 
 router.post("/getUserInfo", userController.getUserInfo);
-router.post("/accessTokenRequest", userController.accessTokenRequest);
+router.post("/accessTokenRequest", accessTokenController.accessTokenRequest);
 router.put("/updateUserInfo/:email", userController.updateUserInfo);
 router.put("/changePassword/:email", userController.changePassword);
 router.put("/forgetPassword/:email", userController.forgetPassword);
