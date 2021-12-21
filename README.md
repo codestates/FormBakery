@@ -40,7 +40,7 @@
 ![](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
 ![](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
 ![](https://img.shields.io/badge/Auth0-EB5424?style=for-the-badge&logo=auth0&logoColor=white)
-![](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jwt&logoColor=white)
+![](https://img.shields.io/badge/JSON_Web_Tokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
 
 - Deployment:   
