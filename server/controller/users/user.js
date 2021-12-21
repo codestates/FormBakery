@@ -9,6 +9,8 @@ const bcrypt = require("bcrypt");
 const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
 
+const accessTokenRequest = require("./accessTokenRequest");
+
 module.exports = {
   /*
       user 로그인
@@ -167,6 +169,13 @@ module.exports = {
       user 비밀번호 변경시, 이메일 인증
   */
   passwordEmailAuth: async (req, res) => {
+    const { email } = req.body;
+    const userInfo = await db["User"].findOne({
+      where: { email },
+    });
+    if (!userInfo) {
+      res.status(400).send({ message: "not exists email" });
+    }
     let number = Math.floor(Math.random() * 1000000) + 100000;
     if (number > 1000000) {
       number = number - 100000;
@@ -275,18 +284,21 @@ module.exports = {
   /*
       user 개인정보 정보가져오기
   */
+
   getUserInfo: async (req, res) => {
     if (!req.headers.authorization) {
-      res.status(400).json({ message: "access token is empty" });
+      // res.status(400).json({ message: "access token is empty" });
+      accessTokenRequest.accessTokenRequest(req, res);
     } else {
       jwt.verify(
         req.headers.authorization,
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            res.status(400).json({
-              message: "invalid access token",
-            });
+            // res.status(400).json({
+            //   message: "invalid access token",
+            // });
+            accessTokenRequest.accessTokenRequest(req, res);
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
@@ -311,56 +323,6 @@ module.exports = {
   },
 
   /*
-      accessToken 생성
-  */
-  accessTokenRequest: async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-      res
-        .status(403)
-        .json({ data: null, message: "refresh token not provided" });
-    } else {
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_SECRET,
-        async (err, decoded) => {
-          if (err) {
-            res.status(400).json({
-              message: "invalid refresh token, please log in again",
-            });
-          } else {
-            const userInfo = await db["User"].findOne({
-              where: { email: decoded.email },
-            });
-            if (!userInfo) {
-              res.status(404).json({
-                message: "refresh token has been tempered",
-              });
-            } else {
-              const accessToken = jwt.sign(
-                userInfo.dataValues,
-                process.env.ACCESS_SECRET,
-                {
-                  expiresIn: "15m",
-                }
-              );
-
-              delete userInfo.dataValues.password;
-              res.status(200).json({
-                data: {
-                  userInfo: userInfo.dataValues,
-                  accessToken: accessToken,
-                },
-                message: "ok",
-              });
-            }
-          }
-        }
-      );
-    }
-  },
-
-  /*
       user 개인정보 수정
   */
   updateUserInfo: async (req, res) => {
@@ -368,16 +330,18 @@ module.exports = {
     const { name, nickname } = req.body;
 
     if (!req.headers.authorization) {
-      res.status(400).json({ message: "access token is empty" });
+      // res.status(400).json({ message: "access token is empty" });
+      accessTokenRequest.accessTokenRequest(req, res);
     } else {
       jwt.verify(
         req.headers.authorization,
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            res.status(401).json({
-              message: "invalid access token",
-            });
+            // res.status(401).json({
+            //   message: "invalid access token",
+            // });
+            accessTokenRequest.accessTokenRequest(req, res);
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
@@ -428,7 +392,7 @@ module.exports = {
   },
 
   /*
-      user 비밀번호 변경
+      잊어버린 user 비밀번호 변경
   */
   forgetPassword: async (req, res) => {
     const { email } = req.params;
