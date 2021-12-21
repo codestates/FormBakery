@@ -1,22 +1,47 @@
 const e = require("express");
 const db = require("../../models/index");
 
-const { Op } = require("sequelize");
+const { Op, UUIDV1 } = require("sequelize");
 module.exports = {
   /*
         Form 생성
     */
   async create(req, res) {
+    let uuid = req.params.uuidInfo;
+    let userEmail = req.body.email;
+    let insertData = {
+      id: uuid,
+      title: "이름없는 설문지 제목",
+      subTitle: "이름없는 설문지 소제목",
+      userEmail,
+      questions: [
+        {
+          question: "이름없는 설문지 질문",
+          type: "short",
+          order: 1,
+          section: 1,
+          isNeccessary: "n",
+        },
+      ],
+    };
+    let find = await db["form"].findOne({
+      where: { id: insertData.id },
+    });
+    if (find) {
+      res.status(400).send({
+        message: "This form already exist",
+      });
+      return;
+    }
     const transaction = await db.sequelize.transaction();
-    let userEmail = req.params.email;
-    let data = req.body.questions;
+    let data = insertData.questions;
     let imageId = [];
     let form = {
+      id: uuid,
       userEmail,
-      title: req.body.title,
+      title: insertData.title,
+      subTitle: insertData.subTitle,
     };
-    if (req.body.subTitle) form.subTitle = req.body.subTitle;
-
     db["User"]
       .findOne({
         where: {
@@ -32,7 +57,6 @@ module.exports = {
           try {
             db["form"].create(form, { transaction }).then(async (result) => {
               let formId = result.id;
-              data.sort((a, b) => a.order - b.order);
 
               for (let el of data) {
                 let options;
@@ -408,4 +432,5 @@ module.exports = {
         res.status(200).send({ message: "ok" });
       });
   },
+  recommandForm(req, res) {},
 };
