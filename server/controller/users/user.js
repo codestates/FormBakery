@@ -233,7 +233,7 @@ module.exports = {
           expiresIn: "30d",
         });
         res
-          .status(200)
+          .status(201)
           .cookie("refreshToken", refreshToken, {
             httpOnly: true,
             samSite: "none",
@@ -274,21 +274,17 @@ module.exports = {
   /*
       user 개인정보 정보가져오기
   */
-
   getUserInfo: async (req, res) => {
     if (!req.headers.authorization) {
-      // res.status(400).json({ message: "access token is empty" });
-      accessTokenRequest.accessTokenRequest(req, res);
+      await accessTokenRequest.accessTokenRequest(req, res);
+      return;
     } else {
       jwt.verify(
         req.headers.authorization,
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            // res.status(400).json({
-            //   message: "invalid access token",
-            // });
-            accessTokenRequest.accessTokenRequest(req, res);
+            await accessTokenRequest.accessTokenRequest(req, res);
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
@@ -320,29 +316,38 @@ module.exports = {
     const { name, nickname } = req.body;
 
     if (!req.headers.authorization) {
-      // res.status(400).json({ message: "access token is empty" });
-      accessTokenRequest.accessTokenRequest(req, res);
+      await accessTokenRequest.accessTokenRequest(req, res, "update");
     } else {
       jwt.verify(
         req.headers.authorization,
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            // res.status(401).json({
-            //   message: "invalid access token",
-            // });
-            accessTokenRequest.accessTokenRequest(req, res);
+            await accessTokenRequest.accessTokenRequest(req, res, "update");
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
             });
+            delete userInfo.dataValues.password;
+
             if (!userInfo) {
               res.status(404).json({
                 message: "access token has been tempered",
               });
             } else {
-              db["User"].update({ name, nickname }, { where: { email } });
-              res.status(200).send({ message: "changeUserInfo successful" });
+              await db["User"].update(
+                { name, nickname },
+                { where: { email: decoded.email } }
+              );
+              userInfo.dataValues.name = name;
+              userInfo.dataValues.nickname = nickname;
+
+              res.status(200).json({
+                data: {
+                  userInfo: userInfo.dataValues,
+                },
+                message: "ok",
+              });
             }
           }
         }
@@ -388,12 +393,20 @@ module.exports = {
     const { email } = req.params;
     const { newPassword } = req.body;
 
-    const encryptedPassword = bcrypt.hashSync(
-      newPassword,
-      Number(process.env.PASSWORD_SALT)
-    );
-    db["User"].update({ password: encryptedPassword }, { where: { email } });
-    res.status(200).send({ message: "changePassword successful" });
+    const userInfo = await db["User"].findOne({
+      where: { email },
+    });
+    if (!userInfo) {
+      res.status(401).send({ message: "no exists email" });
+    } else {
+      const encryptedPassword = bcrypt.hashSync(
+        newPassword,
+        Number(process.env.PASSWORD_SALT)
+      );
+
+      db["User"].update({ password: encryptedPassword }, { where: { email } });
+      res.status(200).send({ message: "changePassword successful" });
+    }
   },
 
   /*
