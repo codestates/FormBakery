@@ -11,9 +11,7 @@ module.exports = {
   accessTokenRequest: async (req, res, type) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-      res
-        .status(403)
-        .json({ data: null, message: "refresh token not provided" });
+      res.status(403).json({ message: "refresh token not provided" });
     } else {
       jwt.verify(
         refreshToken,
@@ -27,6 +25,8 @@ module.exports = {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
             });
+            delete userInfo.dataValues.password;
+
             if (!userInfo) {
               res.status(404).json({
                 message: "refresh token has been tempered",
@@ -46,10 +46,9 @@ module.exports = {
                   { name, nickname },
                   { where: { email } }
                 );
-                userInfo.dataValues.name = req.body.name;
-                userInfo.dataValues.nickname = req.body.nickname;
+                userInfo.dataValues.name = name;
+                userInfo.dataValues.nickname = nickname;
               }
-              delete userInfo.dataValues.password;
 
               res.status(200).json({
                 data: {
