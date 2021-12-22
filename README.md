@@ -23,12 +23,12 @@
 * 작성된 데이터를 가지고 시각적인 통계를 확인할 수 있어요.
 * 자신이 생성하고 답한 설문들을 한번에 모아 볼 수 있어요.
 
-👉🏼 [FromBakery 사이트 바로가기]()  
-👉🏼 [FormBakery 프로젝트 위키 바로가기](https://github.com/codestates/FormBakery/wiki)
+👉🏻 [FromBakery 사이트 바로가기]()  
+👉🏻 [FormBakery 프로젝트 위키 바로가기](https://github.com/codestates/FormBakery/wiki)
 
 
 # TECH STACK
-- Front-End:   
+## Front-End:   
 ![](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![](https://img.shields.io/badge/React_Axios-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![](https://img.shields.io/badge/React_Hooks-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -39,7 +39,7 @@
 ![](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
-- Back-End:   
+## Back-End:   
 ![](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=61DAFB)
 ![](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
@@ -48,7 +48,7 @@
 ![](https://img.shields.io/badge/JSON_Web_Tokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
 
-- Deployment:   
+## Deployment:   
 ![](https://img.shields.io/badge/Amazon_AWS_EC2-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![](https://img.shields.io/badge/Amazon_AWS_RDS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![](https://img.shields.io/badge/Amazon_AWS_loadbalancer-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
@@ -57,25 +57,13 @@
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
 
-# Team Role
+# MEMBER
 
-#### 👩🏼‍💻 [Jeong Subi (Team Leader / Back-End)](https://github.com/JeongSubi)
-  * Team Management
-  * Back-End Development
-  * DataBase Structure Design
+[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)
+|-----|----|----|
+|Back-End|Back-End|Front-End|
 
-#### 👨🏻‍💻 [Park Namsu (Back-End)](https://github.com/PARKNAMSU)
-  * Back-End Development
-  * AWS EC2,RDS Setting
-  * DataBase Structure Design
-
-#### 🧑🏻‍💻 [Jang SaeJin (Front-End)](https://github.com/JangSeBaRi)
-  * Page Design
-  * Front-End Development
-
-# Back-End API Infomation
-
-Link: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)
-
-# FormBakery Reference
-Reference: [Google 설문지](https://www.google.com/intl/ko_kr/forms/about/)
+  
+# REFERENCES
+👉🏻 Back-End API Infomation: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)  
+👉🏻 FormBakery Reference: [Google 설문지](https://www.google.com/intl/ko_kr/forms/about/)
