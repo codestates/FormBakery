@@ -14,9 +14,10 @@ module.exports = {
     let userEmail = req.body.email;
     let recoType = req.body.recommand ? req.body.recommand : "default";
 
-    let insertData = recommandData[recoType];
+    let insertData = { ...recommandData[recoType] };
     insertData.id = id;
     insertData.userEmail = userEmail;
+    console.log(insertData);
     let find = await db["form"].findOne({
       where: { id: insertData.id },
     });
@@ -27,7 +28,7 @@ module.exports = {
       return;
     }
     const transaction = await db.sequelize.transaction();
-    let data = insertData.questions;
+    let data = [...insertData.questions];
     let imageId = [];
     let form = {
       id,
@@ -56,12 +57,13 @@ module.exports = {
                 let gridData;
                 el.formId = formId;
                 if (el.formOptions) {
+                  console.log(e.formOptions);
                   options = el.formOptions;
-                  delete el.formOptions;
+                  //delete el.formOptions;
                 }
                 if (el.gridData) {
                   gridData = el.gridData;
-                  delete el.gridData;
+                  //delete el.gridData;
                 }
                 await db["formContent"]
                   .create(el, { transaction })
