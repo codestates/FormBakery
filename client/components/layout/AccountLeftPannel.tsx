@@ -15,7 +15,7 @@ const AccountLeftPannel = () => {
             label: "프로필 설정",
         },
         { id: "changePassword", label: "비밀번호 변경" },
-        { id: "deleteAccount", label: "계정 탈퇴" },
+        { id: "deleteAccount", label: "계정 삭제" },
     ];
     const [selectedOption, setSelectedOption] = useState<string>(
         router.pathname.split("/")[3]
@@ -24,7 +24,7 @@ const AccountLeftPannel = () => {
         <div className="w-56 text-sm text-gray-600 text-left space-y-1">
             {leftPanelOption.map((v, i) => {
                 return (
-                    <Link href={`/mypage/account/${v.id}`}>
+                    <Link href={`/mypage/account/${v.id}`} key={v.id}>
                         <div
                             className={`pl-2 py-2 rounded-md cursor-pointer  ${
                                 v.id === selectedOption
@@ -34,7 +34,6 @@ const AccountLeftPannel = () => {
                             onClick={() => {
                                 setSelectedOption(v.id);
                             }}
-                            key={v.id}
                         >
                             {v.label}
                         </div>

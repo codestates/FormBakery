@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "utils/regex.js"  ],
+, "utils/regex.js", "reducers/store/user.js", "reducers/store/user.js", "reducers/store/index.js", "reducers/store/user.js"  ],
   "exclude": [
     "node_modules"
   ]
