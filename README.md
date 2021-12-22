@@ -13,6 +13,10 @@
 
 **_FormBakery_** 입니다 :)
 
+
+👉🏻 [FromBakery 사이트 바로가기]()  
+👉🏻 [FormBakery 프로젝트 위키 바로가기](https://github.com/codestates/FormBakery/wiki)
+
 # MAIN FEATURES
 
 * 복잡한 회원가입을 하지 않아도 깃허브, 카카오톡 소셜로그인을 통해 쉽게 접속할 수 있어요.
@@ -21,10 +25,6 @@
 * 이메일과 링크를 통해 설문지를 손쉽게 배포해 보세요.
 * 작성된 데이터를 가지고 시각적인 통계를 확인할 수 있어요.
 * 자신이 생성하고 답한 설문들을 한번에 모아 볼 수 있어요.
-
-👉🏻 [FromBakery 사이트 바로가기]()  
-👉🏻 [FormBakery 프로젝트 위키 바로가기](https://github.com/codestates/FormBakery/wiki)
-
 
 # TECH STACK
 ### Front-End:   
@@ -56,7 +56,8 @@
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
 
-# MEMBERS
+# CodeBaker MEMBERS
+<img src="https://cdn.discordapp.com/attachments/870468027773251616/923224816339783690/KakaoTalk_Photo_2021-12-22-23-44-50.jpeg" width="320" height="90"></img>
 
 |[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)|
 |-----|-----|-----|
