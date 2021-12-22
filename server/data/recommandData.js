@@ -4,7 +4,7 @@
 module.exports = {
   default: {
     title: "이름없는 설문지 제목",
-    subTitle: "이름없는 설문지 소제목",
+    subTitle: "",
     questions: [
       {
         question: "제목없는 질문",

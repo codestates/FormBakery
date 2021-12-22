@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       section: DataTypes.INTEGER,
       order: DataTypes.INTEGER,
       content: DataTypes.STRING,
+      isNeccessary: DataTypes.STRING,
     },
     {
       sequelize,
