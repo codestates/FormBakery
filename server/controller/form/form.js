@@ -3,6 +3,7 @@ const db = require("../../models/index");
 const recommandData = require("../../data/recommandData");
 const { Op, UUIDV1 } = require("sequelize");
 const dbMethod = require("../../method/dbMethod");
+const customMethod = require("../../method/custom");
 module.exports = {
   /*
         Form 생성
@@ -227,11 +228,10 @@ module.exports = {
     */
   getFormList(req, res) {
     let userEmail = req.params.email;
-
     db["form"]
       .findAll({
         where: [{ userEmail }],
-        attributes: { exclude: ["createdAt", "updatedAt"] },
+        order: [["updatedAt", "DESC"]],
         include: {
           model: db["formContent"],
           attributes: { exclude: ["createdAt", "updatedAt", "formId"] },
@@ -295,6 +295,16 @@ module.exports = {
     */
   async updateForm(req, res) {
     let id = req.params.id;
+    // let date = new Date();
+    // let newDate = new Date(
+    //   date.getTime() + date.getTimezoneOffset() * 60 * 1000
+    // );
+
+    // let offset = date.getTimezoneOffset() / 60;
+    // let hours = date.getHours();
+
+    // newDate.setHours(hours - offset);
+    // console.log(newDate);
     const transaction = await db.sequelize.transaction();
     if (!id) res.status(400).send({ message: "id not exist" });
 
@@ -306,6 +316,13 @@ module.exports = {
       return;
     }
     try {
+      await db["form"].update(
+        {
+          upatedAt: customMethod.dateToString(new Date(), "-", true),
+        },
+        { where: { id } },
+        { transaction }
+      );
       await db["formContent"].destroy(
         {
           where: [{ formId: id }],
