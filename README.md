@@ -1,4 +1,7 @@
 # 📝FormBakery🍞
+
+### 누구나 쉽게 온라인 설문조사를 무료로 만들고 분석하세요, 설문지 플랫폼 FormBakery
+
 <img src="https://cdn.discordapp.com/attachments/919801014239002675/921365904011456543/KakaoTalk_Photo_2021-12-17-20-37-03.jpeg" width="300" height="300"></img>
 
 ## Introduce
@@ -21,6 +24,8 @@
 * 자신이 생성하고 답한 설문들을 한번에 모아 볼 수 있어요.
 
 [Form Bakery Introduce Page](https://github.com/codestates/FormBakery/wiki)
+👉🏼 [FromBakery 사이트 바로가기]()
+👉🏼 [FormBakery 프로젝트 위키 바로가기](https://github.com/codestates/FormBakery/wiki)
 
 ## Tech Stack
 - Front-End:   
