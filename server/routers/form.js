@@ -21,7 +21,7 @@ const upload = multer({
   storage,
 });
 
-router.put("/create/:uuidInfo", formController.create);
+router.put("/create/:id", formController.create);
 
 router.get("/get/:id", formController.getForm);
 
