@@ -7,11 +7,12 @@ module.exports = {
     subTitle: "이름없는 설문지 소제목",
     questions: [
       {
-        question: "이름없는 설문지 질문",
-        type: "short",
+        question: "제목없는 질문",
+        type: "radio",
         order: 1,
         section: 1,
         isNeccessary: "n",
+        formOptions: ["옵션 1"],
       },
     ],
   },
