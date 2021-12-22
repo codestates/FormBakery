@@ -3,6 +3,7 @@ const db = require("../../models/index");
 const recommandData = require("../../data/recommandData");
 const { Op, UUIDV1 } = require("sequelize");
 const dbMethod = require("../../method/dbMethod");
+const customMethod = require("../../method/custom");
 module.exports = {
   /*
         Form 생성
@@ -231,6 +232,7 @@ module.exports = {
     db["form"]
       .findAll({
         where: [{ userEmail }],
+        order: [["updatedAt", "DESC"]],
         include: {
           model: db["formContent"],
           attributes: { exclude: ["createdAt", "updatedAt", "formId"] },
@@ -305,6 +307,13 @@ module.exports = {
       return;
     }
     try {
+      await db["form"].update(
+        {
+          upatedAt: customMethod.dateToString(new Date(), "-", true),
+        },
+        { where: { id } },
+        { transaction }
+      );
       await db["formContent"].destroy(
         {
           where: [{ formId: id }],
