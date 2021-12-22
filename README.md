@@ -57,11 +57,15 @@
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
 
-# MEMBER
+# TEAM CodeBaker
+TEAM CodeBaker는 코드스테이츠 34기 2주프로젝트를 통해 결성된 팀입니다!  
+빵을 굽는 제빵사처럼 코드를 맛있게 만들어보겠다는 의미에서 _"CodeBakery"_ 라고 팀명을 정했습니다!
 
-[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)
-|-----|----|----|
-|Back-End|Back-End|Front-End|
+#### 👩🏼‍💻 [Jeong Subi](https://github.com/JeongSubi) (Team Leader / Back-End)
+
+#### 👨🏻‍💻 [Park Namsu](https://github.com/PARKNAMSU) (Back-End)
+
+#### 🧑🏻‍💻 [Jang SaeJin](https://github.com/JangSeBaRi) (Front-End)
 
   
 # REFERENCES
