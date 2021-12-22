@@ -1,6 +1,6 @@
 const answer = require("../../models/answer");
 const db = require("../../models/index");
-
+const customMethod = require("../../method/custom");
 module.exports = {
   /*
         설문 작성
@@ -207,6 +207,7 @@ module.exports = {
     db["answer"]
       .findAll({
         where: [sendParam],
+        order: [["updatedAt", "DESC"]],
         include: [
           {
             model: db["form"],
@@ -404,6 +405,15 @@ module.exports = {
         val.answer = val.row + "." + val.col;
       }
       try {
+        console.log(req.body.answerId);
+        await db["answer"].update(
+          {
+            formId: form.dataValues.id,
+            updatedAt: new Date(),
+          },
+          { where: { id: req.body.answerId } },
+          { transaction }
+        );
         if (val.formOptionIds) {
           await db["answerList"].destroy(
             {
@@ -429,6 +439,7 @@ module.exports = {
           );
         }
       } catch (err) {
+        console.log(err);
         res.status(400).send({
           message: "database err",
           code: err,

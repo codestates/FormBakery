@@ -10,6 +10,11 @@ module.exports = {
     dialect: "mysql",
     port: process.env.DB_PORT || 3306,
     timezone: "+09:00",
+    dialectOptions: {
+      charset: "utf8mb4",
+      dateStrings: true,
+      typeCast: true,
+    },
   },
   test: {
     username: process.env.DB_HOST || "root",
@@ -18,6 +23,11 @@ module.exports = {
     host: process.env.DB_HOST || "127.0.0.1",
     dialect: "mysql",
     timezone: "+09:00",
+    dialectOptions: {
+      charset: "utf8mb4",
+      dateStrings: true,
+      typeCast: true,
+    },
   },
   production: {
     username: process.env.DB_USER || "root",
@@ -26,6 +36,11 @@ module.exports = {
     host: process.env.DB_HOST || "127.0.0.1",
     dialect: "mysql",
     timezone: "+09:00",
+    dialectOptions: {
+      charset: "utf8mb4",
+      dateStrings: true,
+      typeCast: true,
+    },
   },
   smtp: {
     service: "gmail",
