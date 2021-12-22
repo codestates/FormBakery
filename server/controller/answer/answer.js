@@ -11,74 +11,94 @@ module.exports = {
     let formId = req.body.formId;
     let data = req.body.data;
     let i = 0;
+
+    let form = await db["form"].findOne({ where: [{ id: formId }] });
+    if (!form) {
+      res.status(400).send({
+        message: "invalid access(form not exist)",
+      });
+      return;
+    }
+    let answer = await db["answer"].findOne({
+      where: [{ userEmail }, { formId }],
+    });
+
+    if (answer) {
+      await res.status(400).send({
+        message: "invalid access(aleady writed this form)",
+      });
+      return;
+    }
+
+    let formContent = await db["formContent"].findAll({
+      where: { formId: form.dataValues.id },
+    });
+
     for (let val of data) {
+      let find = formContent.find(
+        (item) => item.dataValues.id === val.formContentId
+      );
+      if (!find) {
+        await res.status(400).send({
+          message: "invalid access(formContent not exist)",
+        });
+        return;
+      }
+
       if (!val.answer && !val.formOptionId && (!val.row || !val.col)) {
         res.status(400).send({
           message: "data not received",
         });
         return;
       }
+      // let formContent = await db["formContent"].findOne({
+      //   where: { id: val.formContentId },
+      // });
+      // if (formContent === null) {
+      //   res.status(400).send({
+      //     message: "invalid access",
+      //   });
+      //   return;
+      // }
       if (val.row && val.col) {
         data[i].answer = val.row + "." + val.col;
         delete data[i].row, data[i].col;
-        await db["formGrid"]
-          .findOne({ where: { formContentId: val.formContentId } })
-          .then((result) => {
-            data[i].formGridId = result.dataValues.id;
-          });
+        let grid = await db["formGrid"].findOne({
+          where: { formContentId: val.formContentId },
+        });
+        data[i].formGridId = grid.dataValues.id;
       }
       i++;
     }
-    let find = await db["form"].findOne({ where: [{ id: formId }] });
-    if (!find) {
-      res.status(400).send({
-        message: "form not exist",
-      });
-      return;
-    }
-    db["answer"]
-      .findOne({
-        where: [{ userEmail }, { formId }],
-      })
-      .then(async (result) => {
-        if (result !== null) {
-          await res.status(400).send({
-            message: "aleady writed this form",
-          });
-          return;
-        } else {
-          try {
-            db["answer"]
-              .create(
-                {
-                  userEmail,
-                  formId,
-                },
-                { transaction }
-              )
-              .then(async (result) => {
-                let values = result.dataValues;
+    try {
+      db["answer"]
+        .create(
+          {
+            userEmail,
+            formId,
+          },
+          { transaction }
+        )
+        .then(async (result) => {
+          let values = result.dataValues;
+          data.sort((a, b) => a.formContentId - b.formContentId);
 
-                data.sort((a, b) => a.formContentId - b.formContentId);
-
-                for (let val of data) {
-                  val.answerId = values.id;
-                  await db["answerList"].create(val, { transaction });
-                }
-                await transaction.commit();
-              });
-          } catch (err) {
-            console.log("catch");
-            res.status(400).send({
-              message: "database err",
-              code: err,
-            });
+          for (let val of data) {
+            val.answerId = values.id;
+            await db["answerList"].create(val, { transaction });
           }
+          await transaction.commit();
           res.status(201).send({
             message: "ok",
           });
-        }
+        });
+    } catch (err) {
+      console.log("catch");
+      res.status(400).send({
+        message: "database err",
+        code: err,
       });
+    }
   },
 
   /*
@@ -337,9 +357,49 @@ module.exports = {
   async updateAnswer(req, res) {
     const transaction = await db.sequelize.transaction();
     let changeData = req.body.data;
+
+    const answer = await db["answer"].findOne({
+      where: { id: req.body.answerId },
+    });
+
+    if (answer === null) {
+      res.status(400).send({
+        message: "invalid acess(answer not exist)",
+      });
+      return;
+    }
+
+    const form = await db["form"].findOne({
+      where: { id: answer.dataValues.formId },
+    });
+
+    if (form === null) {
+      res.status(400).send({
+        message: "invalid acess(form not exist)",
+      });
+      return;
+    }
+
+    const formContent = await db["formContent"].findAll({
+      where: { formId: form.dataValues.id },
+    });
+
     for (let val of changeData) {
       let formContentId = val.formContentId;
+
+      let find = await formContent.find(
+        (item) => item.dataValues.id === formContentId
+      );
+
+      if (!find) {
+        res.status(400).send({
+          message: "invalid acess(formContent not exist)",
+        });
+        return;
+      }
+
       delete val.formContentId;
+
       if (val.row && val.col) {
         val.answer = val.row + "." + val.col;
       }
