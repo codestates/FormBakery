@@ -53,7 +53,7 @@ module.exports = {
           .status(200)
           .cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            samSite: "none",
+            sameSite: "none",
           })
           .json({
             data: { accessToken: accessToken },
