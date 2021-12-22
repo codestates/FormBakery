@@ -231,7 +231,6 @@ module.exports = {
     db["form"]
       .findAll({
         where: [{ userEmail }],
-        attributes: { exclude: ["createdAt", "updatedAt"] },
         include: {
           model: db["formContent"],
           attributes: { exclude: ["createdAt", "updatedAt", "formId"] },
