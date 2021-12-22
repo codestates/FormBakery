@@ -1,7 +1,6 @@
 # INTRODUCTION
 
-### 누구나 쉽게 온라인 설문조사를 무료로 만들고 분석해보세요!
-### 온라인 설문지 제작 플랫폼, _FormBakery_ !
+> 온라인 설문지 제작 플랫폼, _FormBakery_
 
 <img src="https://cdn.discordapp.com/attachments/919801014239002675/921365904011456543/KakaoTalk_Photo_2021-12-17-20-37-03.jpeg" width="300" height="300"></img>
 
