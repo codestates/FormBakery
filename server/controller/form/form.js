@@ -228,7 +228,6 @@ module.exports = {
     */
   getFormList(req, res) {
     let userEmail = req.params.email;
-
     db["form"]
       .findAll({
         where: [{ userEmail }],
@@ -296,6 +295,16 @@ module.exports = {
     */
   async updateForm(req, res) {
     let id = req.params.id;
+    // let date = new Date();
+    // let newDate = new Date(
+    //   date.getTime() + date.getTimezoneOffset() * 60 * 1000
+    // );
+
+    // let offset = date.getTimezoneOffset() / 60;
+    // let hours = date.getHours();
+
+    // newDate.setHours(hours - offset);
+    // console.log(newDate);
     const transaction = await db.sequelize.transaction();
     if (!id) res.status(400).send({ message: "id not exist" });
 
