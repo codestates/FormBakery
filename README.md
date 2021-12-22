@@ -1,7 +1,7 @@
 # INTRODUCTION
 
-### 누구나 쉽게 온라인 설문조사를 무료로 만들고 분석해보세요. 
-### 온라인 설문지 제작 플랫폼, _FormBakery!_
+### 누구나 쉽게 온라인 설문조사를 무료로 만들고 분석해보세요!
+### 온라인 설문지 제작 플랫폼, _FormBakery_ !
 
 <img src="https://cdn.discordapp.com/attachments/919801014239002675/921365904011456543/KakaoTalk_Photo_2021-12-17-20-37-03.jpeg" width="300" height="300"></img>
 
@@ -28,7 +28,7 @@
 
 
 # TECH STACK
-## Front-End:   
+### Front-End:   
 ![](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![](https://img.shields.io/badge/React_Axios-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![](https://img.shields.io/badge/React_Hooks-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -39,7 +39,7 @@
 ![](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
-## Back-End:   
+### Back-End:   
 ![](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=61DAFB)
 ![](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
@@ -48,7 +48,7 @@
 ![](https://img.shields.io/badge/JSON_Web_Tokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
 
-## Deployment:   
+### Deployment:   
 ![](https://img.shields.io/badge/Amazon_AWS_EC2-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![](https://img.shields.io/badge/Amazon_AWS_RDS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![](https://img.shields.io/badge/Amazon_AWS_loadbalancer-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
