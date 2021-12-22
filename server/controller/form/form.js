@@ -1,6 +1,6 @@
 const e = require("express");
 const db = require("../../models/index");
-const recommandData = require("./recommandData");
+const recommandData = require("../../data/recommandData");
 const { Op, UUIDV1 } = require("sequelize");
 const dbMethod = require("../../method/dbMethod");
 module.exports = {
