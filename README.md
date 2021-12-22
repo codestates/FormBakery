@@ -28,13 +28,13 @@
 
 # TECH STACK
 
-### Front-End:
+- **Front-End:**
 `React` `React Axios` `React Hooks` `React Router` `Redux` `TypeScript` `JavaScript` `Sass` `HTML` `CSS`
 
-### Back-End:
+- **Back-End:**
 `JavaScript` `Node.js` `MySQL` `Sequelize` `Auth0` `JWT` `Express.js` `Bcrypt` `nodemailer` `Multer` `axios`
 
-### Deployment:
+- **Deployment:**
 `RDS` `Route53` `S3` `EC2` `Load balancer` `cloudfront`
 
 
