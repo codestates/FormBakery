@@ -73,9 +73,9 @@
   * Page Design
   * Front-End Development
 
-## Back-End API Infomation
+# Back-End API Infomation
 
 Link: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)
 
-## FormBakery Reference
+# FormBakery Reference
 Reference: [Google 설문지](https://www.google.com/intl/ko_kr/forms/about/)
