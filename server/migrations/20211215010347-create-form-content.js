@@ -32,6 +32,9 @@ module.exports = {
       content: {
         type: Sequelize.STRING,
       },
+      isNeccessary: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
