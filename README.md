@@ -57,10 +57,10 @@
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
 
-# MEMBER
+# MEMBERS
 
 |[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)|
-|---|---|---|
+|-----|-----|-----|
 |Back-End|Front-End|Back-End|
   
 # REFERENCES
