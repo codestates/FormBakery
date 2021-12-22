@@ -5,6 +5,7 @@ const { Op, UUIDV1 } = require("sequelize");
 module.exports = {
   /*
         Form 생성
+
     */
   async create(req, res) {
     let id = req.params.uuidInfo;
@@ -40,7 +41,7 @@ module.exports = {
       })
       .then((result) => {
         if (result === null) {
-          res.status(400).send({
+          res.status(401).send({
             message: "This email not exist",
           });
         } else {
