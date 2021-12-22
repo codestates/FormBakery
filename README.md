@@ -61,7 +61,7 @@
 
 |[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)|
 |-----|-----|-----|
-|Back|Front|Back|
+|Back-End|Front-End|Back-End|
   
 # REFERENCES
 👉🏻 Back-End API Infomation: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)  
