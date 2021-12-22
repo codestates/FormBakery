@@ -308,7 +308,7 @@ module.exports = {
     try {
       await db["form"].update(
         {
-          upatedAt: customMethod.dateToString(new Date(), "-", true),
+          updatedAt: customMethod.dateToString(new Date(), "-", true),
         },
         { where: { id } },
         { transaction }
