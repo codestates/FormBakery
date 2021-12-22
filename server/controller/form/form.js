@@ -2,13 +2,14 @@ const e = require("express");
 const db = require("../../models/index");
 const recommandData = require("./recommandData");
 const { Op, UUIDV1 } = require("sequelize");
+const dbMethod = require("../../method/dbMethod");
 module.exports = {
   /*
         Form 생성
 
     */
   async create(req, res) {
-    let id = req.params.uuidInfo;
+    let id = req.params.id;
     let userEmail = req.body.email;
     let recoType = req.body.recommand ? req.body.recommand : "default";
 
@@ -116,10 +117,7 @@ module.exports = {
                   });
               }
               await transaction.commit();
-              res.status(201).send({
-                message: "ok",
-                data: imageId,
-              });
+              dbMethod.getForm(req, res, db);
             });
           } catch (err) {
             res.status(400).send({
@@ -165,64 +163,64 @@ module.exports = {
     */
   getForm(req, res) {
     let id = req.params.id;
+    dbMethod.getForm(req, res, db);
+    // db["form"]
+    //   .findOne({
+    //     where: { id },
+    //     include: {
+    //       model: db["formContent"],
+    //       attributes: { exclude: ["createdAt", "updatedAt", "formId"] },
+    //       include: [
+    //         {
+    //           model: db["formOption"],
+    //           attributes: {
+    //             exclude: ["createdAt", "updatedAt", "formContentId"],
+    //           },
+    //           separate: true,
+    //           order: [["id", "ASC"]],
+    //         },
+    //         {
+    //           model: db["formGrid"],
+    //           attributes: {
+    //             exclude: ["createdAt", "updatedAt", "formContentId"],
+    //           },
+    //           include: {
+    //             model: db["gridName"],
+    //             attributes: {
+    //               exclude: ["createdAt", "updatedAt", "formGridId"],
+    //             },
+    //             separate: true,
+    //             order: [
+    //               ["isRaw", "ASC"],
+    //               ["id", "ASC"],
+    //             ],
+    //           },
+    //         },
+    //       ],
+    //     },
+    //     order: [[db["formContent"], "order", "ASC"]],
+    //   })
+    //   .then((result) => {
+    //     if (result === null) {
+    //       res.status(400).send({
+    //         message: "form not exist",
+    //       });
+    //     } else {
+    //       let data = result.dataValues;
 
-    db["form"]
-      .findOne({
-        where: { id },
-        include: {
-          model: db["formContent"],
-          attributes: { exclude: ["createdAt", "updatedAt", "formId"] },
-          include: [
-            {
-              model: db["formOption"],
-              attributes: {
-                exclude: ["createdAt", "updatedAt", "formContentId"],
-              },
-              separate: true,
-              order: [["id", "ASC"]],
-            },
-            {
-              model: db["formGrid"],
-              attributes: {
-                exclude: ["createdAt", "updatedAt", "formContentId"],
-              },
-              include: {
-                model: db["gridName"],
-                attributes: {
-                  exclude: ["createdAt", "updatedAt", "formGridId"],
-                },
-                separate: true,
-                order: [
-                  ["isRaw", "ASC"],
-                  ["id", "ASC"],
-                ],
-              },
-            },
-          ],
-        },
-        order: [[db["formContent"], "order", "ASC"]],
-      })
-      .then((result) => {
-        if (result === null) {
-          res.status(400).send({
-            message: "form not exist",
-          });
-        } else {
-          let data = result.dataValues;
+    //       data.formContents = data.formContents.map((t) => {
+    //         if (t.formOptions.length === 0) delete t.dataValues.formOptions;
+    //         if (t.formGrids.length === 0) delete t.dataValues.formGrids;
+    //         if (t.content === null) delete t.dataValues.content;
+    //         return t;
+    //       });
 
-          data.formContents = data.formContents.map((t) => {
-            if (t.formOptions.length === 0) delete t.dataValues.formOptions;
-            if (t.formGrids.length === 0) delete t.dataValues.formGrids;
-            if (t.content === null) delete t.dataValues.content;
-            return t;
-          });
-
-          res.status(200).send({
-            message: "ok",
-            data,
-          });
-        }
-      });
+    //       res.status(200).send({
+    //         message: "ok",
+    //         data,
+    //       });
+    //     }
+    //   });
   },
   /*
         form List 가져오기
