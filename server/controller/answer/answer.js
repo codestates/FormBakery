@@ -289,6 +289,7 @@ module.exports = {
                 if (statistics["" + content.id] === undefined) {
                   statistics["" + content.id] = {
                     question: content.question,
+                    type: content.type,
                     data: [],
                   };
                 }
@@ -306,6 +307,8 @@ module.exports = {
                   });
                   statistics["" + content.id] = {};
                   statistics["" + content.id].question = content.question;
+                  statistics["" + content.id].type = content.type;
+
                   for (let option of options) {
                     let val = option.dataValues;
                     statistics["" + content.id]["" + val.id] = {
@@ -341,11 +344,16 @@ module.exports = {
             i++;
           }
         }
+        let statisticsArr = [];
+
+        for (let key in statistics) {
+          statisticsArr.push(statistics[key]);
+        }
 
         res.status(200).send({
           data: {
             value: values,
-            statistics,
+            statistics: statisticsArr,
           },
           message: "ok",
         });
@@ -405,7 +413,6 @@ module.exports = {
         val.answer = val.row + "." + val.col;
       }
       try {
-        console.log(req.body.answerId);
         await db["answer"].update(
           {
             formId: form.dataValues.id,
