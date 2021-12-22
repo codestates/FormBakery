@@ -27,32 +27,16 @@
 * 자신이 생성하고 답한 설문들을 한번에 모아 볼 수 있어요.
 
 # TECH STACK
-### Front-End:   
-![](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![](https://img.shields.io/badge/React_Axios-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![](https://img.shields.io/badge/React_Hooks-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
-![](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=61DAFB)
-![](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=61DAFB)
-![](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white)
-![](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
-### Back-End:   
-![](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=61DAFB)
-![](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
-![](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
-![](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
-![](https://img.shields.io/badge/Auth0-EB5424?style=for-the-badge&logo=auth0&logoColor=white)
-![](https://img.shields.io/badge/JSON_Web_Tokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
+### Front-End:
+`React` `React Axios` `React Hooks` `React Router` `Redux` `TypeScript` `JavaScript` `Sass` `HTML` `CSS`
 
-### Deployment:   
-![](https://img.shields.io/badge/Amazon_AWS_EC2-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![](https://img.shields.io/badge/Amazon_AWS_RDS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![](https://img.shields.io/badge/Amazon_AWS_loadbalancer-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![](https://img.shields.io/badge/Amazon_AWS_Route53-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![](https://img.shields.io/badge/Amazon_AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
+### Back-End:
+`JavaScript` `Node.js` `MySQL` `Sequelize` `Auth0` `JWT` `Express.js` `Bcrypt` `nodemailer` `Multer` `axios`
+
+### Deployment:
+`RDS` `Route53` `S3` `EC2` `Load balancer` `cloudfront`
+
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
 
