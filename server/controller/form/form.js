@@ -41,7 +41,7 @@ module.exports = {
       })
       .then((result) => {
         if (result === null) {
-          res.status(400).send({
+          res.status(401).send({
             message: "This email not exist",
           });
         } else {
