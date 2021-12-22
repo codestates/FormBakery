@@ -56,7 +56,7 @@
 
 ![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
 
-# CodeBaker MEMBERS
+# TEAM CodeBaker
 <img src="https://cdn.discordapp.com/attachments/870468027773251616/923224816339783690/KakaoTalk_Photo_2021-12-22-23-44-50.jpeg" width="320" height="90"></img>
 
 |[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)|
