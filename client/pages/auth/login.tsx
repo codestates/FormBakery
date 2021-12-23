@@ -73,7 +73,7 @@ const Login = () => {
     // 로그인 요청
     const requestLogin = (): void => {
         axios
-            .post(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/login/${userInfo.email}`, { password: userInfo.password })
+            .post(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/login/${userInfo.email}`, { password: userInfo.password })
             .then((res) => {
                 dispatch(setAccessToken(res.data.data.accessToken));
                 router.push("/");

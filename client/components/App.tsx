@@ -45,7 +45,7 @@ const App = () => {
         <>
             <Head>
                 <title>Form Bakery</title>
-                <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+                {/* <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> */}
                 <meta name="keyword" content="Form Bakery, free Form" />
                 <meta name="description" content="first codestate team project" />
                 <meta name="author" content="codeBaker" />
