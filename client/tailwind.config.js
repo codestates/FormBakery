@@ -21,7 +21,9 @@ module.exports = {
                 17.5: "70px",
                 21.5: "86px",
                 50: "200px",
-                "102%": "102%"
+                120: "480px",
+                "102%": "102%",
+                "100vh": "100vh",
             },
             borderWidth: {
                 1: "1px",
@@ -31,15 +33,18 @@ module.exports = {
             },
             colors: {
                 main: "#ffdb5f",
+                subMain: "#ffffef",
             },
             minHeight: {
                 login: "calc(100vh - 72px)",
+                forms: "calc(100vh - 10px)",
+                myforms: "calc(100vh - 110px)",
             },
             height: {
-                11.5: "46px"
+                11.5: "46px",
             },
             width: {
-                11.5: "46px"
+                11.5: "46px",
             },
         },
     },

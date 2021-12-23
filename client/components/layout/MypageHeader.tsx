@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "../Logo";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, setAlert, setModal } from "../../reducers/store/user";
 import Modal from "../Modal";
 
 interface IOption {
@@ -10,8 +12,17 @@ interface IOption {
     label: string;
 }
 
-const MypageHeader = () => {
+interface IProps {
+    setSelectedId?: any;
+}
+
+const MypageHeader = ({ setSelectedId } : IProps) => {
     const router = useRouter();
+    const dispatch = useDispatch();
+
+    // 닉네임
+    const nickname = useSelector(({ user }: any) => user.userInfo.nickname);
+
     // 유저아이콘 클릭 시 모달의 보임 유무 state 관리
     const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -31,27 +42,36 @@ const MypageHeader = () => {
         setIsVisible((prev) => !prev);
     };
 
-    // 로그아웃 클릭시 모달 창 활성화 관련 state
-    const [showModal, setShowModal] = useState<boolean>(false);
-
-    // 로그아웃 버튼 함수
+    // 로그아웃 클릭시 모달 활성화
     const buttonHandler = (): void => {
         toggleModal();
-        setShowModal(true);
-        setTimeout(() => {
-            setShowModal(false);
-        }, 100);
+        toggleLogoutModal();
     };
 
     // 로그아웃 요청
-    const requestSignout = (): void => {
-        alert("로그아웃 요청");
+    const requestLogout = (): void => {
+        dispatch(logout());
+        router.push("/auth/login");
+        setTimeout(() => {
+            dispatch(setAlert(true));
+        }, 50);
+    };
+
+    // 로그아웃 모달 보임 유무
+    const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
+    const toggleLogoutModal = (): void => {
+        setIsVisibleModal((prev) => !prev);
     };
 
     return (
         <>
-            <header className="bg-white h-16 flex shadow-md justify-center space-x-96">
-                <Link href="/">
+            <header
+                className="bg-white h-16 flex shadow-md justify-center space-x-96"
+                onClick={() => {
+                    setSelectedId && setSelectedId("");
+                }}
+            >
+                <Link href="/" passHref>
                     <div className="flex items-center space-x-2 cursor-pointer">
                         <Logo />
                         <p className="text-main font-serif font-semibold text-3xl underline whitespace-nowrap w-auto ">
@@ -59,13 +79,10 @@ const MypageHeader = () => {
                         </p>
                     </div>
                 </Link>
-                <div className="flex items-center relative space-x-3">
-                    <button className="border-1 border-white bg-white rounded-md text-white text-md px-2 py-1 w-auto whitespace-nowrap cursor-default">
-                        sign in
-                    </button>
-                    <button className="border-2 border-white bg-white rounded-md text-white text-md px-2 py-1 w-auto whitespace-nowrap cursor-default">
-                        Free experience
-                    </button>
+                <div className="flex items-center relative w-72 justify-end pr-8">
+                    <div className="text-slate-500 font-semibold text-sm mr-2">
+                        {`${nickname}'s page`}
+                    </div>
                     <div
                         className={`h-11.5 w-11.5 rounded-full flex justify-center items-center  cursor-pointer hover:bg-gray-200 ${
                             isVisible ? "bg-gray-200" : "bg-white"
@@ -81,7 +98,7 @@ const MypageHeader = () => {
                         />
                     </div>
                     {isVisible && (
-                        <div className=" bg-white absolute z-10 right-0 top-14.5 w-32 py-2 border-1 rounded-md text-xs text-gray-500 shadow-md">
+                        <div className=" bg-white absolute z-10 right-8 top-14.5 w-32 py-2 border-1 rounded-md text-xs text-gray-500 shadow-md">
                             <p
                                 className="hover:bg-gray-100 cursor-pointer px-2 py-2 font"
                                 onClick={() => {
@@ -119,7 +136,12 @@ const MypageHeader = () => {
                     )}
                 </div>
             </header>
-            <header className="mt-1 text-center bg-white h-10 shadow-md">
+            <header
+                className="mt-1 text-center bg-white h-10 shadow-md"
+                onClick={() => {
+                    setSelectedId && setSelectedId("");
+                }}
+            >
                 <div className="inline-flex w-222 h-full items-center relative">
                     {headerOption.map((v, i) => {
                         return (
@@ -129,6 +151,8 @@ const MypageHeader = () => {
                                         ? "/mypage/myForm"
                                         : "/mypage/account/profile"
                                 }
+                                passHref
+                                key={v.id}
                             >
                                 <div
                                     className={`text-sm cursor-pointer ${
@@ -141,7 +165,6 @@ const MypageHeader = () => {
                                     onClick={() => {
                                         setSelectedOption(v.id);
                                     }}
-                                    key={v.id}
                                 >
                                     {v.label}
                                 </div>
@@ -163,12 +186,47 @@ const MypageHeader = () => {
                     onClick={toggleModal}
                 ></div>
             )}
-            <Modal
-                title={"로그아웃"}
-                subTitle={"정말로 계정을 로그아웃 하시겠습니까?"}
-                show={showModal}
-                onClick={requestSignout}
-            />
+            <div
+                className={`w-full absolute top-0 left-0 bg-black bg-opacity-20 flex justify-center items-center ${
+                    isVisibleModal
+                        ? "z-10 opacity-100 h-full"
+                        : "-z-10 opacity-0 h-0"
+                }`}
+                onClick={toggleLogoutModal}
+            >
+                <div
+                    className={`w-96 h-48 rounded-md bg-white relative p-6 border-1 shadow-md transition-all ${
+                        isVisibleModal
+                            ? "opacity-100 top-0"
+                            : "opacity-0 top-10"
+                    }`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                >
+                    <div className="text-lg font-bold">로그아웃</div>
+                    <div className="text-sm mt-4">
+                        정말로 로그아웃 하시겠습니까?
+                    </div>
+                    <div className="mt-8 text-right space-x-2 absolute bottom-6 right-6">
+                        <button
+                            className={`w-20 h-8 rounded-md border-1 border-main text-main text-sm`}
+                            onClick={toggleLogoutModal}
+                        >
+                            취소
+                        </button>
+                        <button
+                            className={`w-20 h-8 rounded-md bg-main text-white text-sm`}
+                            onClick={() => {
+                                toggleLogoutModal();
+                                requestLogout();
+                            }}
+                        >
+                            확인
+                        </button>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

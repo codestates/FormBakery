@@ -1,0 +1,16 @@
+{
+  "/_app": "pages/_app.js",
+  "/auth/join": "pages/auth/join.html",
+  "/auth/login": "pages/auth/login.html",
+  "/auth/resetPassword": "pages/auth/resetPassword.html",
+  "/forms/[form]": "pages/forms/[form].html",
+  "/forms/[form]/viewform": "pages/forms/[form]/viewform.html",
+  "/": "pages/index.html",
+  "/mypage/account/changePassword": "pages/mypage/account/changePassword.html",
+  "/mypage/account/deleteAccount": "pages/mypage/account/deleteAccount.html",
+  "/mypage/account/profile": "pages/mypage/account/profile.html",
+  "/mypage/myForm": "pages/mypage/myForm.html",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/404": "pages/404.html"
+}
