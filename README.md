@@ -29,7 +29,7 @@
 # TECH STACK
 
 - **Front-End:**
-`React` `React Axios` `React Hooks` `React Router` `Redux` `TypeScript` `JavaScript` `Sass` `HTML` `CSS`
+`React` `React Axios` `React Hooks` `NEXT-JS` `tailwindcss` `React Router` `Redux` `TypeScript` `JavaScript` `JSX` `HTML` `CSS`
 
 - **Back-End:**
 `JavaScript` `Node.js` `MySQL` `Sequelize` `Auth0` `JWT` `Express.js` `Bcrypt` `nodemailer` `Multer` `axios`
