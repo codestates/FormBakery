@@ -38,7 +38,7 @@
 `RDS` `Route53` `S3` `EC2` `Load balancer` `cloudfront`
 
 
-![image](https://user-images.githubusercontent.com/62639722/146731512-946e861c-b659-420c-9203-4a01f3357885.png)  
+![image](https://cdn.discordapp.com/attachments/916188054576844830/923396918187544616/undefined.png)  
 
 # TEAM CodeBaker
 <img src="https://cdn.discordapp.com/attachments/870468027773251616/923224816339783690/KakaoTalk_Photo_2021-12-22-23-44-50.jpeg" width="320" height="90"></img>
