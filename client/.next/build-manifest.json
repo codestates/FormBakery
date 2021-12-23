@@ -35,20 +35,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/forms/[form].js"
     ],
-    "/mypage/account/changePassword": [
+    "/forms/[form]/viewform": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/mypage/account/changePassword.js"
-    ],
-    "/mypage/account/deleteAccount": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/mypage/account/deleteAccount.js"
-    ],
-    "/mypage/account/profile": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/mypage/account/profile.js"
+      "static/chunks/pages/forms/[form]/viewform.js"
     ],
     "/mypage/myForm": [
       "static/chunks/webpack.js",
