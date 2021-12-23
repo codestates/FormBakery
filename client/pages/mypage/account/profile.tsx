@@ -106,7 +106,7 @@ const Proflie = () => {
     const requestModifyUserInfo = (): void => {
         axios
             .put(
-                `http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/updateUserInfo/${user.email}`,
+                `https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/updateUserInfo/${user.email}`,
                 {
                     name: userInfo.name,
                     nickname: userInfo.nickname,
@@ -129,7 +129,7 @@ const Proflie = () => {
                 // 만료된 access 토큰일 경우 refresh 토큰을 조회한다.
                 if (err.response.data.message === "invalid access token") {
                     axios
-                        .post("http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/accessTokenRequest", null, {
+                        .post("https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/accessTokenRequest", null, {
                             withCredentials: true,
                         })
                         .then((response) => {

@@ -40,7 +40,7 @@ const MyForm = () => {
     // 설문지 목록요청
     const requestForms = (): void => {
         axios
-            .post(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/list/${email}`, { email: email })
+            .post(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/list/${email}`, { email: email })
             .then((res) => {
                 setForms(
                     res.data.data.map((obj: IData): IForms => {
@@ -87,7 +87,7 @@ const MyForm = () => {
     // 설문지 삭제요청
     const requestDeleteForm = (): void => {
         axios
-            .delete(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/delete/${beDeletedId}`)
+            .delete(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/delete/${beDeletedId}`)
             .then((res) => {
                 requestForms();
                 dispatch(setAlert(true));

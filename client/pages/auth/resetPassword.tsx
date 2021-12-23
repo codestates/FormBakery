@@ -153,7 +153,7 @@ const ResetPassword = () => {
             time.current -= 1;
         }, 1000);
         axios
-            .post("http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/passwordEmailAuth/", {
+            .post("https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/passwordEmailAuth/", {
                 email: email,
             })
             .then((res) => {
@@ -181,7 +181,7 @@ const ResetPassword = () => {
         if (password.resetPassword === password.reResetPassword) {
             if (authNumber === auth) {
                 axios
-                    .put(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/forgetPassword/${email}`, {
+                    .put(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/forgetPassword/${email}`, {
                         newPassword: password.resetPassword,
                     })
                     .then((res) => {

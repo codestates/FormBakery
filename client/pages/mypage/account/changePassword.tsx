@@ -86,7 +86,7 @@ const ChangePassword = () => {
         if (passwordInfo.newPassword === passwordInfo.reNewPassword) {
             setMatchError("");
             axios
-                .put(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/changePassword/${email}`, {
+                .put(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/changePassword/${email}`, {
                     password: passwordInfo.password,
                     newPassword: passwordInfo.newPassword,
                 })

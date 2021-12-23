@@ -26,7 +26,7 @@ export default function Home() {
             const fomrId = uuidv4();
             axios
                 .put(
-                    `http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/create/${fomrId}`,
+                    `https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/create/${fomrId}`,
                     { email: email }
                 )
                 .then((res) => {

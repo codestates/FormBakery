@@ -38,7 +38,7 @@ const DeleteAccount = () => {
     // 계정 삭제요청
     const requestDelete = (): void => {
         axios
-            .post(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/signout/${email}`, { password: password })
+            .post(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/signout/${email}`, { password: password })
             .then((res) => {
                 router.push({
                     pathname: "/",

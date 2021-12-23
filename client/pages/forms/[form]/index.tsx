@@ -123,7 +123,7 @@ const CreateForm = () => {
         // 폼 아이디
         if (router.query.form) {
             axios
-                .get(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/get/${router.query.form}`)
+                .get(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/get/${router.query.form}`)
                 .then((res) => {
                     setTitle(res.data.data.title);
                     setSubTitle(res.data.data.subTitle);
@@ -328,7 +328,7 @@ const CreateForm = () => {
         };
         console.log(body);
         axios
-            .put(`http://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/update/${router.query.form}`, body)
+            .put(`https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/form/update/${router.query.form}`, body)
             .then((res) => {
                 console.log(res);
                 {
