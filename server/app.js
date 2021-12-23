@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 
 app.use(express.json());
 app.use(express.text());
-app.use(cors({ credentials: true, origin: "https://form-bakery.vercel.app/" }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use("/image", express.static(__dirname + "/image"));
 
