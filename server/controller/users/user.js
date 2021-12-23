@@ -48,13 +48,17 @@ module.exports = {
             expiresIn: "30d",
           }
         );
-
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          secure: false,
+        });
         res
           .status(200)
-          .cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            samSite: "none",
-          })
+          // .cookie("refreshToken", refreshToken, {
+          //   httpOnly: true,
+          //   sameSite: "none",
+          // })
           .json({
             data: { accessToken: accessToken },
             message: "login successful",

@@ -339,6 +339,7 @@ module.exports = {
           for (let el of data) {
             let options;
             let gridData;
+            console.log(el);
             el.formId = formId;
             if (el.formOptions) {
               options = el.formOptions;
