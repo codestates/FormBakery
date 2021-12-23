@@ -162,13 +162,13 @@ const CreateForm = () => {
 
     // 제목 설정
     const [title, setTitle] = useState<string>("");
-    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>): void => {
+    const onChangeTitle = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         setTitle(e.target.value);
     };
 
     // 부제목 설정
     const [subTitle, setSubTitle] = useState<string>("");
-    const onChangeSubTitle = (e: ChangeEvent<HTMLInputElement>): void => {
+    const onChangeSubTitle = (e: ChangeEvent<HTMLTextAreaElement>): void => {
         setSubTitle(e.target.value);
     };
 
@@ -202,8 +202,10 @@ const CreateForm = () => {
 
     // 우측 질문추가 버튼 위치 조정
     const itemClickHandler = (i: number): void => {
-        const newTopHeight = cardIndex === 0 ? document.getElementById("cardContainer").children[0].offsetTop : document.getElementById("cardContainer").children[1].children[cardIndex - 1].offsetTop;
-        rightDiv.current.style.top = newTopHeight + "px";
+        const newTopHeight: HTMLElement | any = cardIndex === 0 ? document.getElementById("cardContainer").children[0] : document.getElementById("cardContainer").children[1].children[cardIndex - 1];
+        if (newTopHeight !== null) {
+            rightDiv.current.style.top = newTopHeight.offsetTop + "px";
+        }
     };
 
     // 헤더 제목에 따른 제목 너비변화
@@ -249,9 +251,11 @@ const CreateForm = () => {
         itemClickHandler(cardIndex);
         if (cardIndex != prevCardIndex && cardIndex != 0) {
             if (cardIndex === 0) {
-                document.getElementById("cardContainer").children[0].getElementsByClassName("customTextarea")[0].select();
+                const textarea = document.getElementById("cardContainer").children[0].getElementsByClassName("customTextarea")[0] as HTMLTextAreaElement;
+                textarea.select();
             } else {
-                document.getElementById("cardContainer").children[1].children[cardIndex - 1].getElementsByClassName("customTextarea")[0].select();
+                const textarea = document.getElementById("cardContainer").children[1].children[cardIndex - 1].getElementsByClassName("customTextarea")[0] as HTMLTextAreaElement;
+                textarea.select();
             }
         }
         setprevCardIndex(cardIndex);
@@ -369,7 +373,7 @@ const CreateForm = () => {
             <div className="bg-white border-b-2 shadow-sm h-16 flex justify-center items-center">
                 <div className="inline-flex w-222 justify-between">
                     <div className="flex fdr aic">
-                        <Link href={"/"}>
+                        <Link href={"/"} passHref>
                             <div className="flex items-center">
                                 <Logo />
                             </div>
@@ -390,7 +394,8 @@ const CreateForm = () => {
                                     }
                                 }}
                                 onClick={(e) => {
-                                    e.target.select();
+                                    const target = e.target as HTMLInputElement;
+                                    target.select();
                                 }}
                             />
                             <div
@@ -630,6 +635,7 @@ const CreateForm = () => {
                                                                         {v.formOptions.map((val, idx) => {
                                                                             return (
                                                                                 <div
+                                                                                    key={val.uuid}
                                                                                     className="flex fdr aic optionsContainer"
                                                                                     style={{
                                                                                         marginTop: idx === 0 ? 15 : 0,
@@ -643,7 +649,8 @@ const CreateForm = () => {
                                                                                         setOptionUuid("");
                                                                                     }}
                                                                                     onClick={(event) => {
-                                                                                        document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1].select();
+                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
+                                                                                        textarea.select();
                                                                                         event.stopPropagation();
                                                                                     }}
                                                                                 >
@@ -770,7 +777,8 @@ const CreateForm = () => {
                                                                                                 }
                                                                                                 e.preventDefault();
                                                                                                 setTimeout(() => {
-                                                                                                    document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 2].select();
+                                                                                                    const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 2] as HTMLTextAreaElement;
+                                                                                                    textarea.select();
                                                                                                 }, 1);
                                                                                             } else if (e.key == "Backspace" && !val.text && v.formOptions.length != 1) {
                                                                                                 const cp = [...questions];
@@ -783,11 +791,13 @@ const CreateForm = () => {
                                                                                                 e.preventDefault();
                                                                                                 if (idx === 0) {
                                                                                                     setTimeout(() => {
-                                                                                                        document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[1].select();
+                                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[1] as HTMLTextAreaElement;
+                                                                                                        textarea.select();
                                                                                                     }, 1);
                                                                                                 } else {
                                                                                                     setTimeout(() => {
-                                                                                                        document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx].select();
+                                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx] as HTMLTextAreaElement;
+                                                                                                        textarea.select();
                                                                                                     }, 1);
                                                                                                 }
                                                                                             }
@@ -805,7 +815,8 @@ const CreateForm = () => {
                                                                                                 formOptions[formOptionsIndex].text = `옵션 ${formOptions.length}`;
                                                                                                 setQuestions(cp);
                                                                                                 setWarningIndex("");
-                                                                                                document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1].blur();
+                                                                                                const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
+                                                                                                textarea.blur();
                                                                                                 event.stopPropagation();
                                                                                             }}
                                                                                         >
@@ -941,7 +952,7 @@ const CreateForm = () => {
                                                                                             height: 35,
                                                                                         }}
                                                                                     >
-                                                                                        '기타' 추가
+                                                                                        {`'기타' 추가`}
                                                                                     </span>
                                                                                 </div>
                                                                             )}
@@ -1065,6 +1076,7 @@ const CreateForm = () => {
                                                                     v.formOptions.map((val, idx) => {
                                                                         return (
                                                                             <div
+                                                                                key={val.uuid}
                                                                                 className="flex fdr aic optionsContainer"
                                                                                 style={{
                                                                                     marginTop: idx === 0 ? 15 : 0,
@@ -1073,7 +1085,8 @@ const CreateForm = () => {
                                                                                 }}
                                                                                 onClick={(event) => {
                                                                                     setTimeout(() => {
-                                                                                        document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1].select();
+                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
+                                                                                        textarea.select();
                                                                                         event.stopPropagation();
                                                                                     }, 1);
                                                                                 }}

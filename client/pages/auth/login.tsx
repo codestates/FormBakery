@@ -18,7 +18,7 @@ interface IUserInfo {
     password: string;
 }
 
-const login = () => {
+const Login = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const invaildRefreshTokenQuery = router.query.invaildRefreshToken;
@@ -135,7 +135,7 @@ const login = () => {
                         로그인
                     </button>
                 </div>
-                <Link href={"/auth/resetPassword"}>
+                <Link href={"/auth/resetPassword"} passHref>
                     <p className="mt-8 text-sm text-slate-500 cursor-pointer inline-flex">비밀번호를 잊으셨나요?</p>
                 </Link>
                 <div className="mt-8">
@@ -153,7 +153,7 @@ const login = () => {
                 </div>
                 <p className="mt-6 text-gray-600">아직 폼 베이커리 계정이 없으신가요?</p>
                 <div className="mt-6">
-                    <Link href="/auth/join">
+                    <Link href="/auth/join" passHref>
                         <button className={"w-96 h-12 rounded-md border-1 border-main text-main"}>회원가입</button>
                     </Link>
                 </div>
@@ -166,4 +166,4 @@ const login = () => {
     );
 };
 
-export default login;
+export default Login;

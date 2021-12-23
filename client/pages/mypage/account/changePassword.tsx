@@ -13,7 +13,7 @@ interface IPassword {
     reNewPassword: string;
 }
 
-const changePassword = () => {
+const ChangePassword = () => {
     const dispatch = useDispatch();
     // 회원 이메일
     const email = useSelector(({ user }: any) => user.userInfo.email);
@@ -190,4 +190,4 @@ const changePassword = () => {
     );
 };
 
-export default changePassword;
+export default ChangePassword;

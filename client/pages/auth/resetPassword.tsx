@@ -19,7 +19,7 @@ interface IPassword {
     reResetPassword: string;
 }
 
-const resetPassword = () => {
+const ResetPassword = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     // ref
@@ -115,10 +115,6 @@ const resetPassword = () => {
     // 인증번호 관련
     const [authNumber, setAuthNumber] = useState<string>("");
     const [showAuth, setShowAuth] = useState<boolean>(false);
-
-    useEffect(() => {
-        console.log(authNumber);
-    }, [authNumber]);
 
     // 타이머
     const [min, setMin] = useState<number>(3);
@@ -308,7 +304,7 @@ const resetPassword = () => {
                 )}
                 <p className="inline-flex w-96 mt-4 text-sm text-slate-500">
                     비밀번호가 생각나셨나요?{" "}
-                    <Link href={"/auth/login"}>
+                    <Link href={"/auth/login"} passHref>
                         <span className="ml-2 text-main cursor-pointer">로그인</span>
                     </Link>
                 </p>
@@ -317,4 +313,4 @@ const resetPassword = () => {
     );
 };
 
-export default resetPassword;
+export default ResetPassword;

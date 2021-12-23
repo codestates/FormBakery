@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import Alert from "../../../components/Alert";
 import App from "../../../components/App";
 
-const deleteAccount = () => {
+const DeleteAccount = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const email = useSelector(({ user }: any) => user.userInfo.email);
@@ -103,4 +103,4 @@ const deleteAccount = () => {
     );
 };
 
-export default deleteAccount;
+export default DeleteAccount;

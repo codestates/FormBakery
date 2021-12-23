@@ -24,7 +24,7 @@ const AccountLeftPannel = () => {
         <div className="w-56 text-sm text-gray-600 text-left space-y-1">
             {leftPanelOption.map((v, i) => {
                 return (
-                    <Link href={`/mypage/account/${v.id}`} key={v.id}>
+                    <Link href={`/mypage/account/${v.id}`} key={v.id} passHref>
                         <div
                             className={`pl-2 py-2 rounded-md cursor-pointer  ${
                                 v.id === selectedOption

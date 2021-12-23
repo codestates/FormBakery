@@ -78,7 +78,7 @@ interface IState {
     questions: IQuestions[];
 }
 
-const viewform = () => {
+const Viewform = () => {
     const router = useRouter();
 
     // 상태관리
@@ -294,6 +294,7 @@ const viewform = () => {
                                             {selectedRadioObject.radioList.map((value, index) => {
                                                 return (
                                                     <FormControlLabel
+                                                        key={value.uuid}
                                                         value={value.uuid}
                                                         control={
                                                             <Radio
@@ -363,6 +364,7 @@ const viewform = () => {
                                                     style={{
                                                         marginTop: index === 0 ? 15 : 0,
                                                     }}
+                                                    key={value.uuid}
                                                 >
                                                     <FormControlLabel
                                                         label={value.text}
@@ -435,7 +437,7 @@ const viewform = () => {
                                             />
                                             {selectedDropDownObject.dropDownList.map((value, index) => {
                                                 return (
-                                                    <MenuItem value={value.uuid} className={classes.MenuItem}>
+                                                    <MenuItem value={value.uuid} className={classes.MenuItem} key={value.uuid}>
                                                         {value.text}
                                                     </MenuItem>
                                                 );
@@ -548,4 +550,4 @@ const viewform = () => {
     );
 };
 
-export default viewform;
+export default Viewform;

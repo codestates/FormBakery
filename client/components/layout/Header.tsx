@@ -38,7 +38,7 @@ const Header = () => {
     return (
         <>
             <header className="bg-white h-16 flex shadow-md justify-center space-x-96">
-                <Link href="/">
+                <Link href="/" passHref>
                     <div className="flex items-center space-x-2 cursor-pointer">
                         <Logo />
                         <p className="text-main font-serif font-semibold text-3xl underline whitespace-nowrap w-auto ">
@@ -48,7 +48,7 @@ const Header = () => {
                 </Link>
                 <div className="flex items-center relative w-72 justify-end pr-8">
                     {!isLogin && (
-                        <Link href="/auth/login">
+                        <Link href="/auth/login" passHref>
                             <button className="border-1 border-main rounded-md text-main text-md px-2 py-1 w-auto whitespace-nowrap ">
                                 sign in
                             </button>
@@ -93,12 +93,12 @@ const Header = () => {
                     )}
                     {isVisible && (
                         <div className=" bg-white absolute z-10 right-8 top-14.5 w-32 py-2 border-1 rounded-md text-xs text-slate-500 shadow-md">
-                            <Link href={"/mypage/myForm"}>
+                            <Link href={"/mypage/myForm"} passHref>
                                 <p className="hover:bg-gray-100 cursor-pointer px-2 py-2 font">
                                     내 설문지
                                 </p>
                             </Link>
-                            <Link href={"/mypage/account/profile"}>
+                            <Link href={"/mypage/account/profile"} passHref>
                                 <p className="hover:bg-gray-100 cursor-pointer px-2 py-2">
                                     계정관리
                                 </p>

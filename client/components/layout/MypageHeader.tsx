@@ -12,7 +12,11 @@ interface IOption {
     label: string;
 }
 
-const MypageHeader = ({ setSelectedId }) => {
+interface IProps {
+    setSelectedId?: any;
+}
+
+const MypageHeader = ({ setSelectedId } : IProps) => {
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -67,7 +71,7 @@ const MypageHeader = ({ setSelectedId }) => {
                     setSelectedId && setSelectedId("");
                 }}
             >
-                <Link href="/">
+                <Link href="/" passHref>
                     <div className="flex items-center space-x-2 cursor-pointer">
                         <Logo />
                         <p className="text-main font-serif font-semibold text-3xl underline whitespace-nowrap w-auto ">
@@ -147,6 +151,7 @@ const MypageHeader = ({ setSelectedId }) => {
                                         ? "/mypage/myForm"
                                         : "/mypage/account/profile"
                                 }
+                                passHref
                                 key={v.id}
                             >
                                 <div

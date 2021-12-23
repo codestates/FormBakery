@@ -22,7 +22,7 @@ interface IUserInfo {
     nickname: string;
 }
 
-const proflie = () => {
+const Proflie = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     // 유저 정보
@@ -282,4 +282,4 @@ const proflie = () => {
     );
 };
 
-export default proflie;
+export default Proflie;

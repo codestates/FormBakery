@@ -29,7 +29,7 @@ interface IData {
     updatedAt: string;
 }
 
-const myForm = () => {
+const MyForm = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     // 접속한 유저의 이메일
@@ -177,4 +177,4 @@ const myForm = () => {
     );
 };
 
-export default myForm;
+export default MyForm;

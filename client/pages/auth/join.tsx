@@ -30,7 +30,7 @@ interface IDisable {
     singUpDisable: boolean;
 }
 
-const join = () => {
+const Join = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     // ref
@@ -413,7 +413,7 @@ const join = () => {
                 )}
                 <p className="inline-flex w-96 mt-4 text-sm text-gray-400">
                     이미 계정이 있으신가요?{" "}
-                    <Link href={"/auth/login"}>
+                    <Link href={"/auth/login"} passHref>
                         <span className="ml-2 text-main cursor-pointer">로그인</span>
                     </Link>
                 </p>
@@ -422,4 +422,4 @@ const join = () => {
     );
 };
 
-export default join;
+export default Join;
