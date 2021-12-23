@@ -45,11 +45,11 @@ const App = () => {
         <>
             <Head>
                 <title>Form Bakery</title>
+                <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
                 <meta name="keyword" content="Form Bakery, free Form" />
                 <meta name="description" content="first codestate team project" />
                 <meta name="author" content="codeBaker" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                {/* <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> */}
                 <link rel="icon" href="/logo.ico" />
             </Head>
         </>
