@@ -49,7 +49,7 @@ const App = () => {
                 <meta name="description" content="first codestate team project" />
                 <meta name="author" content="codeBaker" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+                <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
                 <link rel="icon" href="/logo.ico" />
             </Head>
         </>
