@@ -15,11 +15,6 @@
     "static/development/_middlewareManifest.js"
   ],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -30,30 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/auth/login": [
+    "/forms/[form]/viewform": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/auth/login.js"
-    ],
-    "/forms/[form]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/forms/[form].js"
-    ],
-    "/mypage/account/changePassword": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/mypage/account/changePassword.js"
-    ],
-    "/mypage/account/deleteAccount": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/mypage/account/deleteAccount.js"
-    ],
-    "/mypage/account/profile": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/mypage/account/profile.js"
+      "static/chunks/pages/forms/[form]/viewform.js"
     ],
     "/mypage/myForm": [
       "static/chunks/webpack.js",

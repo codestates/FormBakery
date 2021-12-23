@@ -185,10 +185,6 @@ const CreateForm = () => {
         },
     ]);
 
-    useEffect(() => {
-        console.log(questions);
-    }, [questions]);
-
     // 선택된 질문 index
     const [cardIndex, setCardIndex] = useState<number>(1);
 

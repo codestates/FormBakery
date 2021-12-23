@@ -152,11 +152,8 @@ const viewform = () => {
     const [checkBoxArray, setCheckBoxArray] = useState([]);
     const [dropDownArray, setDropDownArray] = useState([]);
     const [textArray, setTextArray] = useState([]);
+    const [shortArray, setShortArray] = useState([]);
     const [isRequiredItem, setIsRequiredItems] = useState(false);
-
-    useEffect(() => {
-        console.log(radioArray);
-    }, [radioArray]);
 
     useEffect(() => {
         const newRadioArray = state.questions
@@ -217,6 +214,17 @@ const viewform = () => {
                 };
             });
         setTextArray(newTextArray);
+        const newShortArray = state.questions
+            .filter((v, i) => {
+                return v.type === "short";
+            })
+            .map((value, index) => {
+                return {
+                    uuid: value.uuid,
+                    text: "",
+                };
+            });
+        setShortArray(newShortArray);
     }, [state]);
 
     return (
@@ -250,8 +258,11 @@ const viewform = () => {
                     const selectedTextObject = textArray.filter((val) => {
                         return val.uuid === v.uuid;
                     })[0];
+                    const selectedShortObject = shortArray.filter((val) => {
+                        return val.uuid === v.uuid;
+                    })[0];
                     return v.type === "radio" ? (
-                        <Card barPosition={[]}>
+                        <Card barPosition={[]} key={v.uuid}>
                             <>
                                 <div>
                                     {v.question}{" "}
@@ -324,7 +335,7 @@ const viewform = () => {
                             </>
                         </Card>
                     ) : v.type === "check" ? (
-                        <Card barPosition={[]}>
+                        <Card barPosition={[]} key={v.uuid}>
                             <>
                                 <div>
                                     {v.question}{" "}
@@ -382,7 +393,7 @@ const viewform = () => {
                             </>
                         </Card>
                     ) : v.type === "drop" ? (
-                        <Card barPosition={[]}>
+                        <Card barPosition={[]} key={v.uuid}>
                             <>
                                 <div>
                                     {v.question}{" "}
@@ -434,8 +445,8 @@ const viewform = () => {
                                 )}
                             </>
                         </Card>
-                    ) : (
-                        <Card barPosition={[]}>
+                    ) : v.type === "long" ? (
+                        <Card barPosition={[]} key={v.uuid}>
                             <>
                                 <div>
                                     {v.question}{" "}
@@ -476,7 +487,49 @@ const viewform = () => {
                                 )}
                             </>
                         </Card>
-                    );
+                    ) : v.type === "short" ? (
+                        <Card barPosition={[]} key={v.uuid}>
+                            <>
+                                <div>
+                                    {v.question}{" "}
+                                    {v.isNeccessary && (
+                                        <span
+                                            style={{
+                                                fontSize: 13,
+                                                color: "rgba(219, 68, 55, 1)",
+                                                position: "relative",
+                                                top: -3,
+                                            }}
+                                        >
+                                            *
+                                        </span>
+                                    )}
+                                </div>
+                                {shortArray.length > 0 && (
+                                    <div style={{ marginTop: 40 }}>
+                                        <Input
+                                            active={true}
+                                            placeholder={"내 답변"}
+                                            value={selectedShortObject.text}
+                                            onChange={(e) => {
+                                                const cp = [...shortArray];
+                                                const ind = cp.findIndex((x) => x.uuid === v.uuid);
+                                                cp[ind].text = e.target.value;
+                                                setShortArray(cp);
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key == "Enter") {
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                            fontSize={14}
+                                            height={24}
+                                        />
+                                    </div>
+                                )}
+                            </>
+                        </Card>
+                    ) : null;
                 })}
                 <Button
                     variant="contained"
