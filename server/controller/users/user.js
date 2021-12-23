@@ -51,7 +51,7 @@ module.exports = {
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
           sameSite: "none",
-          secure: false,
+          secure: true,
         });
         res
           .status(200)
