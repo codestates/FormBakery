@@ -1296,7 +1296,7 @@ const CreateForm = () => {
                                 </div>
                                 <div className="flex items-center text-xs">
                                     <div className="w-2 h-2 rounded-full bg-red-600 mr-2" />
-                                    <div>Subi's kitchen</div>
+                                    <div>{`Subi's kitchen`}</div>
                                 </div>
                                 <div className="flex items-center text-xs">
                                     <div className="w-2 h-2 rounded-full bg-main mr-2" />
@@ -1351,13 +1351,7 @@ const CreateForm = () => {
                     <div className="text-lg font-bold">설문지 보내기</div>
                     <div className="text-md mt-6">링크</div>
                     <div className="mt-2">
-                        <Input
-                            height={28}
-                            fontSize={16}
-                            backgroundColor={"#f8f8f8"}
-                            bottomBorderColor={"black"}
-                            value={`http://localhost:3000/forms/${router.query.form}/viewform`}
-                        />
+                        <Input height={28} fontSize={16} backgroundColor={"#f8f8f8"} bottomBorderColor={"black"} value={`http://localhost:3000/forms/${router.query.form}/viewform`} />
                     </div>
                     <div className="mt-8 text-right space-x-2 absolute bottom-6 right-6">
                         <button className={`w-20 h-8 rounded-md border-1 border-main text-main text-sm`} onClick={toggleLogoutModal}>
