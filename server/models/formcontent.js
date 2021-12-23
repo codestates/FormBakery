@@ -8,18 +8,37 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.formContent.hasMany(models.formOption,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
-      models.formContent.hasMany(models.answerList,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
-      models.formContent.belongsTo(models.form);
+      models.formContent.hasMany(models.formOption, {
+        foreignKey: "formContentId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+      models.formContent.hasMany(models.answerList, {
+        foreignKey: "formContentId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+      models.formContent.hasMany(models.formGrid, {
+        foreignKey: "formContentId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+      models.formContent.belongsTo(models.form, {
+        foreignKey: "formId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
     }
   }
   formContent.init(
     {
-      formId: DataTypes.INTEGER,
+      formId: DataTypes.STRING,
       type: DataTypes.STRING,
       question: DataTypes.STRING,
       section: DataTypes.INTEGER,
       order: DataTypes.INTEGER,
+      content: DataTypes.STRING,
+      isNeccessary: DataTypes.STRING,
     },
     {
       sequelize,

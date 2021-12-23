@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       models.formOption.hasMany(models.answerList,{foreignKey: 'formOptionId'});
-      models.formOption.belongsTo(models.formContent);
+      models.formOption.belongsTo(models.formContent,{foreignKey: 'formContentId',onDelete: 'CASCADE',onUpdate:'CASCADE'});
     }
   }
   formOption.init(

@@ -6,11 +6,11 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const bcrypt = require("bcrypt");
 
-const clientID = process.env.GITHUB_CLIENT_ID;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-
 const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
+
+const accessTokenRequest = require("./accessTokenRequest");
+const mailMethod = require("../../method/mail");
 
 module.exports = {
   /*
@@ -19,10 +19,13 @@ module.exports = {
   login: async (req, res) => {
     const { email } = req.params;
     const { password } = req.body;
-
     const userInfo = await db["User"].findOne({
       where: { email },
     });
+
+    if (!userInfo) {
+      res.status(400).send({ message: "not exists user email" });
+    }
 
     bcrypt.compare(password, userInfo.password, function (err, resp) {
       if (resp === false) {
@@ -45,12 +48,17 @@ module.exports = {
             expiresIn: "30d",
           }
         );
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          secure: false,
+        });
         res
           .status(200)
-          .cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            samSite: "none",
-          })
+          // .cookie("refreshToken", refreshToken, {
+          //   httpOnly: true,
+          //   sameSite: "none",
+          // })
           .json({
             data: { accessToken: accessToken },
             message: "login successful",
@@ -70,6 +78,9 @@ module.exports = {
     res.status(200).send({ message: "logout successful" });
   },
 
+  /*
+      github 콜백
+  */
   githubCallback: async (req, res) => {
     axios({
       method: "post",
@@ -78,14 +89,47 @@ module.exports = {
         accept: "application/json",
       },
       data: {
-        client_id: clientID,
-        client_secret: clientSecret,
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
         code: req.body.authorizationCode,
       },
     })
       .then((result) =>
         res
           .status(200)
+          .cookie("refreshToken", refresh_Token, {
+            httpOnly: true,
+            samSite: "none",
+          })
+          .json({ accessToken: result.data.access_token, message: "ok" })
+      )
+      .catch((err) => res.status(404));
+  },
+
+  /*
+      kakao 콜백
+  */
+  kakaoCallback: async (req, res) => {
+    axios({
+      method: "post",
+      url: `https://kauth.kakao.com/oauth/token`,
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+
+      data: qs.stringify({
+        client_id: process.env.KAKAO_CLIENT_ID,
+        client_secret: process.env.KAKAO_CLIENT_SECRET,
+        code: req.body.authorization_code,
+      }),
+    })
+      .then((result) =>
+        res
+          .status(200)
+          .cookie("refreshToken", refresh_Token, {
+            httpOnly: true,
+            samSite: "none",
+          })
           .json({ accessToken: result.data.access_token, message: "ok" })
       )
       .catch((err) => res.status(404));
@@ -100,65 +144,61 @@ module.exports = {
       number = number - 100000;
     }
 
-    const transporter = mailer.createTransport(
-      smtp({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        auth: {
-          user: "jsb9761321@gmail.com",
-          pass: process.env.GOOGLE_PASSWORD,
-        },
-      })
+    let title = "Form Bakery 회원가입 인증번호 입니다.";
+    let html = `
+            <h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1>
+            <h2>[${number}]</h2>
+            <br/>
+            <h3>문의: ${process.env.MAIL_EMAIL}</h3>
+      `;
+
+    mailMethod.sendEmail(
+      req,
+      res,
+      process.env.MAIL_EMAIL,
+      req.body.email,
+      title,
+      html,
+      true,
+      number
     );
-
-    const mailOpt = {
-      from: "jsb9761321@gmail.com",
-      to: req.body.email,
-      subject: "Form Bakery 회원가입 인증번호 입니다.",
-      html: `<h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1><h3>[${number}]</h3>`,
-    };
-
-    transporter.sendMail(mailOpt, (err, info) => {
-      if (err) throw err;
-      else {
-        res.status(200).send({ data: number, message: "emailAuth successful" });
-      }
-    });
   },
 
   /*
       user 비밀번호 변경시, 이메일 인증
   */
   passwordEmailAuth: async (req, res) => {
+    const { email } = req.body;
+    const userInfo = await db["User"].findOne({
+      where: { email },
+    });
+    if (!userInfo) {
+      res.status(400).send({ message: "not exists email" });
+    }
+
     let number = Math.floor(Math.random() * 1000000) + 100000;
     if (number > 1000000) {
       number = number - 100000;
     }
 
-    const transporter = mailer.createTransport(
-      smtp({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        auth: {
-          user: "jsb9761321@gmail.com",
-          pass: process.env.GOOGLE_PASSWORD,
-        },
-      })
+    let title = "Form Bakery 비밀번호 재설정 인증번호 입니다.";
+    let html = `
+            <h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1>
+            <h2>[${number}]</h2>
+            <br/>
+            <h3>문의: ${process.env.MAIL_EMAIL}</h3>
+      `;
+
+    mailMethod.sendEmail(
+      req,
+      res,
+      process.env.MAIL_EMAIL,
+      req.body.email,
+      title,
+      html,
+      true,
+      number
     );
-
-    const mailOpt = {
-      from: "jsb9761321@gmail.com",
-      to: req.body.email,
-      subject: "Form Bakery 비밀번호 재설정 인증번호 입니다.",
-      html: `<h1>아래의 인증번호를 Form Bakery 홈페이지 인증번호창에 입력해 주세요.</h1><h3>[${number}]</h3>`,
-    };
-
-    transporter.sendMail(mailOpt, (err, info) => {
-      if (err) throw err;
-      else {
-        res.status(200).send({ data: number, message: "emailAuth successful" });
-      }
-    });
   },
 
   /*
@@ -197,7 +237,7 @@ module.exports = {
           expiresIn: "30d",
         });
         res
-          .status(200)
+          .status(201)
           .cookie("refreshToken", refreshToken, {
             httpOnly: true,
             samSite: "none",
@@ -240,16 +280,15 @@ module.exports = {
   */
   getUserInfo: async (req, res) => {
     if (!req.headers.authorization) {
-      res.status(400).json({ message: "access token is empty" });
+      await accessTokenRequest.accessTokenRequest(req, res);
+      return;
     } else {
       jwt.verify(
         req.headers.authorization,
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            res.status(400).json({
-              message: "invalid access token",
-            });
+            await accessTokenRequest.accessTokenRequest(req, res);
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
@@ -263,56 +302,6 @@ module.exports = {
               res.status(200).json({
                 data: {
                   userInfo: userInfo.dataValues,
-                },
-                message: "ok",
-              });
-            }
-          }
-        }
-      );
-    }
-  },
-
-  /*
-      accessToken 생성
-  */
-  accessTokenRequest: async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-      res
-        .status(403)
-        .json({ data: null, message: "refresh token not provided" });
-    } else {
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_SECRET,
-        async (err, decoded) => {
-          if (err) {
-            res.status(400).json({
-              message: "invalid refresh token, please log in again",
-            });
-          } else {
-            const userInfo = await db["User"].findOne({
-              where: { email: decoded.email },
-            });
-            if (!userInfo) {
-              res.status(404).json({
-                message: "refresh token has been tempered",
-              });
-            } else {
-              const accessToken = jwt.sign(
-                userInfo.dataValues,
-                process.env.ACCESS_SECRET,
-                {
-                  expiresIn: "15m",
-                }
-              );
-
-              delete userInfo.dataValues.password;
-              res.status(200).json({
-                data: {
-                  userInfo: userInfo.dataValues,
-                  accessToken: accessToken,
                 },
                 message: "ok",
               });
@@ -331,27 +320,38 @@ module.exports = {
     const { name, nickname } = req.body;
 
     if (!req.headers.authorization) {
-      res.status(400).json({ message: "access token is empty" });
+      await accessTokenRequest.accessTokenRequest(req, res, "update");
     } else {
       jwt.verify(
         req.headers.authorization,
         process.env.ACCESS_SECRET,
         async (err, decoded) => {
           if (err) {
-            res.status(401).json({
-              message: "invalid access token",
-            });
+            await accessTokenRequest.accessTokenRequest(req, res, "update");
           } else {
             const userInfo = await db["User"].findOne({
               where: { email: decoded.email },
             });
+            delete userInfo.dataValues.password;
+
             if (!userInfo) {
               res.status(404).json({
                 message: "access token has been tempered",
               });
             } else {
-              db["User"].update({ name, nickname }, { where: { email } });
-              res.status(200).send({ message: "changeUserInfo successful" });
+              await db["User"].update(
+                { name, nickname },
+                { where: { email: decoded.email } }
+              );
+              userInfo.dataValues.name = name;
+              userInfo.dataValues.nickname = nickname;
+
+              res.status(200).json({
+                data: {
+                  userInfo: userInfo.dataValues,
+                },
+                message: "ok",
+              });
             }
           }
         }
@@ -391,17 +391,47 @@ module.exports = {
   },
 
   /*
-      user 비밀번호 변경
+      잊어버린 user 비밀번호 변경
   */
   forgetPassword: async (req, res) => {
     const { email } = req.params;
     const { newPassword } = req.body;
 
-    const encryptedPassword = bcrypt.hashSync(
-      newPassword,
-      Number(process.env.PASSWORD_SALT)
-    );
-    db["User"].update({ password: encryptedPassword }, { where: { email } });
-    res.status(200).send({ message: "changePassword successful" });
+    const userInfo = await db["User"].findOne({
+      where: { email },
+    });
+    if (!userInfo) {
+      res.status(401).send({ message: "no exists email" });
+    } else {
+      const encryptedPassword = bcrypt.hashSync(
+        newPassword,
+        Number(process.env.PASSWORD_SALT)
+      );
+
+      db["User"].update({ password: encryptedPassword }, { where: { email } });
+      res.status(200).send({ message: "changePassword successful" });
+    }
+  },
+
+  /*
+      userProfile image 저장
+  */
+  uploadProfileImage: async (req, res) => {
+    const { email } = req.params;
+    const { filename } = req.file;
+    db["User"]
+      .update(
+        {
+          profilePicture: filename,
+        },
+        {
+          where: { email },
+        }
+      )
+      .then((result) => {
+        res.status(201).send({
+          message: "ok",
+        });
+      });
   },
 };

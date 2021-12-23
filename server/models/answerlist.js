@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       //models.answerList.belongsTo(models.answer);
       models.answerList.belongsTo(models.formContent);
       models.answerList.belongsTo(models.formOption);
+      models.answerList.belongsTo(models.formGrid);
     }
   }
   answerList.init(

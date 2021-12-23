@@ -1,22 +1,39 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("answers", {
+    await queryInterface.createTable("formContents", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userEmail: {
-        type: Sequelize.STRING,
-        onDelete: "CASCADE",
-        references: { model: "Users", key: "email" },
-      },
       formId: {
         type: Sequelize.STRING,
+        allowNull: false,
         onDelete: "CASCADE",
         references: { model: "forms", key: "id" },
+      },
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      question: {
+        type: Sequelize.STRING,
+      },
+      section: {
+        type: Sequelize.INTEGER,
+      },
+      order: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      //only image, explane
+      content: {
+        type: Sequelize.STRING,
+      },
+      isNeccessary: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -29,6 +46,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("answers");
+    await queryInterface.dropTable("formContents");
   },
 };

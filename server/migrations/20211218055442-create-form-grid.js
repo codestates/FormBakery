@@ -1,27 +1,23 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('formContents', {
+    await queryInterface.createTable('formGrids', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      formId: {
+      col: {
         type: Sequelize.INTEGER
       },
-      type: {
-        type: Sequelize.STRING
-      },
-      question: {
-        type: Sequelize.STRING
-      },
-      section: {
+      row: {
         type: Sequelize.INTEGER
       },
-      order: {
-        type: Sequelize.INTEGER
+      formContentId: {
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        references: { model: "formContents", key: "id", }
       },
       createdAt: {
         allowNull: false,
@@ -34,6 +30,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('formContents');
+    await queryInterface.dropTable('formGrids');
   }
 };

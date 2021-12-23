@@ -9,7 +9,9 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       formContentId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        references: { model: "formContents", key: "id", }
       },
       text: {
         type: Sequelize.STRING
