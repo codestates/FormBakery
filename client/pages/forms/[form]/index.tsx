@@ -367,11 +367,38 @@ const CreateForm = () => {
         }
     };
 
+    // 질문, 응답페이지 state
+    const [pageState, setPageState] = useState<string>("question");
+
+    // 응답받기 스위치 state
+    const [isAnswer, setIsAnswer] = useState<boolean>(false);
+
     return (
         <div className="min-h-forms" style={{ paddingBottom: 50, backgroundColor: "#ffffef" }}>
             <App />
             <div className="bg-white border-b-2 shadow-sm h-16 flex justify-center items-center">
-                <div className="inline-flex w-222 justify-between">
+                <div className="inline-flex w-222 justify-between relative">
+                    <div className="absolute -bottom-2 left-96 flex justify-center items-center text-xs h-6">
+                        <div className="flex h-6 relative">
+                            <div
+                                className=" h-full flex justify-center items-center px-2 cursor-pointer"
+                                onClick={() => {
+                                    setPageState("question");
+                                }}
+                            >
+                                질문
+                            </div>
+                            <div
+                                className="h-full flex justify-center items-center px-2 cursor-pointer"
+                                onClick={() => {
+                                    setPageState("answer");
+                                }}
+                            >
+                                응답
+                            </div>
+                            <div className={` h-0.75 w-10 bg-main absolute bottom-0 left-0 rounded-full transition-all ${pageState === "question" ? "left-0" : "left-10"}`} />
+                        </div>
+                    </div>
                     <div className="flex fdr aic">
                         <Link href={"/"} passHref>
                             <div className="flex items-center">
@@ -458,764 +485,861 @@ const CreateForm = () => {
                     </div>
                 </div>
             </div>
-            <div style={{ width: 768, margin: "0 auto", position: "relative" }} id={"cardContainer"}>
-                <Card
-                    barPosition={["top", "left"]}
-                    onClick={() => {
-                        setCardIndex(0);
-                        itemClickHandler(0);
-                    }}
-                    active={cardIndex === 0 ? true : false}
-                    cardTopBarColor={`rgb(71, 85, 105),1)`}
-                >
-                    <>
-                        <Input
+            {pageState === "question" ? (
+                <>
+                    <div style={{ width: 768, margin: "0 auto", position: "relative" }} id={"cardContainer"}>
+                        <Card
+                            barPosition={["top", "left"]}
+                            onClick={() => {
+                                setCardIndex(0);
+                                itemClickHandler(0);
+                            }}
                             active={cardIndex === 0 ? true : false}
-                            placeholder={"설문지 제목"}
-                            value={title}
-                            onChange={onChangeTitle}
-                            onKeyDown={(e) => {
-                                if (e.key == "Enter") {
-                                    e.preventDefault();
-                                }
-                            }}
-                            onBlur={() => {
-                                if (!title) {
-                                    setTitle("제목 없는 설문지");
-                                }
-                            }}
-                            fontSize={32}
-                            height={50}
-                        />
-                        <Input active={cardIndex === 0 ? true : false} placeholder={"설문지 설명"} value={subTitle} onChange={onChangeSubTitle} fontSize={14} height={24} constainerStyle={{ marginTop: 8 }} />
-                    </>
-                </Card>
-                <DragDropContext onDragEnd={handleOnDragEnd}>
-                    <Droppable droppableId="questions">
-                        {(provided: any) => (
-                            <ul className="questions" {...provided.droppableProps} ref={provided.innerRef}>
-                                {questions.map((v, i) => {
-                                    return (
-                                        <Draggable key={v.uuid} draggableId={v.uuid} index={i}>
-                                            {(provided: any) => (
-                                                <li ref={provided.innerRef} {...provided.draggableProps}>
-                                                    <Card
-                                                        barPosition={["left"]}
-                                                        onClick={() => {
-                                                            setCardIndex(i + 1);
-                                                            itemClickHandler(i + 1);
-                                                        }}
-                                                        active={cardIndex === i + 1 ? true : false}
-                                                        provided={provided}
-                                                    >
-                                                        {cardIndex === i + 1 ? (
-                                                            <div>
-                                                                <div className="flex fdr">
-                                                                    <Input
-                                                                        constainerStyle={{
-                                                                            width: "100%",
-                                                                            padding: 16,
-                                                                            marginRight: 60,
-                                                                            paddingBottom: 10,
-                                                                        }}
-                                                                        active={cardIndex === i + 1 ? true : false}
-                                                                        height={28}
-                                                                        fontSize={16}
-                                                                        backgroundColor={"#f8f8f8"}
-                                                                        bottomBorderColor={"black"}
-                                                                        value={v.question}
-                                                                        placeholder={"질문"}
-                                                                        onChange={(e) => {
-                                                                            const cp = [...questions];
-                                                                            const index = cp.findIndex((x) => x.uuid === v.uuid);
-                                                                            cp[index] = {
-                                                                                ...cp[index],
-                                                                                question: e.target.value,
-                                                                            };
-                                                                            setQuestions(cp);
-                                                                        }}
-                                                                        onKeyDown={(e) => {
-                                                                            if (e.key == "Enter") {
-                                                                                e.preventDefault();
-                                                                            }
-                                                                        }}
-                                                                    />
-                                                                    <div
-                                                                        style={{
-                                                                            position: "absolute",
-                                                                            top: 25,
-                                                                            right: 238,
-                                                                        }}
-                                                                    >
-                                                                        <IconButton>
-                                                                            <ImageOutlinedIcon style={{ color: "#5f6368" }} />
-                                                                        </IconButton>
-                                                                    </div>
+                            cardTopBarColor={`rgb(71, 85, 105),1)`}
+                        >
+                            <>
+                                <Input
+                                    active={cardIndex === 0 ? true : false}
+                                    placeholder={"설문지 제목"}
+                                    value={title}
+                                    onChange={onChangeTitle}
+                                    onKeyDown={(e) => {
+                                        if (e.key == "Enter") {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                    onBlur={() => {
+                                        if (!title) {
+                                            setTitle("제목 없는 설문지");
+                                        }
+                                    }}
+                                    fontSize={32}
+                                    height={50}
+                                />
+                                <Input active={cardIndex === 0 ? true : false} placeholder={"설문지 설명"} value={subTitle} onChange={onChangeSubTitle} fontSize={14} height={24} constainerStyle={{ marginTop: 8 }} />
+                            </>
+                        </Card>
+                        <DragDropContext onDragEnd={handleOnDragEnd}>
+                            <Droppable droppableId="questions">
+                                {(provided: any) => (
+                                    <ul className="questions" {...provided.droppableProps} ref={provided.innerRef}>
+                                        {questions.map((v, i) => {
+                                            return (
+                                                <Draggable key={v.uuid} draggableId={v.uuid} index={i}>
+                                                    {(provided: any) => (
+                                                        <li ref={provided.innerRef} {...provided.draggableProps}>
+                                                            <Card
+                                                                barPosition={["left"]}
+                                                                onClick={() => {
+                                                                    setCardIndex(i + 1);
+                                                                    itemClickHandler(i + 1);
+                                                                }}
+                                                                active={cardIndex === i + 1 ? true : false}
+                                                                provided={provided}
+                                                            >
+                                                                {cardIndex === i + 1 ? (
                                                                     <div>
-                                                                        <Select
-                                                                            value={v.type}
-                                                                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                                                const cp = [...questions];
-                                                                                cp[cardIndex - 1].type = e.target.value;
-                                                                                setQuestions(cp);
-                                                                            }}
-                                                                            renderValue={(value) => {
-                                                                                switch (value) {
-                                                                                    case "short":
-                                                                                        return (
-                                                                                            <div className={classes.MenuItemList}>
-                                                                                                <SubjectIcon />
-                                                                                                <span className={classes.MenuItemListLabel}>단문형</span>
-                                                                                            </div>
-                                                                                        );
-                                                                                    case "long":
-                                                                                        return (
-                                                                                            <div className={classes.MenuItemList}>
-                                                                                                <SubjectIcon />
-                                                                                                <span className={classes.MenuItemListLabel}>장문형</span>
-                                                                                            </div>
-                                                                                        );
-                                                                                    case "radio":
-                                                                                        return (
-                                                                                            <div className={classes.MenuItemList}>
-                                                                                                <RadioButtonCheckedIcon />
-                                                                                                <span className={classes.MenuItemListLabel}>객관식 질문</span>
-                                                                                            </div>
-                                                                                        );
-                                                                                    case "check":
-                                                                                        return (
-                                                                                            <div className={classes.MenuItemList}>
-                                                                                                <CheckBoxIcon /> <span className={classes.MenuItemListLabel}>체크박스</span>
-                                                                                            </div>
-                                                                                        );
-                                                                                    case "drop":
-                                                                                        return (
-                                                                                            <div className={classes.MenuItemList}>
-                                                                                                <ArrowDropDownCircleIcon />
-                                                                                                <span className={classes.MenuItemListLabel}>드롭다운</span>
-                                                                                            </div>
-                                                                                        );
-                                                                                }
-                                                                            }}
-                                                                            variant="outlined"
-                                                                            className={classes.select}
-                                                                        >
-                                                                            <MenuItem value={"short"} className={classes.MenuItem}>
-                                                                                <SubjectIcon className={classes.icon} />
-                                                                                단문형
-                                                                            </MenuItem>
-                                                                            <MenuItem value={"long"} className={classes.MenuItem}>
-                                                                                <SubjectIcon className={classes.icon} />
-                                                                                장문형
-                                                                            </MenuItem>
-                                                                            <Divider
-                                                                                style={{
-                                                                                    marginTop: 10,
-                                                                                    marginBottom: 10,
+                                                                        <div className="flex fdr">
+                                                                            <Input
+                                                                                constainerStyle={{
+                                                                                    width: "100%",
+                                                                                    padding: 16,
+                                                                                    marginRight: 60,
+                                                                                    paddingBottom: 10,
+                                                                                }}
+                                                                                active={cardIndex === i + 1 ? true : false}
+                                                                                height={28}
+                                                                                fontSize={16}
+                                                                                backgroundColor={"#f8f8f8"}
+                                                                                bottomBorderColor={"black"}
+                                                                                value={v.question}
+                                                                                placeholder={"질문"}
+                                                                                onChange={(e) => {
+                                                                                    const cp = [...questions];
+                                                                                    const index = cp.findIndex((x) => x.uuid === v.uuid);
+                                                                                    cp[index] = {
+                                                                                        ...cp[index],
+                                                                                        question: e.target.value,
+                                                                                    };
+                                                                                    setQuestions(cp);
+                                                                                }}
+                                                                                onKeyDown={(e) => {
+                                                                                    if (e.key == "Enter") {
+                                                                                        e.preventDefault();
+                                                                                    }
                                                                                 }}
                                                                             />
-                                                                            <MenuItem value={"radio"} className={classes.MenuItem}>
-                                                                                <RadioButtonCheckedIcon className={classes.icon} />
-                                                                                객관식 질문
-                                                                            </MenuItem>
-                                                                            <MenuItem value={"check"} className={classes.MenuItem}>
-                                                                                <CheckBoxIcon className={classes.icon} />
-                                                                                체크박스
-                                                                            </MenuItem>
-                                                                            <MenuItem value={"drop"} className={classes.MenuItem}>
-                                                                                <ArrowDropDownCircleIcon className={classes.icon} />
-                                                                                드롭다운
-                                                                            </MenuItem>
-                                                                        </Select>
-                                                                    </div>
-                                                                </div>
-
-                                                                {v.type != "long" && v.type != "short" ? (
-                                                                    <div>
-                                                                        {v.formOptions.map((val, idx) => {
-                                                                            return (
-                                                                                <div
-                                                                                    key={val.uuid}
-                                                                                    className="flex fdr aic optionsContainer"
-                                                                                    style={{
-                                                                                        marginTop: idx === 0 ? 15 : 0,
-                                                                                        position: "relative",
-                                                                                        height: 48,
+                                                                            <div
+                                                                                style={{
+                                                                                    position: "absolute",
+                                                                                    top: 25,
+                                                                                    right: 238,
+                                                                                }}
+                                                                            >
+                                                                                <IconButton>
+                                                                                    <ImageOutlinedIcon style={{ color: "#5f6368" }} />
+                                                                                </IconButton>
+                                                                            </div>
+                                                                            <div>
+                                                                                <Select
+                                                                                    value={v.type}
+                                                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                                                        const cp = [...questions];
+                                                                                        cp[cardIndex - 1].type = e.target.value;
+                                                                                        setQuestions(cp);
                                                                                     }}
-                                                                                    onMouseOver={() => {
-                                                                                        setOptionUuid(val.uuid);
+                                                                                    renderValue={(value) => {
+                                                                                        switch (value) {
+                                                                                            case "short":
+                                                                                                return (
+                                                                                                    <div className={classes.MenuItemList}>
+                                                                                                        <SubjectIcon />
+                                                                                                        <span className={classes.MenuItemListLabel}>단문형</span>
+                                                                                                    </div>
+                                                                                                );
+                                                                                            case "long":
+                                                                                                return (
+                                                                                                    <div className={classes.MenuItemList}>
+                                                                                                        <SubjectIcon />
+                                                                                                        <span className={classes.MenuItemListLabel}>장문형</span>
+                                                                                                    </div>
+                                                                                                );
+                                                                                            case "radio":
+                                                                                                return (
+                                                                                                    <div className={classes.MenuItemList}>
+                                                                                                        <RadioButtonCheckedIcon />
+                                                                                                        <span className={classes.MenuItemListLabel}>객관식 질문</span>
+                                                                                                    </div>
+                                                                                                );
+                                                                                            case "check":
+                                                                                                return (
+                                                                                                    <div className={classes.MenuItemList}>
+                                                                                                        <CheckBoxIcon /> <span className={classes.MenuItemListLabel}>체크박스</span>
+                                                                                                    </div>
+                                                                                                );
+                                                                                            case "drop":
+                                                                                                return (
+                                                                                                    <div className={classes.MenuItemList}>
+                                                                                                        <ArrowDropDownCircleIcon />
+                                                                                                        <span className={classes.MenuItemListLabel}>드롭다운</span>
+                                                                                                    </div>
+                                                                                                );
+                                                                                        }
                                                                                     }}
-                                                                                    onMouseLeave={() => {
-                                                                                        setOptionUuid("");
-                                                                                    }}
-                                                                                    onClick={(event) => {
-                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
-                                                                                        textarea.select();
-                                                                                        event.stopPropagation();
-                                                                                    }}
+                                                                                    variant="outlined"
+                                                                                    className={classes.select}
                                                                                 >
-                                                                                    {optionUuid === val.uuid && (
+                                                                                    <MenuItem value={"short"} className={classes.MenuItem}>
+                                                                                        <SubjectIcon className={classes.icon} />
+                                                                                        단문형
+                                                                                    </MenuItem>
+                                                                                    <MenuItem value={"long"} className={classes.MenuItem}>
+                                                                                        <SubjectIcon className={classes.icon} />
+                                                                                        장문형
+                                                                                    </MenuItem>
+                                                                                    <Divider
+                                                                                        style={{
+                                                                                            marginTop: 10,
+                                                                                            marginBottom: 10,
+                                                                                        }}
+                                                                                    />
+                                                                                    <MenuItem value={"radio"} className={classes.MenuItem}>
+                                                                                        <RadioButtonCheckedIcon className={classes.icon} />
+                                                                                        객관식 질문
+                                                                                    </MenuItem>
+                                                                                    <MenuItem value={"check"} className={classes.MenuItem}>
+                                                                                        <CheckBoxIcon className={classes.icon} />
+                                                                                        체크박스
+                                                                                    </MenuItem>
+                                                                                    <MenuItem value={"drop"} className={classes.MenuItem}>
+                                                                                        <ArrowDropDownCircleIcon className={classes.icon} />
+                                                                                        드롭다운
+                                                                                    </MenuItem>
+                                                                                </Select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {v.type != "long" && v.type != "short" ? (
+                                                                            <div>
+                                                                                {v.formOptions.map((val, idx) => {
+                                                                                    return (
                                                                                         <div
+                                                                                            key={val.uuid}
+                                                                                            className="flex fdr aic optionsContainer"
                                                                                             style={{
-                                                                                                position: "absolute",
-                                                                                                left: -19,
-                                                                                                top: 9,
+                                                                                                marginTop: idx === 0 ? 15 : 0,
+                                                                                                position: "relative",
+                                                                                                height: 48,
+                                                                                            }}
+                                                                                            onMouseOver={() => {
+                                                                                                setOptionUuid(val.uuid);
+                                                                                            }}
+                                                                                            onMouseLeave={() => {
+                                                                                                setOptionUuid("");
+                                                                                            }}
+                                                                                            onClick={(event) => {
+                                                                                                const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
+                                                                                                textarea.select();
+                                                                                                event.stopPropagation();
                                                                                             }}
                                                                                         >
-                                                                                            <DragIndicatorIcon
-                                                                                                style={{
-                                                                                                    color: "#B3B3B3",
-                                                                                                    fontSize: "20px",
+                                                                                            {optionUuid === val.uuid && (
+                                                                                                <div
+                                                                                                    style={{
+                                                                                                        position: "absolute",
+                                                                                                        left: -19,
+                                                                                                        top: 9,
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <DragIndicatorIcon
+                                                                                                        style={{
+                                                                                                            color: "#B3B3B3",
+                                                                                                            fontSize: "20px",
+                                                                                                        }}
+                                                                                                    />
+                                                                                                </div>
+                                                                                            )}
+                                                                                            {v.type === "radio" ? (
+                                                                                                <RadioButtonUncheckedOutlinedIcon
+                                                                                                    style={{
+                                                                                                        color: "#B3B3B3",
+                                                                                                        position: "relative",
+                                                                                                        top: -2,
+                                                                                                    }}
+                                                                                                />
+                                                                                            ) : v.type === "check" ? (
+                                                                                                <CheckBoxOutlineBlankIcon
+                                                                                                    style={{
+                                                                                                        color: "#B3B3B3",
+                                                                                                        position: "relative",
+                                                                                                        top: -2,
+                                                                                                    }}
+                                                                                                />
+                                                                                            ) : (
+                                                                                                <span
+                                                                                                    style={{
+                                                                                                        fontSize: 14,
+                                                                                                        position: "relative",
+                                                                                                        top: -2,
+                                                                                                    }}
+                                                                                                >
+                                                                                                    {idx + 1}
+                                                                                                </span>
+                                                                                            )}
+
+                                                                                            <Input
+                                                                                                customTextareaBottomBorderColor={warningIndex === `${i}-${idx}` ? "#E46337" : ""}
+                                                                                                onBlur={() => {
+                                                                                                    const cp = [...questions];
+                                                                                                    const formOptions = cp[cardIndex - 1].formOptions;
+                                                                                                    if (!formOptions[idx].text.replace(/\s/gi, "")) {
+                                                                                                        formOptions[idx].text = `옵션 ${idx + 1}`;
+                                                                                                        setQuestions(cp);
+                                                                                                    } else if (warningIndex === `${i}-${idx}`) {
+                                                                                                        const formOptionsIndex = formOptions.findIndex((value) => {
+                                                                                                            return value.uuid === val.uuid;
+                                                                                                        });
+                                                                                                        formOptions[formOptionsIndex].text = `옵션 ${formOptions.length}`;
+                                                                                                        setQuestions(cp);
+                                                                                                        setWarningIndex("");
+                                                                                                    }
+                                                                                                }}
+                                                                                                constainerStyle={{
+                                                                                                    width: "90%",
+                                                                                                    marginLeft: 10,
+                                                                                                }}
+                                                                                                fontSize={14}
+                                                                                                height={24}
+                                                                                                value={val.text}
+                                                                                                borderBottom={optionUuid === val.uuid ? "y" : ""}
+                                                                                                onChange={(e) => {
+                                                                                                    const cp = [...questions];
+                                                                                                    const index = cp.findIndex((x) => x.uuid === v.uuid);
+                                                                                                    const formOptions = cp[index].formOptions;
+                                                                                                    const formOptionsIndex = formOptions.findIndex((value) => {
+                                                                                                        return value.uuid === val.uuid;
+                                                                                                    });
+
+                                                                                                    formOptions[formOptionsIndex] = {
+                                                                                                        ...formOptions[formOptionsIndex],
+                                                                                                        text: e.target.value,
+                                                                                                    };
+                                                                                                    if (
+                                                                                                        formOptions
+                                                                                                            .map((vv) => {
+                                                                                                                return vv.text;
+                                                                                                            })
+                                                                                                            .filter((vvv, iii) => {
+                                                                                                                return iii != idx;
+                                                                                                            })
+                                                                                                            .indexOf(e.target.value) === -1
+                                                                                                    ) {
+                                                                                                        setWarningIndex("");
+                                                                                                    } else {
+                                                                                                        setWarningIndex(`${i}-${idx}`);
+                                                                                                    }
+
+                                                                                                    setQuestions(cp);
+                                                                                                }}
+                                                                                                onKeyDown={(e) => {
+                                                                                                    if (e.ctrlKey && e.key === "Enter") {
+                                                                                                        e.preventDefault();
+                                                                                                    } else if (e.key == "Enter") {
+                                                                                                        const cp = [...questions];
+                                                                                                        const index = cp.findIndex((x) => x.uuid === v.uuid);
+                                                                                                        const formOptions = cp[index].formOptions;
+                                                                                                        const formOptionsIndex = formOptions.findIndex((xx) => xx.uuid === val.uuid);
+                                                                                                        formOptions.splice(formOptionsIndex + 1, 0, {
+                                                                                                            uuid: uuid(),
+                                                                                                            text: `옵션 ${v.formOptions.length + 1}`,
+                                                                                                        });
+                                                                                                        setQuestions(cp);
+                                                                                                        if (warningIndex === `${i}-${idx}`) {
+                                                                                                            const cp = [...questions];
+                                                                                                            const formOptions = cp[cardIndex - 1].formOptions;
+                                                                                                            const formOptionsIndex = formOptions.findIndex((value) => {
+                                                                                                                return value.uuid === val.uuid;
+                                                                                                            });
+                                                                                                            formOptions[formOptionsIndex].text = `옵션 ${formOptions.length - 1}`;
+                                                                                                            setQuestions(cp);
+                                                                                                            setWarningIndex("");
+                                                                                                        }
+                                                                                                        e.preventDefault();
+                                                                                                        setTimeout(() => {
+                                                                                                            const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[
+                                                                                                                idx + 2
+                                                                                                            ] as HTMLTextAreaElement;
+                                                                                                            textarea.select();
+                                                                                                        }, 1);
+                                                                                                    } else if (e.key == "Backspace" && !val.text && v.formOptions.length != 1) {
+                                                                                                        const cp = [...questions];
+                                                                                                        const formOptions = cp[cardIndex - 1].formOptions;
+                                                                                                        const formOptionsIndex = formOptions.findIndex((value) => {
+                                                                                                            return value.uuid === val.uuid;
+                                                                                                        });
+                                                                                                        formOptions.splice(formOptionsIndex, 1);
+                                                                                                        setQuestions(cp);
+                                                                                                        e.preventDefault();
+                                                                                                        if (idx === 0) {
+                                                                                                            setTimeout(() => {
+                                                                                                                const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[1] as HTMLTextAreaElement;
+                                                                                                                textarea.select();
+                                                                                                            }, 1);
+                                                                                                        } else {
+                                                                                                            setTimeout(() => {
+                                                                                                                const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[
+                                                                                                                    idx
+                                                                                                                ] as HTMLTextAreaElement;
+                                                                                                                textarea.select();
+                                                                                                            }, 1);
+                                                                                                        }
+                                                                                                    }
                                                                                                 }}
                                                                                             />
+                                                                                            {warningIndex === `${i}-${idx}` && (
+                                                                                                <Tooltip
+                                                                                                    title="중복옵션은 지원되지 않습니다."
+                                                                                                    onClick={(event) => {
+                                                                                                        const cp = [...questions];
+                                                                                                        const formOptions = cp[cardIndex - 1].formOptions;
+                                                                                                        const formOptionsIndex = formOptions.findIndex((value) => {
+                                                                                                            return value.uuid === val.uuid;
+                                                                                                        });
+                                                                                                        formOptions[formOptionsIndex].text = `옵션 ${formOptions.length}`;
+                                                                                                        setQuestions(cp);
+                                                                                                        setWarningIndex("");
+                                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
+                                                                                                        textarea.blur();
+                                                                                                        event.stopPropagation();
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <IconButton>
+                                                                                                        <WarningIcon
+                                                                                                            style={{
+                                                                                                                color: "#E46337",
+                                                                                                            }}
+                                                                                                        />
+                                                                                                    </IconButton>
+                                                                                                </Tooltip>
+                                                                                            )}
+                                                                                            {v.formOptions.length > 1 && (
+                                                                                                <Tooltip
+                                                                                                    title="삭제"
+                                                                                                    onClick={() => {
+                                                                                                        const cp = [...questions];
+                                                                                                        const formOptions = cp[cardIndex - 1].formOptions;
+                                                                                                        const formOptionsIndex = formOptions.findIndex((value) => {
+                                                                                                            return value.uuid === val.uuid;
+                                                                                                        });
+                                                                                                        formOptions.splice(formOptionsIndex, 1);
+                                                                                                        setQuestions(cp);
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <IconButton>
+                                                                                                        <ClearIcon
+                                                                                                            style={{
+                                                                                                                color: "#5f6368",
+                                                                                                            }}
+                                                                                                        />
+                                                                                                    </IconButton>
+                                                                                                </Tooltip>
+                                                                                            )}
                                                                                         </div>
-                                                                                    )}
+                                                                                    );
+                                                                                })}
+                                                                                <div
+                                                                                    className="flex fdr aic"
+                                                                                    style={{
+                                                                                        height: 44,
+                                                                                    }}
+                                                                                >
                                                                                     {v.type === "radio" ? (
                                                                                         <RadioButtonUncheckedOutlinedIcon
                                                                                             style={{
                                                                                                 color: "#B3B3B3",
-                                                                                                position: "relative",
-                                                                                                top: -2,
                                                                                             }}
                                                                                         />
                                                                                     ) : v.type === "check" ? (
                                                                                         <CheckBoxOutlineBlankIcon
                                                                                             style={{
                                                                                                 color: "#B3B3B3",
-                                                                                                position: "relative",
-                                                                                                top: -2,
                                                                                             }}
                                                                                         />
                                                                                     ) : (
                                                                                         <span
                                                                                             style={{
                                                                                                 fontSize: 14,
-                                                                                                position: "relative",
-                                                                                                top: -2,
                                                                                             }}
                                                                                         >
-                                                                                            {idx + 1}
+                                                                                            {v.formOptions.length + 1}
                                                                                         </span>
                                                                                     )}
 
-                                                                                    <Input
-                                                                                        customTextareaBottomBorderColor={warningIndex === `${i}-${idx}` ? "#E46337" : ""}
-                                                                                        onBlur={() => {
-                                                                                            const cp = [...questions];
-                                                                                            const formOptions = cp[cardIndex - 1].formOptions;
-                                                                                            if (!formOptions[idx].text.replace(/\s/gi, "")) {
-                                                                                                formOptions[idx].text = `옵션 ${idx + 1}`;
-                                                                                                setQuestions(cp);
-                                                                                            } else if (warningIndex === `${i}-${idx}`) {
-                                                                                                const formOptionsIndex = formOptions.findIndex((value) => {
-                                                                                                    return value.uuid === val.uuid;
-                                                                                                });
-                                                                                                formOptions[formOptionsIndex].text = `옵션 ${formOptions.length}`;
-                                                                                                setQuestions(cp);
-                                                                                                setWarningIndex("");
-                                                                                            }
-                                                                                        }}
-                                                                                        constainerStyle={{
-                                                                                            width: "90%",
-                                                                                            marginLeft: 10,
-                                                                                        }}
-                                                                                        fontSize={14}
-                                                                                        height={24}
-                                                                                        value={val.text}
-                                                                                        borderBottom={optionUuid === val.uuid ? "y" : ""}
-                                                                                        onChange={(e) => {
-                                                                                            const cp = [...questions];
-                                                                                            const index = cp.findIndex((x) => x.uuid === v.uuid);
-                                                                                            const formOptions = cp[index].formOptions;
-                                                                                            const formOptionsIndex = formOptions.findIndex((value) => {
-                                                                                                return value.uuid === val.uuid;
-                                                                                            });
-
-                                                                                            formOptions[formOptionsIndex] = {
-                                                                                                ...formOptions[formOptionsIndex],
-                                                                                                text: e.target.value,
-                                                                                            };
-                                                                                            if (
-                                                                                                formOptions
-                                                                                                    .map((vv) => {
-                                                                                                        return vv.text;
-                                                                                                    })
-                                                                                                    .filter((vvv, iii) => {
-                                                                                                        return iii != idx;
-                                                                                                    })
-                                                                                                    .indexOf(e.target.value) === -1
-                                                                                            ) {
-                                                                                                setWarningIndex("");
-                                                                                            } else {
-                                                                                                setWarningIndex(`${i}-${idx}`);
-                                                                                            }
-
-                                                                                            setQuestions(cp);
-                                                                                        }}
-                                                                                        onKeyDown={(e) => {
-                                                                                            if (e.ctrlKey && e.key === "Enter") {
-                                                                                                e.preventDefault();
-                                                                                            } else if (e.key == "Enter") {
-                                                                                                const cp = [...questions];
-                                                                                                const index = cp.findIndex((x) => x.uuid === v.uuid);
-                                                                                                const formOptions = cp[index].formOptions;
-                                                                                                const formOptionsIndex = formOptions.findIndex((xx) => xx.uuid === val.uuid);
-                                                                                                formOptions.splice(formOptionsIndex + 1, 0, {
-                                                                                                    uuid: uuid(),
-                                                                                                    text: `옵션 ${v.formOptions.length + 1}`,
-                                                                                                });
-                                                                                                setQuestions(cp);
-                                                                                                if (warningIndex === `${i}-${idx}`) {
+                                                                                    {v.type === "drop" ? (
+                                                                                        <div
+                                                                                            style={{
+                                                                                                fontSize: 14,
+                                                                                                marginLeft: 12,
+                                                                                            }}
+                                                                                        >
+                                                                                            <span
+                                                                                                className="addOption"
+                                                                                                style={{
+                                                                                                    display: "inline-flex",
+                                                                                                    color: "#7f7f7f",
+                                                                                                    height: 35,
+                                                                                                    alignItems: "center",
+                                                                                                }}
+                                                                                                onClick={() => {
                                                                                                     const cp = [...questions];
-                                                                                                    const formOptions = cp[cardIndex - 1].formOptions;
-                                                                                                    const formOptionsIndex = formOptions.findIndex((value) => {
-                                                                                                        return value.uuid === val.uuid;
+                                                                                                    const index = cp.findIndex((x) => x.uuid === v.uuid);
+                                                                                                    const formOptions = cp[index].formOptions;
+                                                                                                    formOptions.push({
+                                                                                                        uuid: uuid(),
+                                                                                                        text: `옵션 ${v.formOptions.length + 1}`,
                                                                                                     });
-                                                                                                    formOptions[formOptionsIndex].text = `옵션 ${formOptions.length - 1}`;
                                                                                                     setQuestions(cp);
-                                                                                                    setWarningIndex("");
-                                                                                                }
-                                                                                                e.preventDefault();
-                                                                                                setTimeout(() => {
-                                                                                                    const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 2] as HTMLTextAreaElement;
-                                                                                                    textarea.select();
-                                                                                                }, 1);
-                                                                                            } else if (e.key == "Backspace" && !val.text && v.formOptions.length != 1) {
-                                                                                                const cp = [...questions];
-                                                                                                const formOptions = cp[cardIndex - 1].formOptions;
-                                                                                                const formOptionsIndex = formOptions.findIndex((value) => {
-                                                                                                    return value.uuid === val.uuid;
-                                                                                                });
-                                                                                                formOptions.splice(formOptionsIndex, 1);
-                                                                                                setQuestions(cp);
-                                                                                                e.preventDefault();
-                                                                                                if (idx === 0) {
-                                                                                                    setTimeout(() => {
-                                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[1] as HTMLTextAreaElement;
-                                                                                                        textarea.select();
-                                                                                                    }, 1);
-                                                                                                } else {
-                                                                                                    setTimeout(() => {
-                                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx] as HTMLTextAreaElement;
-                                                                                                        textarea.select();
-                                                                                                    }, 1);
-                                                                                                }
-                                                                                            }
-                                                                                        }}
-                                                                                    />
-                                                                                    {warningIndex === `${i}-${idx}` && (
-                                                                                        <Tooltip
-                                                                                            title="중복옵션은 지원되지 않습니다."
-                                                                                            onClick={(event) => {
-                                                                                                const cp = [...questions];
-                                                                                                const formOptions = cp[cardIndex - 1].formOptions;
-                                                                                                const formOptionsIndex = formOptions.findIndex((value) => {
-                                                                                                    return value.uuid === val.uuid;
-                                                                                                });
-                                                                                                formOptions[formOptionsIndex].text = `옵션 ${formOptions.length}`;
-                                                                                                setQuestions(cp);
-                                                                                                setWarningIndex("");
-                                                                                                const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
-                                                                                                textarea.blur();
-                                                                                                event.stopPropagation();
+                                                                                                }}
+                                                                                            >
+                                                                                                옵션 추가
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <div
+                                                                                            style={{
+                                                                                                fontSize: 14,
+                                                                                                marginLeft: 12,
                                                                                             }}
                                                                                         >
-                                                                                            <IconButton>
-                                                                                                <WarningIcon
-                                                                                                    style={{
-                                                                                                        color: "#E46337",
-                                                                                                    }}
-                                                                                                />
-                                                                                            </IconButton>
-                                                                                        </Tooltip>
+                                                                                            <span
+                                                                                                className="addOption"
+                                                                                                style={{
+                                                                                                    display: "inline-flex",
+                                                                                                    color: "#7f7f7f",
+                                                                                                    height: 35,
+                                                                                                    alignItems: "center",
+                                                                                                }}
+                                                                                                onClick={() => {
+                                                                                                    const cp = [...questions];
+                                                                                                    const index = cp.findIndex((x) => x.uuid === v.uuid);
+                                                                                                    const formOptions = cp[index].formOptions;
+                                                                                                    formOptions.push({
+                                                                                                        uuid: uuid(),
+                                                                                                        text: `옵션 ${v.formOptions.length + 1}`,
+                                                                                                    });
+                                                                                                    setQuestions(cp);
+                                                                                                }}
+                                                                                            >
+                                                                                                옵션 추가
+                                                                                            </span>{" "}
+                                                                                            또는{" "}
+                                                                                            <span
+                                                                                                className="addOther"
+                                                                                                style={{
+                                                                                                    display: "inline-flex",
+                                                                                                    color: "#4285F4",
+                                                                                                    alignItems: "center",
+                                                                                                    padding: "0 5px",
+                                                                                                    marginLeft: -3,
+                                                                                                    borderRadius: 4,
+                                                                                                    height: 35,
+                                                                                                }}
+                                                                                            >
+                                                                                                {`'기타' 추가`}
+                                                                                            </span>
+                                                                                        </div>
                                                                                     )}
-                                                                                    {v.formOptions.length > 1 && (
-                                                                                        <Tooltip
-                                                                                            title="삭제"
-                                                                                            onClick={() => {
-                                                                                                const cp = [...questions];
-                                                                                                const formOptions = cp[cardIndex - 1].formOptions;
-                                                                                                const formOptionsIndex = formOptions.findIndex((value) => {
-                                                                                                    return value.uuid === val.uuid;
-                                                                                                });
-                                                                                                formOptions.splice(formOptionsIndex, 1);
-                                                                                                setQuestions(cp);
-                                                                                            }}
-                                                                                        >
-                                                                                            <IconButton>
-                                                                                                <ClearIcon
-                                                                                                    style={{
-                                                                                                        color: "#5f6368",
-                                                                                                    }}
-                                                                                                />
-                                                                                            </IconButton>
-                                                                                        </Tooltip>
-                                                                                    )}
                                                                                 </div>
-                                                                            );
-                                                                        })}
-                                                                        <div
-                                                                            className="flex fdr aic"
-                                                                            style={{
-                                                                                height: 44,
-                                                                            }}
-                                                                        >
-                                                                            {v.type === "radio" ? (
-                                                                                <RadioButtonUncheckedOutlinedIcon
-                                                                                    style={{
-                                                                                        color: "#B3B3B3",
-                                                                                    }}
-                                                                                />
-                                                                            ) : v.type === "check" ? (
-                                                                                <CheckBoxOutlineBlankIcon
-                                                                                    style={{
-                                                                                        color: "#B3B3B3",
-                                                                                    }}
-                                                                                />
-                                                                            ) : (
-                                                                                <span
-                                                                                    style={{
-                                                                                        fontSize: 14,
-                                                                                    }}
-                                                                                >
-                                                                                    {v.formOptions.length + 1}
-                                                                                </span>
-                                                                            )}
-
-                                                                            {v.type === "drop" ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        fontSize: 14,
-                                                                                        marginLeft: 12,
-                                                                                    }}
-                                                                                >
-                                                                                    <span
-                                                                                        className="addOption"
-                                                                                        style={{
-                                                                                            display: "inline-flex",
-                                                                                            color: "#7f7f7f",
-                                                                                            height: 35,
-                                                                                            alignItems: "center",
-                                                                                        }}
-                                                                                        onClick={() => {
-                                                                                            const cp = [...questions];
-                                                                                            const index = cp.findIndex((x) => x.uuid === v.uuid);
-                                                                                            const formOptions = cp[index].formOptions;
-                                                                                            formOptions.push({
-                                                                                                uuid: uuid(),
-                                                                                                text: `옵션 ${v.formOptions.length + 1}`,
-                                                                                            });
-                                                                                            setQuestions(cp);
-                                                                                        }}
-                                                                                    >
-                                                                                        옵션 추가
-                                                                                    </span>
-                                                                                </div>
-                                                                            ) : (
-                                                                                <div
-                                                                                    style={{
-                                                                                        fontSize: 14,
-                                                                                        marginLeft: 12,
-                                                                                    }}
-                                                                                >
-                                                                                    <span
-                                                                                        className="addOption"
-                                                                                        style={{
-                                                                                            display: "inline-flex",
-                                                                                            color: "#7f7f7f",
-                                                                                            height: 35,
-                                                                                            alignItems: "center",
-                                                                                        }}
-                                                                                        onClick={() => {
-                                                                                            const cp = [...questions];
-                                                                                            const index = cp.findIndex((x) => x.uuid === v.uuid);
-                                                                                            const formOptions = cp[index].formOptions;
-                                                                                            formOptions.push({
-                                                                                                uuid: uuid(),
-                                                                                                text: `옵션 ${v.formOptions.length + 1}`,
-                                                                                            });
-                                                                                            setQuestions(cp);
-                                                                                        }}
-                                                                                    >
-                                                                                        옵션 추가
-                                                                                    </span>{" "}
-                                                                                    또는{" "}
-                                                                                    <span
-                                                                                        className="addOther"
-                                                                                        style={{
-                                                                                            display: "inline-flex",
-                                                                                            color: "#4285F4",
-                                                                                            alignItems: "center",
-                                                                                            padding: "0 5px",
-                                                                                            marginLeft: -3,
-                                                                                            borderRadius: 4,
-                                                                                            height: 35,
-                                                                                        }}
-                                                                                    >
-                                                                                        {`'기타' 추가`}
-                                                                                    </span>
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                ) : (
-                                                                    <div
-                                                                        style={{
-                                                                            marginTop: 20,
-                                                                            marginBottom: 15,
-                                                                            fontSize: 14,
-                                                                            color: "gray",
-                                                                            borderBottom: "1px dotted black",
-                                                                            paddingBottom: 5,
-                                                                            width: 350,
-                                                                        }}
-                                                                    >
-                                                                        {v.type === "long" ? "장문형 텍스트" : "단답형 텍스트"}
-                                                                    </div>
-                                                                )}
-                                                                <div
-                                                                    style={{
-                                                                        position: "relative",
-                                                                        top: 26,
-                                                                        width: 720,
-                                                                        height: 65,
-                                                                        borderTop: "1px solid #d9d9d9",
-                                                                        display: "flex",
-                                                                        flexDirection: "row",
-                                                                        alignItems: "center",
-                                                                        justifyContent: "flex-end",
-                                                                    }}
-                                                                >
-                                                                    <Tooltip
-                                                                        title="복사"
-                                                                        onClick={() => {
-                                                                            const cp = [...questions];
-                                                                            cp.splice(cardIndex, 0, {
-                                                                                ...cp[cardIndex - 1],
-                                                                                uuid: uuid(),
-                                                                                formOptions: cp[cardIndex - 1].formOptions.map((x) => {
-                                                                                    return {
-                                                                                        text: x.text,
-                                                                                        uuid: uuid(),
-                                                                                    };
-                                                                                }),
-                                                                            });
-                                                                            setQuestions(cp);
-                                                                        }}
-                                                                    >
-                                                                        <IconButton>
-                                                                            <FileCopyOutlinedIcon style={{ color: "#5f6368" }} />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                    <Tooltip
-                                                                        title="삭제"
-                                                                        onClick={() => {
-                                                                            const cp = [...questions];
-                                                                            const index = cp.findIndex((x) => {
-                                                                                return x.uuid == v.uuid;
-                                                                            });
-                                                                            cp.splice(index, 1);
-                                                                            setQuestions(cp);
-                                                                        }}
-                                                                    >
-                                                                        <IconButton>
-                                                                            <DeleteOutlineIcon style={{ color: "#5f6368" }} />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                    <div
-                                                                        style={{
-                                                                            height: 30,
-                                                                            borderLeft: "1px solid #d9d9d9",
-                                                                            marginLeft: 15,
-                                                                            marginRight: 20,
-                                                                        }}
-                                                                    ></div>
-                                                                    <div className="flex fdr jcfe">
-                                                                        <div className="flex fdr aic">
-                                                                            <span
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div
                                                                                 style={{
-                                                                                    marginRight: 16,
+                                                                                    marginTop: 20,
+                                                                                    marginBottom: 15,
                                                                                     fontSize: 14,
+                                                                                    color: "gray",
+                                                                                    borderBottom: "1px dotted black",
+                                                                                    paddingBottom: 5,
+                                                                                    width: 350,
                                                                                 }}
                                                                             >
-                                                                                필수
-                                                                            </span>
-                                                                            <Toggle
-                                                                                active={questions[i].isNeccessary}
-                                                                                setToggle={() => {
+                                                                                {v.type === "long" ? "장문형 텍스트" : "단답형 텍스트"}
+                                                                            </div>
+                                                                        )}
+                                                                        <div
+                                                                            style={{
+                                                                                position: "relative",
+                                                                                top: 26,
+                                                                                width: 720,
+                                                                                height: 65,
+                                                                                borderTop: "1px solid #d9d9d9",
+                                                                                display: "flex",
+                                                                                flexDirection: "row",
+                                                                                alignItems: "center",
+                                                                                justifyContent: "flex-end",
+                                                                            }}
+                                                                        >
+                                                                            <Tooltip
+                                                                                title="복사"
+                                                                                onClick={() => {
                                                                                     const cp = [...questions];
-                                                                                    cp[cardIndex - 1].isNeccessary = !cp[cardIndex - 1].isNeccessary;
+                                                                                    cp.splice(cardIndex, 0, {
+                                                                                        ...cp[cardIndex - 1],
+                                                                                        uuid: uuid(),
+                                                                                        formOptions: cp[cardIndex - 1].formOptions.map((x) => {
+                                                                                            return {
+                                                                                                text: x.text,
+                                                                                                uuid: uuid(),
+                                                                                            };
+                                                                                        }),
+                                                                                    });
                                                                                     setQuestions(cp);
                                                                                 }}
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                    <IconButton style={{ marginLeft: 5 }}>
-                                                                        <MoreVertIcon style={{ color: "#5f6368" }} />
-                                                                    </IconButton>
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div>
-                                                                <div>
-                                                                    {v.question ? v.question : "질문"}{" "}
-                                                                    {v.isNeccessary && (
-                                                                        <span
-                                                                            style={{
-                                                                                fontSize: 13,
-                                                                                color: "rgba(219, 68, 55, 1)",
-                                                                                position: "relative",
-                                                                                top: -3,
-                                                                            }}
-                                                                        >
-                                                                            *
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                                {v.type != "long" && v.type != "short" ? (
-                                                                    v.formOptions.map((val, idx) => {
-                                                                        return (
-                                                                            <div
-                                                                                key={val.uuid}
-                                                                                className="flex fdr aic optionsContainer"
-                                                                                style={{
-                                                                                    marginTop: idx === 0 ? 15 : 0,
-                                                                                    position: "relative",
-                                                                                    height: 48,
-                                                                                }}
-                                                                                onClick={(event) => {
-                                                                                    setTimeout(() => {
-                                                                                        const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
-                                                                                        textarea.select();
-                                                                                        event.stopPropagation();
-                                                                                    }, 1);
+                                                                            >
+                                                                                <IconButton>
+                                                                                    <FileCopyOutlinedIcon style={{ color: "#5f6368" }} />
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                            <Tooltip
+                                                                                title="삭제"
+                                                                                onClick={() => {
+                                                                                    const cp = [...questions];
+                                                                                    const index = cp.findIndex((x) => {
+                                                                                        return x.uuid == v.uuid;
+                                                                                    });
+                                                                                    cp.splice(index, 1);
+                                                                                    setQuestions(cp);
                                                                                 }}
                                                                             >
-                                                                                {v.type === "radio" ? (
-                                                                                    <RadioButtonUncheckedOutlinedIcon
-                                                                                        style={{
-                                                                                            color: "#B3B3B3",
-                                                                                            position: "relative",
-                                                                                            top: 1,
-                                                                                        }}
-                                                                                    />
-                                                                                ) : v.type === "check" ? (
-                                                                                    <CheckBoxOutlineBlankIcon
-                                                                                        style={{
-                                                                                            color: "#B3B3B3",
-                                                                                            position: "relative",
-                                                                                            top: 1,
-                                                                                        }}
-                                                                                    />
-                                                                                ) : (
+                                                                                <IconButton>
+                                                                                    <DeleteOutlineIcon style={{ color: "#5f6368" }} />
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                            <div
+                                                                                style={{
+                                                                                    height: 30,
+                                                                                    borderLeft: "1px solid #d9d9d9",
+                                                                                    marginLeft: 15,
+                                                                                    marginRight: 20,
+                                                                                }}
+                                                                            ></div>
+                                                                            <div className="flex fdr jcfe">
+                                                                                <div className="flex fdr aic">
                                                                                     <span
                                                                                         style={{
+                                                                                            marginRight: 16,
                                                                                             fontSize: 14,
-                                                                                            position: "relative",
-                                                                                            top: 1,
                                                                                         }}
                                                                                     >
-                                                                                        {idx + 1}
+                                                                                        필수
                                                                                     </span>
-                                                                                )}
+                                                                                    <Toggle
+                                                                                        active={questions[i].isNeccessary}
+                                                                                        setToggle={() => {
+                                                                                            const cp = [...questions];
+                                                                                            cp[cardIndex - 1].isNeccessary = !cp[cardIndex - 1].isNeccessary;
+                                                                                            setQuestions(cp);
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                            <IconButton style={{ marginLeft: 5 }}>
+                                                                                <MoreVertIcon style={{ color: "#5f6368" }} />
+                                                                            </IconButton>
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div>
+                                                                        <div>
+                                                                            {v.question ? v.question : "질문"}{" "}
+                                                                            {v.isNeccessary && (
                                                                                 <span
                                                                                     style={{
-                                                                                        fontSize: 14,
-                                                                                        marginLeft: 10,
+                                                                                        fontSize: 13,
+                                                                                        color: "rgba(219, 68, 55, 1)",
+                                                                                        position: "relative",
+                                                                                        top: -3,
                                                                                     }}
                                                                                 >
-                                                                                    {val.text}
+                                                                                    *
                                                                                 </span>
+                                                                            )}
+                                                                        </div>
+                                                                        {v.type != "long" && v.type != "short" ? (
+                                                                            v.formOptions.map((val, idx) => {
+                                                                                return (
+                                                                                    <div
+                                                                                        key={val.uuid}
+                                                                                        className="flex fdr aic optionsContainer"
+                                                                                        style={{
+                                                                                            marginTop: idx === 0 ? 15 : 0,
+                                                                                            position: "relative",
+                                                                                            height: 48,
+                                                                                        }}
+                                                                                        onClick={(event) => {
+                                                                                            setTimeout(() => {
+                                                                                                const textarea = document.getElementsByClassName("cardWrapper")[i + 1].getElementsByClassName("customTextarea")[idx + 1] as HTMLTextAreaElement;
+                                                                                                textarea.select();
+                                                                                                event.stopPropagation();
+                                                                                            }, 1);
+                                                                                        }}
+                                                                                    >
+                                                                                        {v.type === "radio" ? (
+                                                                                            <RadioButtonUncheckedOutlinedIcon
+                                                                                                style={{
+                                                                                                    color: "#B3B3B3",
+                                                                                                    position: "relative",
+                                                                                                    top: 1,
+                                                                                                }}
+                                                                                            />
+                                                                                        ) : v.type === "check" ? (
+                                                                                            <CheckBoxOutlineBlankIcon
+                                                                                                style={{
+                                                                                                    color: "#B3B3B3",
+                                                                                                    position: "relative",
+                                                                                                    top: 1,
+                                                                                                }}
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <span
+                                                                                                style={{
+                                                                                                    fontSize: 14,
+                                                                                                    position: "relative",
+                                                                                                    top: 1,
+                                                                                                }}
+                                                                                            >
+                                                                                                {idx + 1}
+                                                                                            </span>
+                                                                                        )}
+                                                                                        <span
+                                                                                            style={{
+                                                                                                fontSize: 14,
+                                                                                                marginLeft: 10,
+                                                                                            }}
+                                                                                        >
+                                                                                            {val.text}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                );
+                                                                            })
+                                                                        ) : (
+                                                                            <div
+                                                                                style={{
+                                                                                    marginTop: 20,
+                                                                                    marginBottom: 15,
+                                                                                    fontSize: 14,
+                                                                                    color: "gray",
+                                                                                    borderBottom: "1px dotted black",
+                                                                                    paddingBottom: 5,
+                                                                                    width: 350,
+                                                                                }}
+                                                                            >
+                                                                                {v.type === "long" ? "장문형 텍스트" : "단답형 텍스트"}
                                                                             </div>
-                                                                        );
-                                                                    })
-                                                                ) : (
-                                                                    <div
-                                                                        style={{
-                                                                            marginTop: 20,
-                                                                            marginBottom: 15,
-                                                                            fontSize: 14,
-                                                                            color: "gray",
-                                                                            borderBottom: "1px dotted black",
-                                                                            paddingBottom: 5,
-                                                                            width: 350,
-                                                                        }}
-                                                                    >
-                                                                        {v.type === "long" ? "장문형 텍스트" : "단답형 텍스트"}
+                                                                        )}
                                                                     </div>
                                                                 )}
-                                                            </div>
-                                                        )}
-                                                    </Card>
-                                                </li>
-                                            )}
-                                        </Draggable>
-                                    );
-                                })}
-                                {provided.placeholder}
-                            </ul>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-                <div ref={footer} style={{ height: 1 }}></div>
-                <div
-                    ref={rightDiv}
-                    style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 10,
-                        position: "absolute",
-                        top: 0,
-                        right: -60,
-                        backgroundColor: "white",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        display: "flex",
-                        fontSize: 25,
-                        border: "1px solid #dadce0",
-                        boxShadow: "0px 1px 1px rgb(148, 146, 146)",
-                        transition: "top 0.25s ease-in-out",
-                    }}
-                >
-                    <Tooltip
-                        title="질문 추가"
-                        onClick={() => {
-                            const cp = [...questions];
-                            cp.splice(cardIndex, 0, {
-                                type: "radio",
-                                question: "",
-                                uuid: uuid(),
-                                formOptions: [
-                                    {
-                                        text: "옵션 1",
+                                                            </Card>
+                                                        </li>
+                                                    )}
+                                                </Draggable>
+                                            );
+                                        })}
+                                        {provided.placeholder}
+                                    </ul>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                        <div ref={footer} style={{ height: 1 }}></div>
+                        <div
+                            ref={rightDiv}
+                            style={{
+                                width: 50,
+                                height: 50,
+                                borderRadius: 10,
+                                position: "absolute",
+                                top: 0,
+                                right: -60,
+                                backgroundColor: "white",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                display: "flex",
+                                fontSize: 25,
+                                border: "1px solid #dadce0",
+                                boxShadow: "0px 1px 1px rgb(148, 146, 146)",
+                                transition: "top 0.25s ease-in-out",
+                            }}
+                        >
+                            <Tooltip
+                                title="질문 추가"
+                                onClick={() => {
+                                    const cp = [...questions];
+                                    cp.splice(cardIndex, 0, {
+                                        type: "radio",
+                                        question: "",
                                         uuid: uuid(),
-                                    },
-                                ],
-                                isNeccessary: false,
-                                section: 1,
-                                order: 1,
-                            });
-                            setQuestions(cp);
+                                        formOptions: [
+                                            {
+                                                text: "옵션 1",
+                                                uuid: uuid(),
+                                            },
+                                        ],
+                                        isNeccessary: false,
+                                        section: 1,
+                                        order: 1,
+                                    });
+                                    setQuestions(cp);
+                                }}
+                            >
+                                <IconButton size={"small"}>
+                                    <AddCircleOutlineIcon style={{ color: "#5f6368" }} />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            fontSize: 20,
+                            color: "gray",
+                            textAlign: "center",
+                            marginTop: 5,
                         }}
                     >
-                        <IconButton size={"small"}>
-                            <AddCircleOutlineIcon style={{ color: "#5f6368" }} />
-                        </IconButton>
-                    </Tooltip>
+                        미리보기가 가능합니다.
+                        <br />
+                        옵션을 섞고싶은 카드를 선택한 뒤 Ctrl + Enter를 입력하시면 옵션을 무작위로 섞을 수 있습니다.
+                    </div>
+                </>
+            ) : (
+                <div style={{ width: 768, margin: "0 auto", position: "relative" }}>
+                    <div className="bg-white border-1 rounded-lg py-4 px-6 mt-3">
+                        <div className="text-3xl">응답 3개</div>
+                        <div className="flex justify-end items-center">
+                            <div className="text-xs text-slate-600 mr-5 relative" style={{ top: 1 }}>
+                                응답받기
+                            </div>
+                            <Toggle
+                                active={isAnswer}
+                                setToggle={() => {
+                                    setIsAnswer((prev) => !prev);
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div className="bg-white border-1 rounded-lg py-4 px-6 mt-3">
+                        <div>성합을 적어주세요.</div>
+                        <div className="text-xs text-slate-600 mt-2">응답 3개</div>
+                        <div className="mt-6">
+                            <div className="bg-slate-100 rounded-md px-1 py-2 text-sm mt-2">박남수</div>
+                            <div className="bg-slate-100 rounded-md px-1 py-2 text-sm mt-2">장세진</div>
+                            <div className="bg-slate-100 rounded-md px-1 py-2 text-sm mt-2">정수비</div>
+                        </div>
+                    </div>
+                    <div className="bg-white border-1 rounded-lg py-4 px-6 mt-3">
+                        <div>자기소개를 해주세요.</div>
+                        <div className="text-xs text-slate-600 mt-2">응답 3개</div>
+                        <div className="mt-6">
+                            <div className="bg-slate-100 rounded-md px-1 py-2 text-sm mt-2">안녕하세요. 저는 박남수 입니다. 잘 부탁드립니다.</div>
+                            <div className="bg-slate-100 rounded-md px-1 py-2 text-sm mt-2">세진입니다~ 프론트가 1명뿐이지만 열심히 해보겠습니다. ㅠㅠㅠ</div>
+                            <div className="bg-slate-100 rounded-md px-1 py-2 text-sm mt-2">안녕하세요 정수비입니다~~ 다같이 화이팅해서 잘 마무리해요!</div>
+                        </div>
+                    </div>
+                    <div className="bg-white border-1 rounded-lg py-4 px-6 mt-3">
+                        <div>프로젝트 팀명을 하나 골라주세요.</div>
+                        <div className="text-xs text-slate-600 mt-2">응답 3개</div>
+                        <div className="mt-6 flex pl-32 pb-5">
+                            <div className="w-40 h-40 rounded-full bg-main flex justify-center items-center text-xs text-white">100%</div>
+                            <div className="ml-32">
+                                <div className="flex items-center text-xs">
+                                    <div className="w-2 h-2 rounded-full bg-blue-600 mr-2" />
+                                    <div>All is well</div>
+                                </div>
+                                <div className="flex items-center text-xs">
+                                    <div className="w-2 h-2 rounded-full bg-red-600 mr-2" />
+                                    <div>Subi's kitchen</div>
+                                </div>
+                                <div className="flex items-center text-xs">
+                                    <div className="w-2 h-2 rounded-full bg-main mr-2" />
+                                    <div>Form bakery</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white border-1 rounded-lg py-4 px-6 mt-3">
+                        <div>관심있는 직군을 골라주세요.(중복가능)</div>
+                        <div className="text-xs text-slate-600 mt-2">응답 3개</div>
+                        <div className="mt-6 pl-32 pb-10 space-y-6 relative">
+                            <div className="flex items-center">
+                                <div className="text-xs w-16 text-right">프론트엔드</div>
+                                <div className=" w-120 h-8 ml-2 bg-slate-600" />
+                            </div>
+                            <div className="flex items-center">
+                                <div className="text-xs w-16 text-right">백엔드</div>
+                                <div className=" w-120 h-8 ml-2 bg-slate-600" />
+                            </div>
+                            <div className="flex items-center">
+                                <div className="text-xs w-16 text-right">풀스택</div>
+                                <div className=" w-60 h-8 ml-2 bg-slate-600" />
+                            </div>
+                            <div className="bg-black absolute" style={{ top: -40, left: 199, height: 175, width: 1 }} />
+                            <div className="bg-gray-300 absolute" style={{ top: -40, left: 199, height: 1, width: 480 }} />
+                            <div className="bg-gray-300 absolute" style={{ top: -40, left: 439, height: 175, width: 1 }} />
+                            <div className="bg-gray-300 absolute" style={{ top: -40, left: 679, height: 175, width: 1 }} />
+                            <div className="bg-gray-300 absolute text-xs flex items-center justify-between" style={{ top: 135, left: 199, height: 1, width: 480 }}>
+                                <span className="relative" style={{ left: -2, top: 10 }}>
+                                    0
+                                </span>
+                                <span className="relative" style={{ left: 0, top: 10 }}>
+                                    1
+                                </span>
+                                <span className="relative" style={{ left: 2, top: 10 }}>
+                                    2
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div
-                style={{
-                    fontSize: 20,
-                    color: "gray",
-                    textAlign: "center",
-                    marginTop: 5,
-                }}
-            >
-                색상변경 및 미리보기가 가능합니다.
-                <br />
-                옵션을 섞고싶은 카드를 선택한 뒤 Ctrl + Enter를 입력하시면 옵션을 무작위로 섞을 수 있습니다.
-            </div>
+            )}
             <Alert title={"폼 변경"} subTitle={"변경사항이 수정되었습니다."} />
             <div className={`w-full absolute top-0 left-0 bg-black bg-opacity-20 flex justify-center items-center ${isVisibleModal ? "z-10 opacity-100 h-full" : "-z-10 opacity-0 h-0"}`} onClick={toggleLogoutModal}>
                 <div
@@ -1228,7 +1352,6 @@ const CreateForm = () => {
                     <div className="text-md mt-6">링크</div>
                     <div className="mt-2">
                         <Input
-                            // active={cardIndex === i + 1 ? true : false}
                             height={28}
                             fontSize={16}
                             backgroundColor={"#f8f8f8"}
