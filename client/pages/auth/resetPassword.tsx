@@ -152,7 +152,7 @@ const resetPassword = () => {
         setMin(3);
         setSec(0);
         timerId.current = setInterval(() => {
-            setMin(parseInt(time.current / 60));
+            setMin(parseInt(String(time.current / 60)));
             setSec(time.current % 60);
             time.current -= 1;
         }, 1000);

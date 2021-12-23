@@ -6,10 +6,10 @@ interface IProps {
     fontSize?: number;
     placeholder?: string;
     value?: string;
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     height?: number;
     customTextareaBottomBorderColor?: string;
-    onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
     onBlur?: () => void;
     constainerStyle?: CSSProperties;
     backgroundColor?: string;
@@ -76,7 +76,8 @@ const Input = ({ active, fontSize, placeholder, value, onChange, height, customT
                 }}
                 onKeyDown={onKeyDown}
                 onClick={(e) => {
-                    e.target.select();
+                    const target = e.target as HTMLTextAreaElement
+                    target.select();
                 }}
             />
 
