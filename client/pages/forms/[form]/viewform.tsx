@@ -4,9 +4,12 @@ import { Button, RadioGroup, FormControlLabel, Radio, Checkbox, Select, MenuItem
 import Input from "../../../components/Input";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import App from "../../../components/App";
+import Alert from "../../../components/Alert";
+import { setAlert } from "../../../reducers/store/user";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -80,7 +83,7 @@ interface IState {
 
 const Viewform = () => {
     const router = useRouter();
-
+    const dispatch = useDispatch();
     // 상태관리
     const [state, setState] = useState<IState>({
         title: "", // 제목
@@ -226,6 +229,9 @@ const Viewform = () => {
             });
         setShortArray(newShortArray);
     }, [state]);
+
+    // 제출 횟수
+    const [countAnswer, setCountAnswer] = useState<number>(0);
 
     return (
         <div className="bg-subMain w-screen min-h-screen -mt-3 py-4">
@@ -542,10 +548,15 @@ const Viewform = () => {
                         fontSize: 14,
                         height: 36,
                     }}
+                    onClick={() => {
+                        setCountAnswer(countAnswer + 1);
+                        dispatch(setAlert(true));
+                    }}
                 >
                     제출
                 </Button>
             </div>
+            <Alert title={countAnswer !== 1 ? "답변 제출" : "답변 제출"} subTitle={countAnswer !== 1 ? "이미 답변을 제출 하셨습니다." : "답변을 제출 하였습니다."} />
         </div>
     );
 };
