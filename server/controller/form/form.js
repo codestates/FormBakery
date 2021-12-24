@@ -17,7 +17,7 @@ module.exports = {
     let insertData = { ...recommandData[recoType] };
     insertData.id = id;
     insertData.userEmail = userEmail;
-    console.log(insertData);
+
     let find = await db["form"].findOne({
       where: { id: insertData.id },
     });
@@ -57,7 +57,6 @@ module.exports = {
                 let gridData;
                 el.formId = formId;
                 if (el.formOptions) {
-                  console.log(e.formOptions);
                   options = el.formOptions;
                   //delete el.formOptions;
                 }
@@ -84,7 +83,6 @@ module.exports = {
                       db["formOption"].bulkCreate(options, { transaction });
                     }
                     if (el.type === "grid") {
-                      console.log(gridData);
                       await db["formGrid"]
                         .create(
                           {
@@ -339,7 +337,7 @@ module.exports = {
           for (let el of data) {
             let options;
             let gridData;
-            console.log(el);
+
             el.formId = formId;
             if (el.formOptions) {
               options = el.formOptions;

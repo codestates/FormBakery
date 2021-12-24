@@ -18,10 +18,11 @@ app.use("/user", userRouter);
 app.use("/answer", answerRouter);
 app.use("/form", formRouter);
 app.use("/link", linkRouter);
+
 app.get("/", (req, res) => {
   res.send("hello world");
 });
 
 app.listen(port, () => {
-  console.log("server open!");
+  console.log("Code Baker Server Open!!");
 });

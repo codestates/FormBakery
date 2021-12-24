@@ -93,7 +93,6 @@ module.exports = {
           });
         });
     } catch (err) {
-      console.log("catch");
       res.status(400).send({
         message: "database err",
         code: err,
@@ -335,7 +334,7 @@ module.exports = {
                     gridNames: answer.formGrid.gridNames,
                   };
                 }
-                console.log(answer.row + "." + answer.col);
+
                 statistics["" + content.id].data[Number(answer.row)][
                   Number(answer.col)
                 ]++;
@@ -446,7 +445,6 @@ module.exports = {
           );
         }
       } catch (err) {
-        console.log(err);
         res.status(400).send({
           message: "database err",
           code: err,
