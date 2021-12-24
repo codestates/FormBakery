@@ -18,6 +18,8 @@
 👉🏻 [FromBakery 사이트 바로가기](https://form-bakery-qg8343iof-jangsebari.vercel.app/)  
 👉🏻 [FormBakery 프로젝트 위키 바로가기](https://github.com/codestates/FormBakery/wiki)
 
+<br>
+
 # MAIN FEATURES
 
 * 복잡한 회원가입을 하지 않아도 깃허브, 카카오톡 소셜로그인을 통해 쉽게 접속할 수 있어요.
@@ -26,6 +28,8 @@
 * 이메일과 링크를 통해 설문지를 손쉽게 배포해 보세요.
 * 작성된 데이터를 가지고 시각적인 통계를 확인할 수 있어요.
 * 자신이 생성하고 답한 설문들을 한번에 모아 볼 수 있어요.
+
+<br>
 
 # TECH STACK
 
@@ -41,6 +45,8 @@
 
 ![image](https://cdn.discordapp.com/attachments/916188054576844830/923396918187544616/undefined.png)  
 
+<br>
+
 # TEAM CodeBaker
 <img src="https://cdn.discordapp.com/attachments/870468027773251616/923224816339783690/KakaoTalk_Photo_2021-12-22-23-44-50.jpeg" width="320" height="90"></img>
 
@@ -48,6 +54,8 @@
 |-----|-----|-----|
 |Back-End|Front-End|Back-End|
   
+<br>
+
 # REFERENCES
 👉🏻 Back-End API Infomation: [Form Bakery API Docs](https://codebaker.gitbook.io/api-docs/b96lnOebJuI9fFbPcJmi/)  
 👉🏻 FormBakery Reference: [Google 설문지](https://www.google.com/intl/ko_kr/forms/about/)
