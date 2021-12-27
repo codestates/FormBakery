@@ -22,16 +22,12 @@ const App = () => {
   useEffect((): void => {
     if (accessToken) {
       axios
-        .post(
-          "https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/getUserInfo",
-          null,
-          {
-            headers: {
-              Authorization: accessToken,
-            },
-            withCredentials: true,
-          }
-        )
+        .post("https://nspark.shop/user/getUserInfo", null, {
+          headers: {
+            Authorization: accessToken,
+          },
+          withCredentials: true,
+        })
         .then((res) => {
           dispatch(setUserInfo(res.data.data.userInfo));
         })

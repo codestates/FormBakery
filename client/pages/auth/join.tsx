@@ -213,12 +213,9 @@ const Join = () => {
         time.current -= 1;
       }, 1000);
       axios
-        .post(
-          "https://elb-test-852958890.ap-northeast-2.elb.amazonaws.com/user/signupEmailAuth/",
-          {
-            email: userInfo.email,
-          }
-        )
+        .post("https://nspark.shop/user/signupEmailAuth/", {
+          email: userInfo.email,
+        })
         .then((res) => {
           setUserInfo({
             ...userInfo,
