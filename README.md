@@ -48,7 +48,7 @@
 <br>
 
 # TEAM CodeBaker
-<img src="https://cdn.discordapp.com/attachments/870468027773251616/923224816339783690/KakaoTalk_Photo_2021-12-22-23-44-50.jpeg" width="320" height="90"></img>
+<img src="https://cdn.discordapp.com/attachments/866840488887713823/936297790055776336/KakaoTalk_Image_2022-01-28-01-28-11.jpeg" width="320" height="90"></img>
 
 |[Jeong Subi](https://github.com/JeongSubi)|[Park Namsu](https://github.com/PARKNAMSU)|[Jang SaeJin](https://github.com/JangSeBaRi)|
 |-----|-----|-----|
